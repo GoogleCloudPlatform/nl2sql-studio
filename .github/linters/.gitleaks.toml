@@ -7,5 +7,5 @@ useDefault = true
 
 [allowlist]
 paths = [
-  ".github/linters/block-delimiters.list" 
+  ".github/actions/spelling/block-delimiters.list" 
 ]
