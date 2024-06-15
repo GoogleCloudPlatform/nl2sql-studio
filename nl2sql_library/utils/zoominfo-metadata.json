@@ -1,0 +1,2396 @@
+{
+    "zi-companies-under-1000-employees-offering-tuition": {
+        "Name": "zi-companies-under-1000-employees-offering-tuition",
+        "Description": "The table 'zi-companies-under-1000-employees-offering-tuition' contains information about companies with less than 1000 employees that offer tuition assistance as a benefit to their employees. The table includes the following columns:\n\n* **Company Name**: The name of the company.\n* **Headquarters**: The location of the company's headquarters.\n* **Number of Employees**: The number of employees at the company.\n* **Tuition Assistance**: A description of the tuition assistance program offered by the company.\n* **Other Benefits**: A list of other benefits offered by the company.",
+        "Columns": {
+            "ZI_C_LOCATION_ID": {
+                "Name": "ZI_C_LOCATION_ID",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_LOCATION_ID :** Unique identifier for the location of the company.",
+                "Examples": "Sample value for ZI_C_LOCATION_ID"
+            },
+            "ZI_C_COMPANY_ID": {
+                "Name": "ZI_C_COMPANY_ID",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_COMPANY_ID :** Unique identifier for the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_ID"
+            },
+            "ZI_C_IS_HQ": {
+                "Name": "ZI_C_IS_HQ",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_HQ :** Flag indicating whether the location is the company's headquarters.",
+                "Examples": "Sample value for ZI_C_IS_HQ"
+            },
+            "ZI_ES_ECID": {
+                "Name": "ZI_ES_ECID",
+                "Type": "INTEGER",
+                "Description": "**ZI_ES_ECID :** Unique identifier for the location in the ES index.",
+                "Examples": "Sample value for ZI_ES_ECID"
+            },
+            "ZI_ES_LOCATION_ID": {
+                "Name": "ZI_ES_LOCATION_ID",
+                "Type": "STRING",
+                "Description": "**ZI_ES_LOCATION_ID :** Location ID in the ES index.",
+                "Examples": "Sample value for ZI_ES_LOCATION_ID"
+            },
+            "ZI_C_TIER_GRADE": {
+                "Name": "ZI_C_TIER_GRADE",
+                "Type": "STRING",
+                "Description": "**ZI_C_TIER_GRADE :** Grade of the company based on various factors such as employee growth, revenue growth, etc.",
+                "Examples": "Sample value for ZI_C_TIER_GRADE"
+            },
+            "ZI_C_NAME": {
+                "Name": "ZI_C_NAME",
+                "Type": "STRING",
+                "Description": "**ZI_C_NAME :** Name of the company.",
+                "Examples": "Sample value for ZI_C_NAME"
+            },
+            "ZI_C_NAME_DISPLAY": {
+                "Name": "ZI_C_NAME_DISPLAY",
+                "Type": "STRING",
+                "Description": "**ZI_C_NAME_DISPLAY :** Display name of the company.",
+                "Examples": "Sample value for ZI_C_NAME_DISPLAY"
+            },
+            "ZI_C_LEGAL_ENTITY_TYPE": {
+                "Name": "ZI_C_LEGAL_ENTITY_TYPE",
+                "Type": "STRING",
+                "Description": "**ZI_C_LEGAL_ENTITY_TYPE :** Legal entity type of the company such as Corporation, LLC, etc.",
+                "Examples": "Sample value for ZI_C_LEGAL_ENTITY_TYPE"
+            },
+            "ZI_C_URL": {
+                "Name": "ZI_C_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_URL :** Website URL of the company.",
+                "Examples": "Sample value for ZI_C_URL"
+            },
+            "ZI_C_STREET": {
+                "Name": "ZI_C_STREET",
+                "Type": "STRING",
+                "Description": "**ZI_C_STREET :** Street address of the company.",
+                "Examples": "Sample value for ZI_C_STREET"
+            },
+            "ZI_C_STREET_2": {
+                "Name": "ZI_C_STREET_2",
+                "Type": "STRING",
+                "Description": "**ZI_C_STREET_2 :** Additional street address information.",
+                "Examples": "Sample value for ZI_C_STREET_2"
+            },
+            "ZI_C_CITY": {
+                "Name": "ZI_C_CITY",
+                "Type": "STRING",
+                "Description": "**ZI_C_CITY :** City of the company's location.",
+                "Examples": "Sample value for ZI_C_CITY"
+            },
+            "ZI_C_STATE": {
+                "Name": "ZI_C_STATE",
+                "Type": "STRING",
+                "Description": "**ZI_C_STATE :** State of the company's location.",
+                "Examples": "Sample value for ZI_C_STATE"
+            },
+            "ZI_C_ZIP": {
+                "Name": "ZI_C_ZIP",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_ZIP :** ZIP code of the company's location.",
+                "Examples": "Sample value for ZI_C_ZIP"
+            },
+            "ZI_C_COUNTRY": {
+                "Name": "ZI_C_COUNTRY",
+                "Type": "STRING",
+                "Description": "**ZI_C_COUNTRY :** Country of the company's location.",
+                "Examples": "Sample value for ZI_C_COUNTRY"
+            },
+            "ZI_C_CBSA_NAME": {
+                "Name": "ZI_C_CBSA_NAME",
+                "Type": "STRING",
+                "Description": "**ZI_C_CBSA_NAME :** Name of the Core Based Statistical Area (CBSA) where the company is located.",
+                "Examples": "Sample value for ZI_C_CBSA_NAME"
+            },
+            "ZI_C_COUNTY": {
+                "Name": "ZI_C_COUNTY",
+                "Type": "STRING",
+                "Description": "**ZI_C_COUNTY :** County where the company is located.",
+                "Examples": "Sample value for ZI_C_COUNTY"
+            },
+            "ZI_C_LATITUDE": {
+                "Name": "ZI_C_LATITUDE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_LATITUDE :** Latitude of the company's location.",
+                "Examples": "Sample value for ZI_C_LATITUDE"
+            },
+            "ZI_C_LONGITUDE": {
+                "Name": "ZI_C_LONGITUDE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_LONGITUDE :** Longitude of the company's location.",
+                "Examples": "Sample value for ZI_C_LONGITUDE"
+            },
+            "ZI_C_VERIFIED_ADDRESS": {
+                "Name": "ZI_C_VERIFIED_ADDRESS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_VERIFIED_ADDRESS :** Flag indicating whether the company's address has been verified.",
+                "Examples": "Sample value for ZI_C_VERIFIED_ADDRESS"
+            },
+            "ZI_C_EMPLOYEE_RANGE": {
+                "Name": "ZI_C_EMPLOYEE_RANGE",
+                "Type": "STRING",
+                "Description": "**ZI_C_EMPLOYEE_RANGE :** Range of the company's employee count.",
+                "Examples": "Sample value for ZI_C_EMPLOYEE_RANGE"
+            },
+            "ZI_C_EMPLOYEES": {
+                "Name": "ZI_C_EMPLOYEES",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_EMPLOYEES :** Number of employees at the company.",
+                "Examples": "Sample value for ZI_C_EMPLOYEES"
+            },
+            "ZI_C_REVENUE_RANGE": {
+                "Name": "ZI_C_REVENUE_RANGE",
+                "Type": "STRING",
+                "Description": "**ZI_C_REVENUE_RANGE :** Range of the company's revenue.",
+                "Examples": "Sample value for ZI_C_REVENUE_RANGE"
+            },
+            "ZI_C_REVENUE": {
+                "Name": "ZI_C_REVENUE",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_REVENUE :** Annual revenue of the company.",
+                "Examples": "Sample value for ZI_C_REVENUE"
+            },
+            "ZI_C_PHONE": {
+                "Name": "ZI_C_PHONE",
+                "Type": "STRING",
+                "Description": "**ZI_C_PHONE :** Phone number of the company.",
+                "Examples": "Sample value for ZI_C_PHONE"
+            },
+            "ZI_C_FAX": {
+                "Name": "ZI_C_FAX",
+                "Type": "STRING",
+                "Description": "**ZI_C_FAX :** Fax number of the company.",
+                "Examples": "Sample value for ZI_C_FAX"
+            },
+            "ZI_C_INDUSTRY_PRIMARY": {
+                "Name": "ZI_C_INDUSTRY_PRIMARY",
+                "Type": "STRING",
+                "Description": "**ZI_C_INDUSTRY_PRIMARY :** Primary industry of the company.",
+                "Examples": "Sample value for ZI_C_INDUSTRY_PRIMARY"
+            },
+            "ZI_C_SUB_INDUSTRY_PRIMARY": {
+                "Name": "ZI_C_SUB_INDUSTRY_PRIMARY",
+                "Type": "STRING",
+                "Description": "**ZI_C_SUB_INDUSTRY_PRIMARY :** Primary sub-industry of the company.",
+                "Examples": "Sample value for ZI_C_SUB_INDUSTRY_PRIMARY"
+            },
+            "ZI_C_INDUSTRIES": {
+                "Name": "ZI_C_INDUSTRIES",
+                "Type": "STRING",
+                "Description": "**ZI_C_INDUSTRIES :** List of all industries the company is involved in.",
+                "Examples": "Sample value for ZI_C_INDUSTRIES"
+            },
+            "ZI_C_SUB_INDUSTRIES": {
+                "Name": "ZI_C_SUB_INDUSTRIES",
+                "Type": "STRING",
+                "Description": "**ZI_C_SUB_INDUSTRIES :** List of all sub-industries the company is involved in.",
+                "Examples": "Sample value for ZI_C_SUB_INDUSTRIES"
+            },
+            "ZI_ES_INDUSTRY": {
+                "Name": "ZI_ES_INDUSTRY",
+                "Type": "STRING",
+                "Description": "**ZI_ES_INDUSTRY :** Industry of the company as per ES index.",
+                "Examples": "Sample value for ZI_ES_INDUSTRY"
+            },
+            "ZI_ES_INDUSTRIES_TOP3": {
+                "Name": "ZI_ES_INDUSTRIES_TOP3",
+                "Type": "STRING",
+                "Description": "**ZI_ES_INDUSTRIES_TOP3 :** Top 3 industries of the company as per ES index.",
+                "Examples": "Sample value for ZI_ES_INDUSTRIES_TOP3"
+            },
+            "ZI_C_NAICS2": {
+                "Name": "ZI_C_NAICS2",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_NAICS2 :** NAICS 2-digit code of the company's primary industry.",
+                "Examples": "Sample value for ZI_C_NAICS2"
+            },
+            "ZI_C_NAICS4": {
+                "Name": "ZI_C_NAICS4",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_NAICS4 :** NAICS 4-digit code of the company's primary industry.",
+                "Examples": "Sample value for ZI_C_NAICS4"
+            },
+            "ZI_C_NAICS6": {
+                "Name": "ZI_C_NAICS6",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_NAICS6 :** NAICS 6-digit code of the company's primary industry.",
+                "Examples": "Sample value for ZI_C_NAICS6"
+            },
+            "ZI_C_NAICS_TOP3": {
+                "Name": "ZI_C_NAICS_TOP3",
+                "Type": "STRING",
+                "Description": "**ZI_C_NAICS_TOP3 :** Top 3 NAICS codes of the company.",
+                "Examples": "Sample value for ZI_C_NAICS_TOP3"
+            },
+            "ZI_C_SIC2": {
+                "Name": "ZI_C_SIC2",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_SIC2 :** SIC 2-digit code of the company's primary industry.",
+                "Examples": "Sample value for ZI_C_SIC2"
+            },
+            "ZI_C_SIC3": {
+                "Name": "ZI_C_SIC3",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_SIC3 :** SIC 3-digit code of the company's primary industry.",
+                "Examples": "Sample value for ZI_C_SIC3"
+            },
+            "ZI_C_SIC4": {
+                "Name": "ZI_C_SIC4",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_SIC4 :** SIC 4-digit code of the company's primary industry.",
+                "Examples": "Sample value for ZI_C_SIC4"
+            },
+            "ZI_C_SIC_TOP3": {
+                "Name": "ZI_C_SIC_TOP3",
+                "Type": "STRING",
+                "Description": "**ZI_C_SIC_TOP3 :** Top 3 SIC codes of the company.",
+                "Examples": "Sample value for ZI_C_SIC_TOP3"
+            },
+            "ZI_C_ESTIMATED_AGE": {
+                "Name": "ZI_C_ESTIMATED_AGE",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_ESTIMATED_AGE :** Estimated age of the company in years.",
+                "Examples": "Sample value for ZI_C_ESTIMATED_AGE"
+            },
+            "ZI_C_YEAR_FOUNDED": {
+                "Name": "ZI_C_YEAR_FOUNDED",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_YEAR_FOUNDED :** Year in which the company was founded.",
+                "Examples": "Sample value for ZI_C_YEAR_FOUNDED"
+            },
+            "ZI_C_IS_B2B": {
+                "Name": "ZI_C_IS_B2B",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_B2B :** Flag indicating whether the company is a B2B business.",
+                "Examples": "Sample value for ZI_C_IS_B2B"
+            },
+            "ZI_C_IS_B2C": {
+                "Name": "ZI_C_IS_B2C",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_B2C :** Flag indicating whether the company is a B2C business.",
+                "Examples": "Sample value for ZI_C_IS_B2C"
+            },
+            "ZI_ES_HQ_ECID": {
+                "Name": "ZI_ES_HQ_ECID",
+                "Type": "INTEGER",
+                "Description": "**ZI_ES_HQ_ECID :** Unique identifier for the headquarters location in the ES index.",
+                "Examples": "Sample value for ZI_ES_HQ_ECID"
+            },
+            "ZI_ES_HQ_LOCATION_ID": {
+                "Name": "ZI_ES_HQ_LOCATION_ID",
+                "Type": "STRING",
+                "Description": "**ZI_ES_HQ_LOCATION_ID :** Location ID for the headquarters in the ES index.",
+                "Examples": "Sample value for ZI_ES_HQ_LOCATION_ID"
+            },
+            "ZI_C_COMPANY_NAME": {
+                "Name": "ZI_C_COMPANY_NAME",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_NAME :** Name of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_NAME"
+            },
+            "ZI_C_COMPANY_URL": {
+                "Name": "ZI_C_COMPANY_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_URL :** Website URL of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_URL"
+            },
+            "ZI_C_COMPANY_STREET": {
+                "Name": "ZI_C_COMPANY_STREET",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_STREET :** Street address of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_STREET"
+            },
+            "ZI_C_COMPANY_STREET_2": {
+                "Name": "ZI_C_COMPANY_STREET_2",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_STREET_2 :** Additional street address information.",
+                "Examples": "Sample value for ZI_C_COMPANY_STREET_2"
+            },
+            "ZI_C_COMPANY_CITY": {
+                "Name": "ZI_C_COMPANY_CITY",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_CITY :** City of the company's location.",
+                "Examples": "Sample value for ZI_C_COMPANY_CITY"
+            },
+            "ZI_C_COMPANY_STATE": {
+                "Name": "ZI_C_COMPANY_STATE",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_STATE :** State of the company's location.",
+                "Examples": "Sample value for ZI_C_COMPANY_STATE"
+            },
+            "ZI_C_COMPANY_ZIP": {
+                "Name": "ZI_C_COMPANY_ZIP",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_COMPANY_ZIP :** ZIP code of the company's location.",
+                "Examples": "Sample value for ZI_C_COMPANY_ZIP"
+            },
+            "ZI_C_COMPANY_COUNTRY": {
+                "Name": "ZI_C_COMPANY_COUNTRY",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_COUNTRY :** Country of the company's location.",
+                "Examples": "Sample value for ZI_C_COMPANY_COUNTRY"
+            },
+            "ZI_C_COMPANY_CBSA_NAME": {
+                "Name": "ZI_C_COMPANY_CBSA_NAME",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_CBSA_NAME :** Name of the Core Based Statistical Area (CBSA) where the company is located.",
+                "Examples": "Sample value for ZI_C_COMPANY_CBSA_NAME"
+            },
+            "ZI_C_COMPANY_COUNTY": {
+                "Name": "ZI_C_COMPANY_COUNTY",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_COUNTY :** County where the company is located.",
+                "Examples": "Sample value for ZI_C_COMPANY_COUNTY"
+            },
+            "ZI_C_COMPANY_LATITUDE": {
+                "Name": "ZI_C_COMPANY_LATITUDE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_COMPANY_LATITUDE :** Latitude of the company's location.",
+                "Examples": "Sample value for ZI_C_COMPANY_LATITUDE"
+            },
+            "ZI_C_COMPANY_LONGITUDE": {
+                "Name": "ZI_C_COMPANY_LONGITUDE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_COMPANY_LONGITUDE :** Longitude of the company's location.",
+                "Examples": "Sample value for ZI_C_COMPANY_LONGITUDE"
+            },
+            "ZI_C_COMPANY_VERIFIED_ADDRESS": {
+                "Name": "ZI_C_COMPANY_VERIFIED_ADDRESS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_COMPANY_VERIFIED_ADDRESS :** Flag indicating whether the company's address has been verified.",
+                "Examples": "Sample value for ZI_C_COMPANY_VERIFIED_ADDRESS"
+            },
+            "ZI_C_COMPANY_EMPLOYEE_RANGE": {
+                "Name": "ZI_C_COMPANY_EMPLOYEE_RANGE",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_EMPLOYEE_RANGE :** Range of the company's employee count.",
+                "Examples": "Sample value for ZI_C_COMPANY_EMPLOYEE_RANGE"
+            },
+            "ZI_C_COMPANY_EMPLOYEES": {
+                "Name": "ZI_C_COMPANY_EMPLOYEES",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_COMPANY_EMPLOYEES :** Number of employees at the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_EMPLOYEES"
+            },
+            "ZI_C_COMPANY_REVENUE_RANGE": {
+                "Name": "ZI_C_COMPANY_REVENUE_RANGE",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_REVENUE_RANGE :** Range of the company's revenue.",
+                "Examples": "Sample value for ZI_C_COMPANY_REVENUE_RANGE"
+            },
+            "ZI_C_COMPANY_REVENUE": {
+                "Name": "ZI_C_COMPANY_REVENUE",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_COMPANY_REVENUE :** Annual revenue of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_REVENUE"
+            },
+            "ZI_C_COMPANY_PHONE": {
+                "Name": "ZI_C_COMPANY_PHONE",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_PHONE :** Phone number of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_PHONE"
+            },
+            "ZI_C_COMPANY_FAX": {
+                "Name": "ZI_C_COMPANY_FAX",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_FAX :** Fax number of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_FAX"
+            },
+            "ZI_C_LINKEDIN_URL": {
+                "Name": "ZI_C_LINKEDIN_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_LINKEDIN_URL :** LinkedIn URL of the company.",
+                "Examples": "Sample value for ZI_C_LINKEDIN_URL"
+            },
+            "ZI_C_FACEBOOK_URL": {
+                "Name": "ZI_C_FACEBOOK_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_FACEBOOK_URL :** Facebook URL of the company.",
+                "Examples": "Sample value for ZI_C_FACEBOOK_URL"
+            },
+            "ZI_C_TWITTER_URL": {
+                "Name": "ZI_C_TWITTER_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_TWITTER_URL :** Twitter URL of the company.",
+                "Examples": "Sample value for ZI_C_TWITTER_URL"
+            },
+            "ZI_C_YELP_URL": {
+                "Name": "ZI_C_YELP_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_YELP_URL :** Yelp URL of the company.",
+                "Examples": "Sample value for ZI_C_YELP_URL"
+            },
+            "ZI_C_ALEXA_RANK": {
+                "Name": "ZI_C_ALEXA_RANK",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_ALEXA_RANK :** Alexa rank of the company's website.",
+                "Examples": "Sample value for ZI_C_ALEXA_RANK"
+            },
+            "ZI_C_KEYWORDS": {
+                "Name": "ZI_C_KEYWORDS",
+                "Type": "STRING",
+                "Description": "**ZI_C_KEYWORDS :** List of keywords associated with the company.",
+                "Examples": "Sample value for ZI_C_KEYWORDS"
+            },
+            "ZI_C_TOP_KEYWORDS": {
+                "Name": "ZI_C_TOP_KEYWORDS",
+                "Type": "STRING",
+                "Description": "**ZI_C_TOP_KEYWORDS :** Top keywords associated with the company.",
+                "Examples": "Sample value for ZI_C_TOP_KEYWORDS"
+            },
+            "ZI_C_NUM_KEYWORDS": {
+                "Name": "ZI_C_NUM_KEYWORDS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_NUM_KEYWORDS :** Number of keywords associated with the company.",
+                "Examples": "Sample value for ZI_C_NUM_KEYWORDS"
+            },
+            "ZI_C_EMPLOYEE_GROWTH_1YR": {
+                "Name": "ZI_C_EMPLOYEE_GROWTH_1YR",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_EMPLOYEE_GROWTH_1YR :** Employee growth rate of the company in the last 1 year.",
+                "Examples": "Sample value for ZI_C_EMPLOYEE_GROWTH_1YR"
+            },
+            "ZI_C_EMPLOYEE_GROWTH_2YR": {
+                "Name": "ZI_C_EMPLOYEE_GROWTH_2YR",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_EMPLOYEE_GROWTH_2YR :** Employee growth rate of the company in the last 2 years.",
+                "Examples": "Sample value for ZI_C_EMPLOYEE_GROWTH_2YR"
+            },
+            "ZI_ES_GROWTH": {
+                "Name": "ZI_ES_GROWTH",
+                "Type": "STRING",
+                "Description": "**ZI_ES_GROWTH :** Growth status of the company as per ES index.",
+                "Examples": "Sample value for ZI_ES_GROWTH"
+            },
+            "ZI_ES_EMPLOYEE_GROWTH": {
+                "Name": "ZI_ES_EMPLOYEE_GROWTH",
+                "Type": "STRING",
+                "Description": "**ZI_ES_EMPLOYEE_GROWTH :** Employee growth status of the company as per ES index.",
+                "Examples": "Sample value for ZI_ES_EMPLOYEE_GROWTH"
+            },
+            "ZI_ES_REVENUE_GROWTH": {
+                "Name": "ZI_ES_REVENUE_GROWTH",
+                "Type": "STRING",
+                "Description": "**ZI_ES_REVENUE_GROWTH :** Revenue growth status of the company as per ES index.",
+                "Examples": "Sample value for ZI_ES_REVENUE_GROWTH"
+            },
+            "ZI_ES_PERCENT_EMPLOYEE_GROWTH": {
+                "Name": "ZI_ES_PERCENT_EMPLOYEE_GROWTH",
+                "Type": "FLOAT",
+                "Description": "**ZI_ES_PERCENT_EMPLOYEE_GROWTH :** Percentage employee growth rate of the company as per ES index.",
+                "Examples": "Sample value for ZI_ES_PERCENT_EMPLOYEE_GROWTH"
+            },
+            "ZI_ES_PERCENT_REVENUE_GROWTH": {
+                "Name": "ZI_ES_PERCENT_REVENUE_GROWTH",
+                "Type": "FLOAT",
+                "Description": "**ZI_ES_PERCENT_REVENUE_GROWTH :** Percentage revenue growth rate of the company as per ES index.",
+                "Examples": "Sample value for ZI_ES_PERCENT_REVENUE_GROWTH"
+            },
+            "ZI_C_NAME_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_NAME_CONFIDENCE_SCORE",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_NAME_CONFIDENCE_SCORE :** Confidence score of the company's name.",
+                "Examples": "Sample value for ZI_C_NAME_CONFIDENCE_SCORE"
+            },
+            "ZI_C_URL_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_URL_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_URL_CONFIDENCE_SCORE :** Confidence score of the company's website URL.",
+                "Examples": "Sample value for ZI_C_URL_CONFIDENCE_SCORE"
+            },
+            "ZI_C_ADDRESS_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_ADDRESS_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_ADDRESS_CONFIDENCE_SCORE :** Confidence score of the company's address.",
+                "Examples": "Sample value for ZI_C_ADDRESS_CONFIDENCE_SCORE"
+            },
+            "ZI_C_PHONE_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_PHONE_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_PHONE_CONFIDENCE_SCORE :** Confidence score of the company's phone number.",
+                "Examples": "Sample value for ZI_C_PHONE_CONFIDENCE_SCORE"
+            },
+            "ZI_C_EMPLOYEES_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_EMPLOYEES_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_EMPLOYEES_CONFIDENCE_SCORE :** Confidence score of the company's employee count.",
+                "Examples": "Sample value for ZI_C_EMPLOYEES_CONFIDENCE_SCORE"
+            },
+            "ZI_C_REVENUE_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_REVENUE_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_REVENUE_CONFIDENCE_SCORE :** Confidence score of the company's revenue.",
+                "Examples": "Sample value for ZI_C_REVENUE_CONFIDENCE_SCORE"
+            },
+            "ZI_ES_INDUSTRY_CONFIDENCE_SCORE": {
+                "Name": "ZI_ES_INDUSTRY_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_ES_INDUSTRY_CONFIDENCE_SCORE :** Confidence score of the company's industry as per ES index.",
+                "Examples": "Sample value for ZI_ES_INDUSTRY_CONFIDENCE_SCORE"
+            },
+            "ZI_C_NAICS_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_NAICS_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_NAICS_CONFIDENCE_SCORE :** Confidence score of the company's NAICS code.",
+                "Examples": "Sample value for ZI_C_NAICS_CONFIDENCE_SCORE"
+            },
+            "ZI_C_SIC_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_SIC_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_SIC_CONFIDENCE_SCORE :** Confidence score of the company's SIC code.",
+                "Examples": "Sample value for ZI_C_SIC_CONFIDENCE_SCORE"
+            },
+            "ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES": {
+                "Name": "ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES",
+                "Type": "STRING",
+                "Description": "**ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES :** Confidence scores of the company's top 3 industries as per ES index.",
+                "Examples": "Sample value for ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES"
+            },
+            "ZI_C_NAICS_TOP3_CONFIDENCE_SCORES": {
+                "Name": "ZI_C_NAICS_TOP3_CONFIDENCE_SCORES",
+                "Type": "STRING",
+                "Description": "**ZI_C_NAICS_TOP3_CONFIDENCE_SCORES :** Confidence scores of the company's top 3 NAICS codes.",
+                "Examples": "Sample value for ZI_C_NAICS_TOP3_CONFIDENCE_SCORES"
+            },
+            "ZI_C_SIC_TOP3_CONFIDENCE_SCORES": {
+                "Name": "ZI_C_SIC_TOP3_CONFIDENCE_SCORES",
+                "Type": "STRING",
+                "Description": "**ZI_C_SIC_TOP3_CONFIDENCE_SCORES :** Confidence scores of the company's top 3 SIC codes.",
+                "Examples": "Sample value for ZI_C_SIC_TOP3_CONFIDENCE_SCORES"
+            },
+            "ZI_C_IDS_MERGED": {
+                "Name": "ZI_C_IDS_MERGED",
+                "Type": "STRING",
+                "Description": "**ZI_C_IDS_MERGED :** Merged IDs of the company from various sources.",
+                "Examples": "Sample value for ZI_C_IDS_MERGED"
+            },
+            "ZI_C_NAMES_OTHER": {
+                "Name": "ZI_C_NAMES_OTHER",
+                "Type": "STRING",
+                "Description": "**ZI_C_NAMES_OTHER :** Other names of the company.",
+                "Examples": "Sample value for ZI_C_NAMES_OTHER"
+            },
+            "ZI_C_URL_STATUS": {
+                "Name": "ZI_C_URL_STATUS",
+                "Type": "STRING",
+                "Description": "**ZI_C_URL_STATUS :** Status of the company's website URL.",
+                "Examples": "Sample value for ZI_C_URL_STATUS"
+            },
+            "ZI_C_URLS_ALT": {
+                "Name": "ZI_C_URLS_ALT",
+                "Type": "STRING",
+                "Description": "**ZI_C_URLS_ALT :** Alternate website URLs of the company.",
+                "Examples": "Sample value for ZI_C_URLS_ALT"
+            },
+            "ZI_C_URL_LAST_UPDATED": {
+                "Name": "ZI_C_URL_LAST_UPDATED",
+                "Type": "DATE",
+                "Description": "**ZI_C_URL_LAST_UPDATED :** Date when the company's website URL was last updated.",
+                "Examples": "Sample value for ZI_C_URL_LAST_UPDATED"
+            },
+            "ZI_C_INACTIVE_FLAG": {
+                "Name": "ZI_C_INACTIVE_FLAG",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_INACTIVE_FLAG :** Flag indicating whether the company is inactive.",
+                "Examples": "Sample value for ZI_C_INACTIVE_FLAG"
+            },
+            "ZI_C_EIN": {
+                "Name": "ZI_C_EIN",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_EIN :** Employer Identification Number (EIN) of the company.",
+                "Examples": "Sample value for ZI_C_EIN"
+            },
+            "ZI_C_IS_SMALL_BUSINESS": {
+                "Name": "ZI_C_IS_SMALL_BUSINESS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_SMALL_BUSINESS :** Flag indicating whether the company is a small business.",
+                "Examples": "Sample value for ZI_C_IS_SMALL_BUSINESS"
+            },
+            "ZI_C_IS_PUBLIC": {
+                "Name": "ZI_C_IS_PUBLIC",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_PUBLIC :** Flag indicating whether the company is a public company.",
+                "Examples": "Sample value for ZI_C_IS_PUBLIC"
+            },
+            "ZI_C_TICKER": {
+                "Name": "ZI_C_TICKER",
+                "Type": "STRING",
+                "Description": "**ZI_C_TICKER :** Ticker symbol of the company's stock.",
+                "Examples": "Sample value for ZI_C_TICKER"
+            },
+            "ZI_C_TICKERS_ALT": {
+                "Name": "ZI_C_TICKERS_ALT",
+                "Type": "STRING",
+                "Description": "**ZI_C_TICKERS_ALT :** Alternate ticker symbols of the company's stock.",
+                "Examples": "Sample value for ZI_C_TICKERS_ALT"
+            },
+            "ZI_C_HAS_MOBILE_APP": {
+                "Name": "ZI_C_HAS_MOBILE_APP",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_HAS_MOBILE_APP :** Flag indicating whether the company has a mobile app.",
+                "Examples": "Sample value for ZI_C_HAS_MOBILE_APP"
+            },
+            "ZI_C_CURRENCY_CODE": {
+                "Name": "ZI_C_CURRENCY_CODE",
+                "Type": "STRING",
+                "Description": "**ZI_C_CURRENCY_CODE :** Currency code of the company's revenue.",
+                "Examples": "Sample value for ZI_C_CURRENCY_CODE"
+            },
+            "ZI_C_NUM_LOCATIONS": {
+                "Name": "ZI_C_NUM_LOCATIONS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_NUM_LOCATIONS :** Number of locations the company has.",
+                "Examples": "Sample value for ZI_C_NUM_LOCATIONS"
+            },
+            "ZI_C_HR_CONTACTS": {
+                "Name": "ZI_C_HR_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_HR_CONTACTS :** Number of HR contacts associated with the company.",
+                "Examples": "Sample value for ZI_C_HR_CONTACTS"
+            },
+            "ZI_C_SALES_CONTACTS": {
+                "Name": "ZI_C_SALES_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_SALES_CONTACTS :** Number of sales contacts associated with the company.",
+                "Examples": "Sample value for ZI_C_SALES_CONTACTS"
+            },
+            "ZI_C_MARKETING_CONTACTS": {
+                "Name": "ZI_C_MARKETING_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_MARKETING_CONTACTS :** Number of marketing contacts associated with the company.",
+                "Examples": "Sample value for ZI_C_MARKETING_CONTACTS"
+            },
+            "ZI_C_FINANCE_CONTACTS": {
+                "Name": "ZI_C_FINANCE_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_FINANCE_CONTACTS :** Number of finance contacts associated with the company.",
+                "Examples": "Sample value for ZI_C_FINANCE_CONTACTS"
+            },
+            "ZI_C_C_SUITE_CONTACTS": {
+                "Name": "ZI_C_C_SUITE_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_C_SUITE_CONTACTS :** Number of C-suite contacts associated with the company.",
+                "Examples": "Sample value for ZI_C_C_SUITE_CONTACTS"
+            },
+            "ZI_C_ENGINEERING_CONTACTS": {
+                "Name": "ZI_C_ENGINEERING_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_ENGINEERING_CONTACTS :** Number of engineering contacts associated with the company.",
+                "Examples": "Sample value for ZI_C_ENGINEERING_CONTACTS"
+            },
+            "ZI_C_IT_CONTACTS": {
+                "Name": "ZI_C_IT_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IT_CONTACTS :** Number of IT contacts associated with the company.",
+                "Examples": "Sample value for ZI_C_IT_CONTACTS"
+            },
+            "ZI_C_OPERATIONS_CONTACTS": {
+                "Name": "ZI_C_OPERATIONS_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_OPERATIONS_CONTACTS :** Number of operations contacts associated with the company.",
+                "Examples": "Sample value for ZI_C_OPERATIONS_CONTACTS"
+            },
+            "ZI_C_LEGAL_CONTACTS": {
+                "Name": "ZI_C_LEGAL_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_LEGAL_CONTACTS :** Number of legal contacts associated with the company.",
+                "Examples": "Sample value for ZI_C_LEGAL_CONTACTS"
+            },
+            "ZI_C_MEDICAL_CONTACTS": {
+                "Name": "ZI_C_MEDICAL_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_MEDICAL_CONTACTS :** Number of medical contacts associated with the company.",
+                "Examples": "Sample value for ZI_C_MEDICAL_CONTACTS"
+            },
+            "ZI_C_TECH_IDS": {
+                "Name": "ZI_C_TECH_IDS",
+                "Type": "STRING",
+                "Description": "**ZI_C_TECH_IDS :** Technical IDs associated with the company.",
+                "Examples": "Sample value for ZI_C_TECH_IDS"
+            },
+            "ZI_C_LATEST_FUNDING_AGE": {
+                "Name": "ZI_C_LATEST_FUNDING_AGE",
+                "Type": "STRING",
+                "Description": "**ZI_C_LATEST_FUNDING_AGE :** Age of the latest funding received by the company.",
+                "Examples": "Sample value for ZI_C_LATEST_FUNDING_AGE"
+            },
+            "ZI_C_NUM_OF_INVESTORS": {
+                "Name": "ZI_C_NUM_OF_INVESTORS",
+                "Type": "STRING",
+                "Description": "**ZI_C_NUM_OF_INVESTORS :** Number of investors who have invested in the company.",
+                "Examples": "Sample value for ZI_C_NUM_OF_INVESTORS"
+            },
+            "ZI_C_INVESTOR_NAMES": {
+                "Name": "ZI_C_INVESTOR_NAMES",
+                "Type": "STRING",
+                "Description": "**ZI_C_INVESTOR_NAMES :** Names of investors who have invested in the company.",
+                "Examples": "Sample value for ZI_C_INVESTOR_NAMES"
+            },
+            "ZI_C_FUNDING_STRENGTH": {
+                "Name": "ZI_C_FUNDING_STRENGTH",
+                "Type": "STRING",
+                "Description": "**ZI_C_FUNDING_STRENGTH :** Funding strength of the company.",
+                "Examples": "Sample value for ZI_C_FUNDING_STRENGTH"
+            },
+            "ZI_C_FUNDING_TYPE": {
+                "Name": "ZI_C_FUNDING_TYPE",
+                "Type": "STRING",
+                "Description": "**ZI_C_FUNDING_TYPE :** Type of funding received by the company.",
+                "Examples": "Sample value for ZI_C_FUNDING_TYPE"
+            },
+            "ZI_C_TOTAL_FUNDING_AMOUNT": {
+                "Name": "ZI_C_TOTAL_FUNDING_AMOUNT",
+                "Type": "STRING",
+                "Description": "**ZI_C_TOTAL_FUNDING_AMOUNT :** Total amount of funding received by the company.",
+                "Examples": "Sample value for ZI_C_TOTAL_FUNDING_AMOUNT"
+            },
+            "ZI_C_LATEST_FUNDING_AMOUNT": {
+                "Name": "ZI_C_LATEST_FUNDING_AMOUNT",
+                "Type": "STRING",
+                "Description": "**ZI_C_LATEST_FUNDING_AMOUNT :** Amount of the latest funding received by the company.",
+                "Examples": "Sample value for ZI_C_LATEST_FUNDING_AMOUNT"
+            },
+            "ZI_C_LATEST_FUNDING_DATE": {
+                "Name": "ZI_C_LATEST_FUNDING_DATE",
+                "Type": "STRING",
+                "Description": "**ZI_C_LATEST_FUNDING_DATE :** Date of the latest funding received by the company.",
+                "Examples": "Sample value for ZI_C_LATEST_FUNDING_DATE"
+            },
+            "ZI_C_NUM_FUNDING_ROUNDS": {
+                "Name": "ZI_C_NUM_FUNDING_ROUNDS",
+                "Type": "STRING",
+                "Description": "**ZI_C_NUM_FUNDING_ROUNDS :** Number of funding rounds the company has gone through.",
+                "Examples": "Sample value for ZI_C_NUM_FUNDING_ROUNDS"
+            },
+            "ZI_C_IS_FORTUNE_100": {
+                "Name": "ZI_C_IS_FORTUNE_100",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_FORTUNE_100 :** Flag indicating whether the company is in the Fortune 100 list.",
+                "Examples": "Sample value for ZI_C_IS_FORTUNE_100"
+            },
+            "ZI_C_IS_FORTUNE_500": {
+                "Name": "ZI_C_IS_FORTUNE_500",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_FORTUNE_500 :** Flag indicating whether the company is in the Fortune 500 list.",
+                "Examples": "Sample value for ZI_C_IS_FORTUNE_500"
+            },
+            "ZI_C_IS_S_AND_P_500": {
+                "Name": "ZI_C_IS_S_AND_P_500",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_S_AND_P_500 :** Flag indicating whether the company is in the S&P 500 list.",
+                "Examples": "Sample value for ZI_C_IS_S_AND_P_500"
+            },
+            "ZI_C_LAST_UPDATED_DATE": {
+                "Name": "ZI_C_LAST_UPDATED_DATE",
+                "Type": "DATE",
+                "Description": "**ZI_C_LAST_UPDATED_DATE :** Date when the company's data was last updated.",
+                "Examples": "Sample value for ZI_C_LAST_UPDATED_DATE"
+            },
+            "ZI_C_RELEASE_DATE": {
+                "Name": "ZI_C_RELEASE_DATE",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_RELEASE_DATE :** Date when the company's data was released.",
+                "Examples": "Sample value for ZI_C_RELEASE_DATE"
+            }
+        }
+    },
+    "zi-companies-with-most-marketing-professionals": {
+        "Name": "zi-companies-with-most-marketing-professionals",
+        "Description": "The table 'zi-companies-with-most-marketing-professionals' provides information about companies with a significant number of marketing professionals. Each row in the table represents a company, and the columns provide details about the company's name, industry, location, and the number of marketing professionals employed.\n\nHere's a breakdown of the data in the table:\n\n- **Company Name**: This column lists the names of the companies with a high concentration of marketing professionals.\n\n- **Industry**: This column specifies the industry sector in which each company operates. The industries represented in the table include technology, finance, healthcare, retail, and",
+        "Columns": {
+            "ZI_C_LOCATION_ID": {
+                "Name": "ZI_C_LOCATION_ID",
+                "Type": "INTEGER",
+                "Description": "ZI_C_LOCATION_ID : Unique identifier for the location of the company.",
+                "Examples": "Sample value for ZI_C_LOCATION_ID"
+            },
+            "ZI_C_COMPANY_ID": {
+                "Name": "ZI_C_COMPANY_ID",
+                "Type": "INTEGER",
+                "Description": "ZI_C_COMPANY_ID : Unique identifier for the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_ID"
+            },
+            "ZI_C_IS_HQ": {
+                "Name": "ZI_C_IS_HQ",
+                "Type": "INTEGER",
+                "Description": "ZI_C_IS_HQ : Indicates whether the location is the headquarters of the company.",
+                "Examples": "Sample value for ZI_C_IS_HQ"
+            },
+            "ZI_ES_ECID": {
+                "Name": "ZI_ES_ECID",
+                "Type": "INTEGER",
+                "Description": "ZI_ES_ECID : Unique identifier for the location in the external data source.",
+                "Examples": "Sample value for ZI_ES_ECID"
+            },
+            "ZI_ES_LOCATION_ID": {
+                "Name": "ZI_ES_LOCATION_ID",
+                "Type": "STRING",
+                "Description": "ZI_ES_LOCATION_ID : Location identifier in the external data source.",
+                "Examples": "Sample value for ZI_ES_LOCATION_ID"
+            },
+            "ZI_C_TIER_GRADE": {
+                "Name": "ZI_C_TIER_GRADE",
+                "Type": "STRING",
+                "Description": "ZI_C_TIER_GRADE : Tier grade of the company.",
+                "Examples": "Sample value for ZI_C_TIER_GRADE"
+            },
+            "ZI_C_NAME": {
+                "Name": "ZI_C_NAME",
+                "Type": "STRING",
+                "Description": "ZI_C_NAME : Name of the company.",
+                "Examples": "Sample value for ZI_C_NAME"
+            },
+            "ZI_C_NAME_DISPLAY": {
+                "Name": "ZI_C_NAME_DISPLAY",
+                "Type": "STRING",
+                "Description": "ZI_C_NAME_DISPLAY : Display name of the company.",
+                "Examples": "Sample value for ZI_C_NAME_DISPLAY"
+            },
+            "ZI_C_LEGAL_ENTITY_TYPE": {
+                "Name": "ZI_C_LEGAL_ENTITY_TYPE",
+                "Type": "STRING",
+                "Description": "ZI_C_LEGAL_ENTITY_TYPE : Legal entity type of the company.",
+                "Examples": "Sample value for ZI_C_LEGAL_ENTITY_TYPE"
+            },
+            "ZI_C_URL": {
+                "Name": "ZI_C_URL",
+                "Type": "STRING",
+                "Description": "ZI_C_URL : URL of the company.",
+                "Examples": "Sample value for ZI_C_URL"
+            },
+            "ZI_C_STREET": {
+                "Name": "ZI_C_STREET",
+                "Type": "STRING",
+                "Description": "ZI_C_STREET : Street address of the company.",
+                "Examples": "Sample value for ZI_C_STREET"
+            },
+            "ZI_C_STREET_2": {
+                "Name": "ZI_C_STREET_2",
+                "Type": "STRING",
+                "Description": "ZI_C_STREET_2 : Secondary street address of the company.",
+                "Examples": "Sample value for ZI_C_STREET_2"
+            },
+            "ZI_C_CITY": {
+                "Name": "ZI_C_CITY",
+                "Type": "STRING",
+                "Description": "ZI_C_CITY : City of the company.",
+                "Examples": "Sample value for ZI_C_CITY"
+            },
+            "ZI_C_STATE": {
+                "Name": "ZI_C_STATE",
+                "Type": "STRING",
+                "Description": "ZI_C_STATE : State of the company.",
+                "Examples": "Sample value for ZI_C_STATE"
+            },
+            "ZI_C_ZIP": {
+                "Name": "ZI_C_ZIP",
+                "Type": "INTEGER",
+                "Description": "ZI_C_ZIP : ZIP code of the company.",
+                "Examples": "Sample value for ZI_C_ZIP"
+            },
+            "ZI_C_COUNTRY": {
+                "Name": "ZI_C_COUNTRY",
+                "Type": "STRING",
+                "Description": "ZI_C_COUNTRY : Country of the company.",
+                "Examples": "Sample value for ZI_C_COUNTRY"
+            },
+            "ZI_C_CBSA_NAME": {
+                "Name": "ZI_C_CBSA_NAME",
+                "Type": "STRING",
+                "Description": "ZI_C_CBSA_NAME : Core-Based Statistical Area (CBSA) name of the company.",
+                "Examples": "Sample value for ZI_C_CBSA_NAME"
+            },
+            "ZI_C_COUNTY": {
+                "Name": "ZI_C_COUNTY",
+                "Type": "STRING",
+                "Description": "ZI_C_COUNTY : County of the company.",
+                "Examples": "Sample value for ZI_C_COUNTY"
+            },
+            "ZI_C_LATITUDE": {
+                "Name": "ZI_C_LATITUDE",
+                "Type": "FLOAT",
+                "Description": "ZI_C_LATITUDE : Latitude of the company location.",
+                "Examples": "Sample value for ZI_C_LATITUDE"
+            },
+            "ZI_C_LONGITUDE": {
+                "Name": "ZI_C_LONGITUDE",
+                "Type": "FLOAT",
+                "Description": "ZI_C_LONGITUDE : Longitude of the company location.",
+                "Examples": "Sample value for ZI_C_LONGITUDE"
+            },
+            "ZI_C_VERIFIED_ADDRESS": {
+                "Name": "ZI_C_VERIFIED_ADDRESS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_VERIFIED_ADDRESS : Flag indicating whether the address is verified.",
+                "Examples": "Sample value for ZI_C_VERIFIED_ADDRESS"
+            },
+            "ZI_C_EMPLOYEE_RANGE": {
+                "Name": "ZI_C_EMPLOYEE_RANGE",
+                "Type": "STRING",
+                "Description": "ZI_C_EMPLOYEE_RANGE : Range of employees in the company.",
+                "Examples": "Sample value for ZI_C_EMPLOYEE_RANGE"
+            },
+            "ZI_C_EMPLOYEES": {
+                "Name": "ZI_C_EMPLOYEES",
+                "Type": "INTEGER",
+                "Description": "ZI_C_EMPLOYEES : Number of employees in the company.",
+                "Examples": "Sample value for ZI_C_EMPLOYEES"
+            },
+            "ZI_C_REVENUE_RANGE": {
+                "Name": "ZI_C_REVENUE_RANGE",
+                "Type": "STRING",
+                "Description": "ZI_C_REVENUE_RANGE : Range of revenue in the company.",
+                "Examples": "Sample value for ZI_C_REVENUE_RANGE"
+            },
+            "ZI_C_REVENUE": {
+                "Name": "ZI_C_REVENUE",
+                "Type": "INTEGER",
+                "Description": "ZI_C_REVENUE : Revenue of the company.",
+                "Examples": "Sample value for ZI_C_REVENUE"
+            },
+            "ZI_C_PHONE": {
+                "Name": "ZI_C_PHONE",
+                "Type": "STRING",
+                "Description": "ZI_C_PHONE : Phone number of the company.",
+                "Examples": "Sample value for ZI_C_PHONE"
+            },
+            "ZI_C_FAX": {
+                "Name": "ZI_C_FAX",
+                "Type": "STRING",
+                "Description": "ZI_C_FAX : Fax number of the company.",
+                "Examples": "Sample value for ZI_C_FAX"
+            },
+            "ZI_C_INDUSTRY_PRIMARY": {
+                "Name": "ZI_C_INDUSTRY_PRIMARY",
+                "Type": "STRING",
+                "Description": "ZI_C_INDUSTRY_PRIMARY : Primary industry of the company.",
+                "Examples": "Sample value for ZI_C_INDUSTRY_PRIMARY"
+            },
+            "ZI_C_SUB_INDUSTRY_PRIMARY": {
+                "Name": "ZI_C_SUB_INDUSTRY_PRIMARY",
+                "Type": "STRING",
+                "Description": "ZI_C_SUB_INDUSTRY_PRIMARY : Primary sub-industry of the company.",
+                "Examples": "Sample value for ZI_C_SUB_INDUSTRY_PRIMARY"
+            },
+            "ZI_C_INDUSTRIES": {
+                "Name": "ZI_C_INDUSTRIES",
+                "Type": "STRING",
+                "Description": "ZI_C_INDUSTRIES : All industries associated with the company.",
+                "Examples": "Sample value for ZI_C_INDUSTRIES"
+            },
+            "ZI_C_SUB_INDUSTRIES": {
+                "Name": "ZI_C_SUB_INDUSTRIES",
+                "Type": "STRING",
+                "Description": "ZI_C_SUB_INDUSTRIES : All sub-industries associated with the company.",
+                "Examples": "Sample value for ZI_C_SUB_INDUSTRIES"
+            },
+            "ZI_ES_INDUSTRY": {
+                "Name": "ZI_ES_INDUSTRY",
+                "Type": "STRING",
+                "Description": "ZI_ES_INDUSTRY : Industry of the company according to the external data source.",
+                "Examples": "Sample value for ZI_ES_INDUSTRY"
+            },
+            "ZI_ES_INDUSTRIES_TOP3": {
+                "Name": "ZI_ES_INDUSTRIES_TOP3",
+                "Type": "STRING",
+                "Description": "ZI_ES_INDUSTRIES_TOP3 : Top three industries of the company according to the external data source.",
+                "Examples": "Sample value for ZI_ES_INDUSTRIES_TOP3"
+            },
+            "ZI_C_NAICS2": {
+                "Name": "ZI_C_NAICS2",
+                "Type": "INTEGER",
+                "Description": "ZI_C_NAICS2 : 2-digit NAICS code of the company.",
+                "Examples": "Sample value for ZI_C_NAICS2"
+            },
+            "ZI_C_NAICS4": {
+                "Name": "ZI_C_NAICS4",
+                "Type": "INTEGER",
+                "Description": "ZI_C_NAICS4 : 4-digit NAICS code of the company.",
+                "Examples": "Sample value for ZI_C_NAICS4"
+            },
+            "ZI_C_NAICS6": {
+                "Name": "ZI_C_NAICS6",
+                "Type": "INTEGER",
+                "Description": "ZI_C_NAICS6 : 6-digit NAICS code of the company.",
+                "Examples": "Sample value for ZI_C_NAICS6"
+            },
+            "ZI_C_NAICS_TOP3": {
+                "Name": "ZI_C_NAICS_TOP3",
+                "Type": "STRING",
+                "Description": "ZI_C_NAICS_TOP3 : Top three NAICS codes of the company.",
+                "Examples": "Sample value for ZI_C_NAICS_TOP3"
+            },
+            "ZI_C_SIC2": {
+                "Name": "ZI_C_SIC2",
+                "Type": "INTEGER",
+                "Description": "ZI_C_SIC2 : 2-digit SIC code of the company.",
+                "Examples": "Sample value for ZI_C_SIC2"
+            },
+            "ZI_C_SIC3": {
+                "Name": "ZI_C_SIC3",
+                "Type": "INTEGER",
+                "Description": "ZI_C_SIC3 : 3-digit SIC code of the company.",
+                "Examples": "Sample value for ZI_C_SIC3"
+            },
+            "ZI_C_SIC4": {
+                "Name": "ZI_C_SIC4",
+                "Type": "INTEGER",
+                "Description": "ZI_C_SIC4 : 4-digit SIC code of the company.",
+                "Examples": "Sample value for ZI_C_SIC4"
+            },
+            "ZI_C_SIC_TOP3": {
+                "Name": "ZI_C_SIC_TOP3",
+                "Type": "STRING",
+                "Description": "ZI_C_SIC_TOP3 : Top three SIC codes of the company.",
+                "Examples": "Sample value for ZI_C_SIC_TOP3"
+            },
+            "ZI_C_ESTIMATED_AGE": {
+                "Name": "ZI_C_ESTIMATED_AGE",
+                "Type": "INTEGER",
+                "Description": "ZI_C_ESTIMATED_AGE : Estimated age of the company.",
+                "Examples": "Sample value for ZI_C_ESTIMATED_AGE"
+            },
+            "ZI_C_YEAR_FOUNDED": {
+                "Name": "ZI_C_YEAR_FOUNDED",
+                "Type": "INTEGER",
+                "Description": "ZI_C_YEAR_FOUNDED : Year in which the company was founded.",
+                "Examples": "Sample value for ZI_C_YEAR_FOUNDED"
+            },
+            "ZI_C_IS_B2B": {
+                "Name": "ZI_C_IS_B2B",
+                "Type": "INTEGER",
+                "Description": "ZI_C_IS_B2B : Flag indicating whether the company is business-to-business (B2B).",
+                "Examples": "Sample value for ZI_C_IS_B2B"
+            },
+            "ZI_C_IS_B2C": {
+                "Name": "ZI_C_IS_B2C",
+                "Type": "INTEGER",
+                "Description": "ZI_C_IS_B2C : Flag indicating whether the company is business-to-consumer (B2C).",
+                "Examples": "Sample value for ZI_C_IS_B2C"
+            },
+            "ZI_ES_HQ_ECID": {
+                "Name": "ZI_ES_HQ_ECID",
+                "Type": "INTEGER",
+                "Description": "ZI_ES_HQ_ECID : Unique identifier for the headquarters of the company in the external data source.",
+                "Examples": "Sample value for ZI_ES_HQ_ECID"
+            },
+            "ZI_ES_HQ_LOCATION_ID": {
+                "Name": "ZI_ES_HQ_LOCATION_ID",
+                "Type": "STRING",
+                "Description": "ZI_ES_HQ_LOCATION_ID : Location ID of the headquarters of the company in the external data source.",
+                "Examples": "Sample value for ZI_ES_HQ_LOCATION_ID"
+            },
+            "ZI_C_COMPANY_NAME": {
+                "Name": "ZI_C_COMPANY_NAME",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_NAME : Company name.",
+                "Examples": "Sample value for ZI_C_COMPANY_NAME"
+            },
+            "ZI_C_COMPANY_URL": {
+                "Name": "ZI_C_COMPANY_URL",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_URL : Company URL.",
+                "Examples": "Sample value for ZI_C_COMPANY_URL"
+            },
+            "ZI_C_COMPANY_STREET": {
+                "Name": "ZI_C_COMPANY_STREET",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_STREET : Company street address.",
+                "Examples": "Sample value for ZI_C_COMPANY_STREET"
+            },
+            "ZI_C_COMPANY_STREET_2": {
+                "Name": "ZI_C_COMPANY_STREET_2",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_STREET_2 : Company secondary street address.",
+                "Examples": "Sample value for ZI_C_COMPANY_STREET_2"
+            },
+            "ZI_C_COMPANY_CITY": {
+                "Name": "ZI_C_COMPANY_CITY",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_CITY : Company city.",
+                "Examples": "Sample value for ZI_C_COMPANY_CITY"
+            },
+            "ZI_C_COMPANY_STATE": {
+                "Name": "ZI_C_COMPANY_STATE",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_STATE : Company state.",
+                "Examples": "Sample value for ZI_C_COMPANY_STATE"
+            },
+            "ZI_C_COMPANY_ZIP": {
+                "Name": "ZI_C_COMPANY_ZIP",
+                "Type": "INTEGER",
+                "Description": "ZI_C_COMPANY_ZIP : Company ZIP code.",
+                "Examples": "Sample value for ZI_C_COMPANY_ZIP"
+            },
+            "ZI_C_COMPANY_COUNTRY": {
+                "Name": "ZI_C_COMPANY_COUNTRY",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_COUNTRY : Company country.",
+                "Examples": "Sample value for ZI_C_COMPANY_COUNTRY"
+            },
+            "ZI_C_COMPANY_CBSA_NAME": {
+                "Name": "ZI_C_COMPANY_CBSA_NAME",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_CBSA_NAME : Company Core-Based Statistical Area (CBSA) name.",
+                "Examples": "Sample value for ZI_C_COMPANY_CBSA_NAME"
+            },
+            "ZI_C_COMPANY_COUNTY": {
+                "Name": "ZI_C_COMPANY_COUNTY",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_COUNTY : Company county.",
+                "Examples": "Sample value for ZI_C_COMPANY_COUNTY"
+            },
+            "ZI_C_COMPANY_LATITUDE": {
+                "Name": "ZI_C_COMPANY_LATITUDE",
+                "Type": "FLOAT",
+                "Description": "ZI_C_COMPANY_LATITUDE : Company latitude.",
+                "Examples": "Sample value for ZI_C_COMPANY_LATITUDE"
+            },
+            "ZI_C_COMPANY_LONGITUDE": {
+                "Name": "ZI_C_COMPANY_LONGITUDE",
+                "Type": "FLOAT",
+                "Description": "ZI_C_COMPANY_LONGITUDE : Company longitude.",
+                "Examples": "Sample value for ZI_C_COMPANY_LONGITUDE"
+            },
+            "ZI_C_COMPANY_VERIFIED_ADDRESS": {
+                "Name": "ZI_C_COMPANY_VERIFIED_ADDRESS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_COMPANY_VERIFIED_ADDRESS : Flag indicating whether the company address is verified.",
+                "Examples": "Sample value for ZI_C_COMPANY_VERIFIED_ADDRESS"
+            },
+            "ZI_C_COMPANY_EMPLOYEE_RANGE": {
+                "Name": "ZI_C_COMPANY_EMPLOYEE_RANGE",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_EMPLOYEE_RANGE : Company employee range.",
+                "Examples": "Sample value for ZI_C_COMPANY_EMPLOYEE_RANGE"
+            },
+            "ZI_C_COMPANY_EMPLOYEES": {
+                "Name": "ZI_C_COMPANY_EMPLOYEES",
+                "Type": "INTEGER",
+                "Description": "ZI_C_COMPANY_EMPLOYEES : Number of employees in the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_EMPLOYEES"
+            },
+            "ZI_C_COMPANY_REVENUE_RANGE": {
+                "Name": "ZI_C_COMPANY_REVENUE_RANGE",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_REVENUE_RANGE : Company revenue range.",
+                "Examples": "Sample value for ZI_C_COMPANY_REVENUE_RANGE"
+            },
+            "ZI_C_COMPANY_REVENUE": {
+                "Name": "ZI_C_COMPANY_REVENUE",
+                "Type": "INTEGER",
+                "Description": "ZI_C_COMPANY_REVENUE : Company revenue.",
+                "Examples": "Sample value for ZI_C_COMPANY_REVENUE"
+            },
+            "ZI_C_COMPANY_PHONE": {
+                "Name": "ZI_C_COMPANY_PHONE",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_PHONE : Company phone number.",
+                "Examples": "Sample value for ZI_C_COMPANY_PHONE"
+            },
+            "ZI_C_COMPANY_FAX": {
+                "Name": "ZI_C_COMPANY_FAX",
+                "Type": "STRING",
+                "Description": "ZI_C_COMPANY_FAX : Company fax number.",
+                "Examples": "Sample value for ZI_C_COMPANY_FAX"
+            },
+            "ZI_C_LINKEDIN_URL": {
+                "Name": "ZI_C_LINKEDIN_URL",
+                "Type": "STRING",
+                "Description": "ZI_C_LINKEDIN_URL : LinkedIn URL of the company.",
+                "Examples": "Sample value for ZI_C_LINKEDIN_URL"
+            },
+            "ZI_C_FACEBOOK_URL": {
+                "Name": "ZI_C_FACEBOOK_URL",
+                "Type": "STRING",
+                "Description": "ZI_C_FACEBOOK_URL : Facebook URL of the company.",
+                "Examples": "Sample value for ZI_C_FACEBOOK_URL"
+            },
+            "ZI_C_TWITTER_URL": {
+                "Name": "ZI_C_TWITTER_URL",
+                "Type": "STRING",
+                "Description": "ZI_C_TWITTER_URL : Twitter URL of the company.",
+                "Examples": "Sample value for ZI_C_TWITTER_URL"
+            },
+            "ZI_C_YELP_URL": {
+                "Name": "ZI_C_YELP_URL",
+                "Type": "STRING",
+                "Description": "ZI_C_YELP_URL : Yelp URL of the company.",
+                "Examples": "Sample value for ZI_C_YELP_URL"
+            },
+            "ZI_C_ALEXA_RANK": {
+                "Name": "ZI_C_ALEXA_RANK",
+                "Type": "INTEGER",
+                "Description": "ZI_C_ALEXA_RANK : Alexa rank of the company.",
+                "Examples": "Sample value for ZI_C_ALEXA_RANK"
+            },
+            "ZI_C_KEYWORDS": {
+                "Name": "ZI_C_KEYWORDS",
+                "Type": "STRING",
+                "Description": "ZI_C_KEYWORDS : Keywords associated with the company.",
+                "Examples": "Sample value for ZI_C_KEYWORDS"
+            },
+            "ZI_C_TOP_KEYWORDS": {
+                "Name": "ZI_C_TOP_KEYWORDS",
+                "Type": "STRING",
+                "Description": "ZI_C_TOP_KEYWORDS : Top keywords associated with the company.",
+                "Examples": "Sample value for ZI_C_TOP_KEYWORDS"
+            },
+            "ZI_C_NUM_KEYWORDS": {
+                "Name": "ZI_C_NUM_KEYWORDS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_NUM_KEYWORDS : Number of keywords associated with the company.",
+                "Examples": "Sample value for ZI_C_NUM_KEYWORDS"
+            },
+            "ZI_C_EMPLOYEE_GROWTH_1YR": {
+                "Name": "ZI_C_EMPLOYEE_GROWTH_1YR",
+                "Type": "FLOAT",
+                "Description": "ZI_C_EMPLOYEE_GROWTH_1YR : Employee growth rate of the company in the last 1 year.",
+                "Examples": "Sample value for ZI_C_EMPLOYEE_GROWTH_1YR"
+            },
+            "ZI_C_EMPLOYEE_GROWTH_2YR": {
+                "Name": "ZI_C_EMPLOYEE_GROWTH_2YR",
+                "Type": "FLOAT",
+                "Description": "ZI_C_EMPLOYEE_GROWTH_2YR : Employee growth rate of the company in the last 2 years.",
+                "Examples": "Sample value for ZI_C_EMPLOYEE_GROWTH_2YR"
+            },
+            "ZI_ES_GROWTH": {
+                "Name": "ZI_ES_GROWTH",
+                "Type": "STRING",
+                "Description": "ZI_ES_GROWTH : Growth indicator of the company according to the external data source.",
+                "Examples": "Sample value for ZI_ES_GROWTH"
+            },
+            "ZI_ES_EMPLOYEE_GROWTH": {
+                "Name": "ZI_ES_EMPLOYEE_GROWTH",
+                "Type": "STRING",
+                "Description": "ZI_ES_EMPLOYEE_GROWTH : Employee growth rate of the company according to the external data source.",
+                "Examples": "Sample value for ZI_ES_EMPLOYEE_GROWTH"
+            },
+            "ZI_ES_REVENUE_GROWTH": {
+                "Name": "ZI_ES_REVENUE_GROWTH",
+                "Type": "STRING",
+                "Description": "ZI_ES_REVENUE_GROWTH : Revenue growth rate of the company according to the external data source.",
+                "Examples": "Sample value for ZI_ES_REVENUE_GROWTH"
+            },
+            "ZI_ES_PERCENT_EMPLOYEE_GROWTH": {
+                "Name": "ZI_ES_PERCENT_EMPLOYEE_GROWTH",
+                "Type": "FLOAT",
+                "Description": "ZI_ES_PERCENT_EMPLOYEE_GROWTH : Percentage employee growth rate of the company according to the external data source.",
+                "Examples": "Sample value for ZI_ES_PERCENT_EMPLOYEE_GROWTH"
+            },
+            "ZI_ES_PERCENT_REVENUE_GROWTH": {
+                "Name": "ZI_ES_PERCENT_REVENUE_GROWTH",
+                "Type": "FLOAT",
+                "Description": "ZI_ES_PERCENT_REVENUE_GROWTH : Percentage revenue growth rate of the company according to the external data source.",
+                "Examples": "Sample value for ZI_ES_PERCENT_REVENUE_GROWTH"
+            },
+            "ZI_C_NAME_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_NAME_CONFIDENCE_SCORE",
+                "Type": "INTEGER",
+                "Description": "ZI_C_NAME_CONFIDENCE_SCORE : Confidence score for the company name.",
+                "Examples": "Sample value for ZI_C_NAME_CONFIDENCE_SCORE"
+            },
+            "ZI_C_URL_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_URL_CONFIDENCE_SCORE",
+                "Type": "INTEGER",
+                "Description": "ZI_C_URL_CONFIDENCE_SCORE : Confidence score for the company URL.",
+                "Examples": "Sample value for ZI_C_URL_CONFIDENCE_SCORE"
+            },
+            "ZI_C_ADDRESS_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_ADDRESS_CONFIDENCE_SCORE",
+                "Type": "INTEGER",
+                "Description": "ZI_C_ADDRESS_CONFIDENCE_SCORE : Confidence score for the company address.",
+                "Examples": "Sample value for ZI_C_ADDRESS_CONFIDENCE_SCORE"
+            },
+            "ZI_C_PHONE_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_PHONE_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "ZI_C_PHONE_CONFIDENCE_SCORE : Confidence score for the company phone number.",
+                "Examples": "Sample value for ZI_C_PHONE_CONFIDENCE_SCORE"
+            },
+            "ZI_C_EMPLOYEES_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_EMPLOYEES_CONFIDENCE_SCORE",
+                "Type": "INTEGER",
+                "Description": "ZI_C_EMPLOYEES_CONFIDENCE_SCORE : Confidence score for the company employee count.",
+                "Examples": "Sample value for ZI_C_EMPLOYEES_CONFIDENCE_SCORE"
+            },
+            "ZI_C_REVENUE_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_REVENUE_CONFIDENCE_SCORE",
+                "Type": "INTEGER",
+                "Description": "ZI_C_REVENUE_CONFIDENCE_SCORE : Confidence score for the company revenue.",
+                "Examples": "Sample value for ZI_C_REVENUE_CONFIDENCE_SCORE"
+            },
+            "ZI_ES_INDUSTRY_CONFIDENCE_SCORE": {
+                "Name": "ZI_ES_INDUSTRY_CONFIDENCE_SCORE",
+                "Type": "INTEGER",
+                "Description": "ZI_ES_INDUSTRY_CONFIDENCE_SCORE : Confidence score for the company industry according to the external data source.",
+                "Examples": "Sample value for ZI_ES_INDUSTRY_CONFIDENCE_SCORE"
+            },
+            "ZI_C_NAICS_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_NAICS_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "ZI_C_NAICS_CONFIDENCE_SCORE : Confidence score for the company NAICS codes.",
+                "Examples": "Sample value for ZI_C_NAICS_CONFIDENCE_SCORE"
+            },
+            "ZI_C_SIC_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_SIC_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "ZI_C_SIC_CONFIDENCE_SCORE : Confidence score for the company SIC codes.",
+                "Examples": "Sample value for ZI_C_SIC_CONFIDENCE_SCORE"
+            },
+            "ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES": {
+                "Name": "ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES",
+                "Type": "STRING",
+                "Description": "ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three industries of the company according to the external data source.",
+                "Examples": "Sample value for ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES"
+            },
+            "ZI_C_NAICS_TOP3_CONFIDENCE_SCORES": {
+                "Name": "ZI_C_NAICS_TOP3_CONFIDENCE_SCORES",
+                "Type": "STRING",
+                "Description": "ZI_C_NAICS_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three NAICS codes of the company.",
+                "Examples": "Sample value for ZI_C_NAICS_TOP3_CONFIDENCE_SCORES"
+            },
+            "ZI_C_SIC_TOP3_CONFIDENCE_SCORES": {
+                "Name": "ZI_C_SIC_TOP3_CONFIDENCE_SCORES",
+                "Type": "STRING",
+                "Description": "ZI_C_SIC_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three SIC codes of the company.",
+                "Examples": "Sample value for ZI_C_SIC_TOP3_CONFIDENCE_SCORES"
+            },
+            "ZI_C_IDS_MERGED": {
+                "Name": "ZI_C_IDS_MERGED",
+                "Type": "STRING",
+                "Description": "ZI_C_IDS_MERGED : Merged identifiers for the company.",
+                "Examples": "Sample value for ZI_C_IDS_MERGED"
+            },
+            "ZI_C_NAMES_OTHER": {
+                "Name": "ZI_C_NAMES_OTHER",
+                "Type": "STRING",
+                "Description": "ZI_C_NAMES_OTHER : Other names for the company.",
+                "Examples": "Sample value for ZI_C_NAMES_OTHER"
+            },
+            "ZI_C_URL_STATUS": {
+                "Name": "ZI_C_URL_STATUS",
+                "Type": "STRING",
+                "Description": "ZI_C_URL_STATUS : Status of the company URL.",
+                "Examples": "Sample value for ZI_C_URL_STATUS"
+            },
+            "ZI_C_URLS_ALT": {
+                "Name": "ZI_C_URLS_ALT",
+                "Type": "STRING",
+                "Description": "ZI_C_URLS_ALT : Alternate URLs for the company.",
+                "Examples": "Sample value for ZI_C_URLS_ALT"
+            },
+            "ZI_C_URL_LAST_UPDATED": {
+                "Name": "ZI_C_URL_LAST_UPDATED",
+                "Type": "DATE",
+                "Description": "ZI_C_URL_LAST_UPDATED : Last updated date for the company URL.",
+                "Examples": "Sample value for ZI_C_URL_LAST_UPDATED"
+            },
+            "ZI_C_INACTIVE_FLAG": {
+                "Name": "ZI_C_INACTIVE_FLAG",
+                "Type": "INTEGER",
+                "Description": "ZI_C_INACTIVE_FLAG : Flag indicating whether the company is inactive.",
+                "Examples": "Sample value for ZI_C_INACTIVE_FLAG"
+            },
+            "ZI_C_EIN": {
+                "Name": "ZI_C_EIN",
+                "Type": "INTEGER",
+                "Description": "ZI_C_EIN : Employer Identification Number (EIN) of the company.",
+                "Examples": "Sample value for ZI_C_EIN"
+            },
+            "ZI_C_IS_SMALL_BUSINESS": {
+                "Name": "ZI_C_IS_SMALL_BUSINESS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_IS_SMALL_BUSINESS : Flag indicating whether the company is a small business.",
+                "Examples": "Sample value for ZI_C_IS_SMALL_BUSINESS"
+            },
+            "ZI_C_IS_PUBLIC": {
+                "Name": "ZI_C_IS_PUBLIC",
+                "Type": "INTEGER",
+                "Description": "ZI_C_IS_PUBLIC : Flag indicating whether the company is public.",
+                "Examples": "Sample value for ZI_C_IS_PUBLIC"
+            },
+            "ZI_C_TICKER": {
+                "Name": "ZI_C_TICKER",
+                "Type": "STRING",
+                "Description": "ZI_C_TICKER : Ticker symbol of the company.",
+                "Examples": "Sample value for ZI_C_TICKER"
+            },
+            "ZI_C_TICKERS_ALT": {
+                "Name": "ZI_C_TICKERS_ALT",
+                "Type": "STRING",
+                "Description": "ZI_C_TICKERS_ALT : Alternate ticker symbols of the company.",
+                "Examples": "Sample value for ZI_C_TICKERS_ALT"
+            },
+            "ZI_C_HAS_MOBILE_APP": {
+                "Name": "ZI_C_HAS_MOBILE_APP",
+                "Type": "INTEGER",
+                "Description": "ZI_C_HAS_MOBILE_APP : Flag indicating whether the company has a mobile app.",
+                "Examples": "Sample value for ZI_C_HAS_MOBILE_APP"
+            },
+            "ZI_C_CURRENCY_CODE": {
+                "Name": "ZI_C_CURRENCY_CODE",
+                "Type": "STRING",
+                "Description": "ZI_C_CURRENCY_CODE : Currency code of the company.",
+                "Examples": "Sample value for ZI_C_CURRENCY_CODE"
+            },
+            "ZI_C_NUM_LOCATIONS": {
+                "Name": "ZI_C_NUM_LOCATIONS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_NUM_LOCATIONS : Number of locations of the company.",
+                "Examples": "Sample value for ZI_C_NUM_LOCATIONS"
+            },
+            "ZI_C_HR_CONTACTS": {
+                "Name": "ZI_C_HR_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_HR_CONTACTS : Number of HR contacts in the company.",
+                "Examples": "Sample value for ZI_C_HR_CONTACTS"
+            },
+            "ZI_C_SALES_CONTACTS": {
+                "Name": "ZI_C_SALES_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_SALES_CONTACTS : Number of sales contacts in the company.",
+                "Examples": "Sample value for ZI_C_SALES_CONTACTS"
+            },
+            "ZI_C_MARKETING_CONTACTS": {
+                "Name": "ZI_C_MARKETING_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_MARKETING_CONTACTS : Number of marketing contacts in the company.",
+                "Examples": "Sample value for ZI_C_MARKETING_CONTACTS"
+            },
+            "ZI_C_FINANCE_CONTACTS": {
+                "Name": "ZI_C_FINANCE_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_FINANCE_CONTACTS : Number of finance contacts in the company.",
+                "Examples": "Sample value for ZI_C_FINANCE_CONTACTS"
+            },
+            "ZI_C_C_SUITE_CONTACTS": {
+                "Name": "ZI_C_C_SUITE_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_C_SUITE_CONTACTS : Number of C-suite contacts in the company.",
+                "Examples": "Sample value for ZI_C_C_SUITE_CONTACTS"
+            },
+            "ZI_C_ENGINEERING_CONTACTS": {
+                "Name": "ZI_C_ENGINEERING_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_ENGINEERING_CONTACTS : Number of engineering contacts in the company.",
+                "Examples": "Sample value for ZI_C_ENGINEERING_CONTACTS"
+            },
+            "ZI_C_IT_CONTACTS": {
+                "Name": "ZI_C_IT_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_IT_CONTACTS : Number of IT contacts in the company.",
+                "Examples": "Sample value for ZI_C_IT_CONTACTS"
+            },
+            "ZI_C_OPERATIONS_CONTACTS": {
+                "Name": "ZI_C_OPERATIONS_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_OPERATIONS_CONTACTS : Number of operations contacts in the company.",
+                "Examples": "Sample value for ZI_C_OPERATIONS_CONTACTS"
+            },
+            "ZI_C_LEGAL_CONTACTS": {
+                "Name": "ZI_C_LEGAL_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_LEGAL_CONTACTS : Number of legal contacts in the company.",
+                "Examples": "Sample value for ZI_C_LEGAL_CONTACTS"
+            },
+            "ZI_C_MEDICAL_CONTACTS": {
+                "Name": "ZI_C_MEDICAL_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "ZI_C_MEDICAL_CONTACTS : Number of medical contacts in the company.",
+                "Examples": "Sample value for ZI_C_MEDICAL_CONTACTS"
+            },
+            "ZI_C_TECH_IDS": {
+                "Name": "ZI_C_TECH_IDS",
+                "Type": "STRING",
+                "Description": "ZI_C_TECH_IDS : Technology IDs associated with the company.",
+                "Examples": "Sample value for ZI_C_TECH_IDS"
+            },
+            "ZI_C_LATEST_FUNDING_AGE": {
+                "Name": "ZI_C_LATEST_FUNDING_AGE",
+                "Type": "STRING",
+                "Description": "ZI_C_LATEST_FUNDING_AGE : Age of the latest funding round of the company.",
+                "Examples": "Sample value for ZI_C_LATEST_FUNDING_AGE"
+            },
+            "ZI_C_NUM_OF_INVESTORS": {
+                "Name": "ZI_C_NUM_OF_INVESTORS",
+                "Type": "STRING",
+                "Description": "ZI_C_NUM_OF_INVESTORS : Number of investors in the company.",
+                "Examples": "Sample value for ZI_C_NUM_OF_INVESTORS"
+            },
+            "ZI_C_INVESTOR_NAMES": {
+                "Name": "ZI_C_INVESTOR_NAMES",
+                "Type": "STRING",
+                "Description": "ZI_C_INVESTOR_NAMES : Names of investors in the company.",
+                "Examples": "Sample value for ZI_C_INVESTOR_NAMES"
+            },
+            "ZI_C_FUNDING_STRENGTH": {
+                "Name": "ZI_C_FUNDING_STRENGTH",
+                "Type": "STRING",
+                "Description": "ZI_C_FUNDING_STRENGTH : Funding strength of the company.",
+                "Examples": "Sample value for ZI_C_FUNDING_STRENGTH"
+            },
+            "ZI_C_FUNDING_TYPE": {
+                "Name": "ZI_C_FUNDING_TYPE",
+                "Type": "STRING",
+                "Description": "ZI_C_FUNDING_TYPE : Type of funding received by the company.",
+                "Examples": "Sample value for ZI_C_FUNDING_TYPE"
+            },
+            "ZI_C_TOTAL_FUNDING_AMOUNT": {
+                "Name": "ZI_C_TOTAL_FUNDING_AMOUNT",
+                "Type": "STRING",
+                "Description": "ZI_C_TOTAL_FUNDING_AMOUNT : Total funding amount received by the company.",
+                "Examples": "Sample value for ZI_C_TOTAL_FUNDING_AMOUNT"
+            },
+            "ZI_C_LATEST_FUNDING_AMOUNT": {
+                "Name": "ZI_C_LATEST_FUNDING_AMOUNT",
+                "Type": "STRING",
+                "Description": "ZI_C_LATEST_FUNDING_AMOUNT : Latest funding amount received by the company.",
+                "Examples": "Sample value for ZI_C_LATEST_FUNDING_AMOUNT"
+            },
+            "ZI_C_LATEST_FUNDING_DATE": {
+                "Name": "ZI_C_LATEST_FUNDING_DATE",
+                "Type": "STRING",
+                "Description": "ZI_C_LATEST_FUNDING_DATE : Date of the latest funding round of the company.",
+                "Examples": "Sample value for ZI_C_LATEST_FUNDING_DATE"
+            },
+            "ZI_C_NUM_FUNDING_ROUNDS": {
+                "Name": "ZI_C_NUM_FUNDING_ROUNDS",
+                "Type": "STRING",
+                "Description": "ZI_C_NUM_FUNDING_ROUNDS : Number of funding rounds of the company.",
+                "Examples": "Sample value for ZI_C_NUM_FUNDING_ROUNDS"
+            },
+            "ZI_C_IS_FORTUNE_100": {
+                "Name": "ZI_C_IS_FORTUNE_100",
+                "Type": "INTEGER",
+                "Description": "ZI_C_IS_FORTUNE_100 : Flag indicating whether the company is in the Fortune 100 list.",
+                "Examples": "Sample value for ZI_C_IS_FORTUNE_100"
+            },
+            "ZI_C_IS_FORTUNE_500": {
+                "Name": "ZI_C_IS_FORTUNE_500",
+                "Type": "INTEGER",
+                "Description": "ZI_C_IS_FORTUNE_500 : Flag indicating whether the company is in the Fortune 500 list.",
+                "Examples": "Sample value for ZI_C_IS_FORTUNE_500"
+            },
+            "ZI_C_IS_S_AND_P_500": {
+                "Name": "ZI_C_IS_S_AND_P_500",
+                "Type": "INTEGER",
+                "Description": "ZI_C_IS_S_AND_P_500 : Flag indicating whether the company is in the S&P 500 list.",
+                "Examples": "Sample value for ZI_C_IS_S_AND_P_500"
+            },
+            "ZI_C_LAST_UPDATED_DATE": {
+                "Name": "ZI_C_LAST_UPDATED_DATE",
+                "Type": "DATE",
+                "Description": "ZI_C_LAST_UPDATED_DATE : Last updated date for the company information",
+                "Examples": "Sample value for ZI_C_LAST_UPDATED_DATE"
+            },
+            "ZI_C_RELEASE_DATE": {
+                "Name": "ZI_C_RELEASE_DATE",
+                "Type": "INTEGER",
+                "Description": "ZI_C_RELEASE_DATE : Release date of the company information",
+                "Examples": "Sample value for ZI_C_RELEASE_DATE"
+            }
+        }
+    },
+    "zi-retail-companies-headquartered-california": {
+        "Name": "zi-retail-companies-headquartered-california",
+        "Description": "The table 'zi-retail-companies-headquartered-california' contains information about retail companies headquartered in California. Each row in the table represents a different company. The columns in the table include:\n\n* **Company Name**: The name of the company.\n* **Headquarters City**: The city where the company is headquartered.\n* **Number of Employees**: The number of employees the company has.\n* **Annual Revenue**: The annual revenue of the company.\n* **Founded**: The year the company was founded.\n* **Website**: The company's website.\n\nThe data in this table can be used to learn",
+        "Columns": {
+            "ZI_C_LOCATION_ID": {
+                "Name": "ZI_C_LOCATION_ID",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_LOCATION_ID :** Sequential Location ID.",
+                "Examples": "Sample value for ZI_C_LOCATION_ID"
+            },
+            "ZI_C_COMPANY_ID": {
+                "Name": "ZI_C_COMPANY_ID",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_COMPANY_ID :** Sequential Company ID.",
+                "Examples": "Sample value for ZI_C_COMPANY_ID"
+            },
+            "ZI_C_IS_HQ": {
+                "Name": "ZI_C_IS_HQ",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_HQ :** Flag for headquarters location. (1 = HQ).",
+                "Examples": "Sample value for ZI_C_IS_HQ"
+            },
+            "ZI_ES_ECID": {
+                "Name": "ZI_ES_ECID",
+                "Type": "INTEGER",
+                "Description": "**ZI_ES_ECID :** Encrypted Company Id.",
+                "Examples": "Sample value for ZI_ES_ECID"
+            },
+            "ZI_ES_LOCATION_ID": {
+                "Name": "ZI_ES_LOCATION_ID",
+                "Type": "STRING",
+                "Description": "**ZI_ES_LOCATION_ID :** Encrypted Location Id.",
+                "Examples": "Sample value for ZI_ES_LOCATION_ID"
+            },
+            "ZI_C_TIER_GRADE": {
+                "Name": "ZI_C_TIER_GRADE",
+                "Type": "STRING",
+                "Description": "**ZI_C_TIER_GRADE :** Tier Grade of a company.",
+                "Examples": "Sample value for ZI_C_TIER_GRADE"
+            },
+            "ZI_C_NAME": {
+                "Name": "ZI_C_NAME",
+                "Type": "STRING",
+                "Description": "**ZI_C_NAME :** Full name of the company.",
+                "Examples": "Sample value for ZI_C_NAME"
+            },
+            "ZI_C_NAME_DISPLAY": {
+                "Name": "ZI_C_NAME_DISPLAY",
+                "Type": "STRING",
+                "Description": "**ZI_C_NAME_DISPLAY :** Displayable name of the company.",
+                "Examples": "Sample value for ZI_C_NAME_DISPLAY"
+            },
+            "ZI_C_LEGAL_ENTITY_TYPE": {
+                "Name": "ZI_C_LEGAL_ENTITY_TYPE",
+                "Type": "STRING",
+                "Description": "**ZI_C_LEGAL_ENTITY_TYPE :** Legal entity type of the company.",
+                "Examples": "Sample value for ZI_C_LEGAL_ENTITY_TYPE"
+            },
+            "ZI_C_URL": {
+                "Name": "ZI_C_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_URL :** Primary URL of the company.",
+                "Examples": "Sample value for ZI_C_URL"
+            },
+            "ZI_C_STREET": {
+                "Name": "ZI_C_STREET",
+                "Type": "STRING",
+                "Description": "**ZI_C_STREET :** Primary street address of the company.",
+                "Examples": "Sample value for ZI_C_STREET"
+            },
+            "ZI_C_STREET_2": {
+                "Name": "ZI_C_STREET_2",
+                "Type": "STRING",
+                "Description": "**ZI_C_STREET_2 :** Secondary street address of the company.",
+                "Examples": "Sample value for ZI_C_STREET_2"
+            },
+            "ZI_C_CITY": {
+                "Name": "ZI_C_CITY",
+                "Type": "STRING",
+                "Description": "**ZI_C_CITY :** City of the company.",
+                "Examples": "Sample value for ZI_C_CITY"
+            },
+            "ZI_C_STATE": {
+                "Name": "ZI_C_STATE",
+                "Type": "STRING",
+                "Description": "**ZI_C_STATE :** State of the company.",
+                "Examples": "Sample value for ZI_C_STATE"
+            },
+            "ZI_C_ZIP": {
+                "Name": "ZI_C_ZIP",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_ZIP :** Zip code of the company.",
+                "Examples": "Sample value for ZI_C_ZIP"
+            },
+            "ZI_C_COUNTRY": {
+                "Name": "ZI_C_COUNTRY",
+                "Type": "STRING",
+                "Description": "**ZI_C_COUNTRY :** Country of the company.",
+                "Examples": "Sample value for ZI_C_COUNTRY"
+            },
+            "ZI_C_CBSA_NAME": {
+                "Name": "ZI_C_CBSA_NAME",
+                "Type": "STRING",
+                "Description": "**ZI_C_CBSA_NAME :** Name of the Core Based Statistical Area (CBSA) where the company is located.",
+                "Examples": "Sample value for ZI_C_CBSA_NAME"
+            },
+            "ZI_C_COUNTY": {
+                "Name": "ZI_C_COUNTY",
+                "Type": "STRING",
+                "Description": "**ZI_C_COUNTY :** County of the company.",
+                "Examples": "Sample value for ZI_C_COUNTY"
+            },
+            "ZI_C_LATITUDE": {
+                "Name": "ZI_C_LATITUDE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_LATITUDE :** Latitude of the company.",
+                "Examples": "Sample value for ZI_C_LATITUDE"
+            },
+            "ZI_C_LONGITUDE": {
+                "Name": "ZI_C_LONGITUDE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_LONGITUDE :** Longitude of the company.",
+                "Examples": "Sample value for ZI_C_LONGITUDE"
+            },
+            "ZI_C_VERIFIED_ADDRESS": {
+                "Name": "ZI_C_VERIFIED_ADDRESS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_VERIFIED_ADDRESS :** Address verification status. (1 = verified).",
+                "Examples": "Sample value for ZI_C_VERIFIED_ADDRESS"
+            },
+            "ZI_C_EMPLOYEE_RANGE": {
+                "Name": "ZI_C_EMPLOYEE_RANGE",
+                "Type": "STRING",
+                "Description": "**ZI_C_EMPLOYEE_RANGE :** Range of the number of employees in the company.",
+                "Examples": "Sample value for ZI_C_EMPLOYEE_RANGE"
+            },
+            "ZI_C_EMPLOYEES": {
+                "Name": "ZI_C_EMPLOYEES",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_EMPLOYEES :** Number of employees in the company.",
+                "Examples": "Sample value for ZI_C_EMPLOYEES"
+            },
+            "ZI_C_REVENUE_RANGE": {
+                "Name": "ZI_C_REVENUE_RANGE",
+                "Type": "STRING",
+                "Description": "**ZI_C_REVENUE_RANGE :** Range of revenue of the company.",
+                "Examples": "Sample value for ZI_C_REVENUE_RANGE"
+            },
+            "ZI_C_REVENUE": {
+                "Name": "ZI_C_REVENUE",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_REVENUE :** Revenue of the company.",
+                "Examples": "Sample value for ZI_C_REVENUE"
+            },
+            "ZI_C_PHONE": {
+                "Name": "ZI_C_PHONE",
+                "Type": "STRING",
+                "Description": "**ZI_C_PHONE :** Primary phone number of the company.",
+                "Examples": "Sample value for ZI_C_PHONE"
+            },
+            "ZI_C_FAX": {
+                "Name": "ZI_C_FAX",
+                "Type": "STRING",
+                "Description": "**ZI_C_FAX :** Fax number of the company.",
+                "Examples": "Sample value for ZI_C_FAX"
+            },
+            "ZI_C_INDUSTRY_PRIMARY": {
+                "Name": "ZI_C_INDUSTRY_PRIMARY",
+                "Type": "STRING",
+                "Description": "**ZI_C_INDUSTRY_PRIMARY :** Primary industry of the company.",
+                "Examples": "Sample value for ZI_C_INDUSTRY_PRIMARY"
+            },
+            "ZI_C_SUB_INDUSTRY_PRIMARY": {
+                "Name": "ZI_C_SUB_INDUSTRY_PRIMARY",
+                "Type": "STRING",
+                "Description": "**ZI_C_SUB_INDUSTRY_PRIMARY :** Primary sub-industry of the company.",
+                "Examples": "Sample value for ZI_C_SUB_INDUSTRY_PRIMARY"
+            },
+            "ZI_C_INDUSTRIES": {
+                "Name": "ZI_C_INDUSTRIES",
+                "Type": "STRING",
+                "Description": "**ZI_C_INDUSTRIES :** All industries of the company.",
+                "Examples": "Sample value for ZI_C_INDUSTRIES"
+            },
+            "ZI_C_SUB_INDUSTRIES": {
+                "Name": "ZI_C_SUB_INDUSTRIES",
+                "Type": "STRING",
+                "Description": "**ZI_C_SUB_INDUSTRIES :** All sub-industries of the company.",
+                "Examples": "Sample value for ZI_C_SUB_INDUSTRIES"
+            },
+            "ZI_ES_INDUSTRY": {
+                "Name": "ZI_ES_INDUSTRY",
+                "Type": "STRING",
+                "Description": "**ZI_ES_INDUSTRY :** Encrypted industry of the company.",
+                "Examples": "Sample value for ZI_ES_INDUSTRY"
+            },
+            "ZI_ES_INDUSTRIES_TOP3": {
+                "Name": "ZI_ES_INDUSTRIES_TOP3",
+                "Type": "STRING",
+                "Description": "**ZI_ES_INDUSTRIES_TOP3 :** Encrypted top 3 industries of the company.",
+                "Examples": "Sample value for ZI_ES_INDUSTRIES_TOP3"
+            },
+            "ZI_C_NAICS2": {
+                "Name": "ZI_C_NAICS2",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_NAICS2 :** 2-digit North American Industry Classification System (NAICS) code.",
+                "Examples": "Sample value for ZI_C_NAICS2"
+            },
+            "ZI_C_NAICS4": {
+                "Name": "ZI_C_NAICS4",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_NAICS4 :** 4-digit NAICS code.",
+                "Examples": "Sample value for ZI_C_NAICS4"
+            },
+            "ZI_C_NAICS6": {
+                "Name": "ZI_C_NAICS6",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_NAICS6 :** 6-digit NAICS code.",
+                "Examples": "Sample value for ZI_C_NAICS6"
+            },
+            "ZI_C_NAICS_TOP3": {
+                "Name": "ZI_C_NAICS_TOP3",
+                "Type": "STRING",
+                "Description": "**ZI_C_NAICS_TOP3 :** Top 3 NAICS codes of the company.",
+                "Examples": "Sample value for ZI_C_NAICS_TOP3"
+            },
+            "ZI_C_SIC2": {
+                "Name": "ZI_C_SIC2",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_SIC2 :** 2-digit Standard Industrial Classification (SIC) code.",
+                "Examples": "Sample value for ZI_C_SIC2"
+            },
+            "ZI_C_SIC3": {
+                "Name": "ZI_C_SIC3",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_SIC3 :** 3-digit SIC code.",
+                "Examples": "Sample value for ZI_C_SIC3"
+            },
+            "ZI_C_SIC4": {
+                "Name": "ZI_C_SIC4",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_SIC4 :** 4-digit SIC code.",
+                "Examples": "Sample value for ZI_C_SIC4"
+            },
+            "ZI_C_SIC_TOP3": {
+                "Name": "ZI_C_SIC_TOP3",
+                "Type": "STRING",
+                "Description": "**ZI_C_SIC_TOP3 :** Top 3 SIC codes of the company.",
+                "Examples": "Sample value for ZI_C_SIC_TOP3"
+            },
+            "ZI_C_ESTIMATED_AGE": {
+                "Name": "ZI_C_ESTIMATED_AGE",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_ESTIMATED_AGE :** Estimated age of the company.",
+                "Examples": "Sample value for ZI_C_ESTIMATED_AGE"
+            },
+            "ZI_C_YEAR_FOUNDED": {
+                "Name": "ZI_C_YEAR_FOUNDED",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_YEAR_FOUNDED :** Year the company was founded.",
+                "Examples": "Sample value for ZI_C_YEAR_FOUNDED"
+            },
+            "ZI_C_IS_B2B": {
+                "Name": "ZI_C_IS_B2B",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_B2B :** Flag for business-to-business (B2B) company. (1 = B2B).",
+                "Examples": "Sample value for ZI_C_IS_B2B"
+            },
+            "ZI_C_IS_B2C": {
+                "Name": "ZI_C_IS_B2C",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_B2C :** Flag for business-to-consumer (B2C) company. (1 = B2C).",
+                "Examples": "Sample value for ZI_C_IS_B2C"
+            },
+            "ZI_ES_HQ_ECID": {
+                "Name": "ZI_ES_HQ_ECID",
+                "Type": "INTEGER",
+                "Description": "**ZI_ES_HQ_ECID :** Encrypted Headquarters Company Id.",
+                "Examples": "Sample value for ZI_ES_HQ_ECID"
+            },
+            "ZI_ES_HQ_LOCATION_ID": {
+                "Name": "ZI_ES_HQ_LOCATION_ID",
+                "Type": "STRING",
+                "Description": "**ZI_ES_HQ_LOCATION_ID :** Encrypted Headquarters Location Id.",
+                "Examples": "Sample value for ZI_ES_HQ_LOCATION_ID"
+            },
+            "ZI_C_COMPANY_NAME": {
+                "Name": "ZI_C_COMPANY_NAME",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_NAME :** Full name of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_NAME"
+            },
+            "ZI_C_COMPANY_URL": {
+                "Name": "ZI_C_COMPANY_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_URL :** Primary URL of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_URL"
+            },
+            "ZI_C_COMPANY_STREET": {
+                "Name": "ZI_C_COMPANY_STREET",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_STREET :** Primary street address of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_STREET"
+            },
+            "ZI_C_COMPANY_STREET_2": {
+                "Name": "ZI_C_COMPANY_STREET_2",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_STREET_2 :** Secondary street address of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_STREET_2"
+            },
+            "ZI_C_COMPANY_CITY": {
+                "Name": "ZI_C_COMPANY_CITY",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_CITY :** City of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_CITY"
+            },
+            "ZI_C_COMPANY_STATE": {
+                "Name": "ZI_C_COMPANY_STATE",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_STATE :** State of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_STATE"
+            },
+            "ZI_C_COMPANY_ZIP": {
+                "Name": "ZI_C_COMPANY_ZIP",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_COMPANY_ZIP :** Zip code of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_ZIP"
+            },
+            "ZI_C_COMPANY_COUNTRY": {
+                "Name": "ZI_C_COMPANY_COUNTRY",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_COUNTRY :** Country of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_COUNTRY"
+            },
+            "ZI_C_COMPANY_CBSA_NAME": {
+                "Name": "ZI_C_COMPANY_CBSA_NAME",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_CBSA_NAME :** Name of the Core Based Statistical Area (CBSA) where the company is located.",
+                "Examples": "Sample value for ZI_C_COMPANY_CBSA_NAME"
+            },
+            "ZI_C_COMPANY_COUNTY": {
+                "Name": "ZI_C_COMPANY_COUNTY",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_COUNTY :** County of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_COUNTY"
+            },
+            "ZI_C_COMPANY_LATITUDE": {
+                "Name": "ZI_C_COMPANY_LATITUDE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_COMPANY_LATITUDE :** Latitude of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_LATITUDE"
+            },
+            "ZI_C_COMPANY_LONGITUDE": {
+                "Name": "ZI_C_COMPANY_LONGITUDE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_COMPANY_LONGITUDE :** Longitude of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_LONGITUDE"
+            },
+            "ZI_C_COMPANY_VERIFIED_ADDRESS": {
+                "Name": "ZI_C_COMPANY_VERIFIED_ADDRESS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_COMPANY_VERIFIED_ADDRESS :** Address verification status. (1 = verified).",
+                "Examples": "Sample value for ZI_C_COMPANY_VERIFIED_ADDRESS"
+            },
+            "ZI_C_COMPANY_EMPLOYEE_RANGE": {
+                "Name": "ZI_C_COMPANY_EMPLOYEE_RANGE",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_EMPLOYEE_RANGE :** Range of the number of employees in the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_EMPLOYEE_RANGE"
+            },
+            "ZI_C_COMPANY_EMPLOYEES": {
+                "Name": "ZI_C_COMPANY_EMPLOYEES",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_COMPANY_EMPLOYEES :** Number of employees in the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_EMPLOYEES"
+            },
+            "ZI_C_COMPANY_REVENUE_RANGE": {
+                "Name": "ZI_C_COMPANY_REVENUE_RANGE",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_REVENUE_RANGE :** Range of revenue of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_REVENUE_RANGE"
+            },
+            "ZI_C_COMPANY_REVENUE": {
+                "Name": "ZI_C_COMPANY_REVENUE",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_COMPANY_REVENUE :** Revenue of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_REVENUE"
+            },
+            "ZI_C_COMPANY_PHONE": {
+                "Name": "ZI_C_COMPANY_PHONE",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_PHONE :** Primary phone number of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_PHONE"
+            },
+            "ZI_C_COMPANY_FAX": {
+                "Name": "ZI_C_COMPANY_FAX",
+                "Type": "STRING",
+                "Description": "**ZI_C_COMPANY_FAX :** Fax number of the company.",
+                "Examples": "Sample value for ZI_C_COMPANY_FAX"
+            },
+            "ZI_C_LINKEDIN_URL": {
+                "Name": "ZI_C_LINKEDIN_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_LINKEDIN_URL :** LinkedIn URL of the company.",
+                "Examples": "Sample value for ZI_C_LINKEDIN_URL"
+            },
+            "ZI_C_FACEBOOK_URL": {
+                "Name": "ZI_C_FACEBOOK_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_FACEBOOK_URL :** Facebook URL of the company.",
+                "Examples": "Sample value for ZI_C_FACEBOOK_URL"
+            },
+            "ZI_C_TWITTER_URL": {
+                "Name": "ZI_C_TWITTER_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_TWITTER_URL :** Twitter URL of the company.",
+                "Examples": "Sample value for ZI_C_TWITTER_URL"
+            },
+            "ZI_C_YELP_URL": {
+                "Name": "ZI_C_YELP_URL",
+                "Type": "STRING",
+                "Description": "**ZI_C_YELP_URL :** Yelp URL of the company.",
+                "Examples": "Sample value for ZI_C_YELP_URL"
+            },
+            "ZI_C_ALEXA_RANK": {
+                "Name": "ZI_C_ALEXA_RANK",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_ALEXA_RANK :** Alexa rank of the company.",
+                "Examples": "Sample value for ZI_C_ALEXA_RANK"
+            },
+            "ZI_C_KEYWORDS": {
+                "Name": "ZI_C_KEYWORDS",
+                "Type": "STRING",
+                "Description": "**ZI_C_KEYWORDS :** Keywords associated with the company.",
+                "Examples": "Sample value for ZI_C_KEYWORDS"
+            },
+            "ZI_C_TOP_KEYWORDS": {
+                "Name": "ZI_C_TOP_KEYWORDS",
+                "Type": "STRING",
+                "Description": "**ZI_C_TOP_KEYWORDS :** Top keywords associated with the company.",
+                "Examples": "Sample value for ZI_C_TOP_KEYWORDS"
+            },
+            "ZI_C_NUM_KEYWORDS": {
+                "Name": "ZI_C_NUM_KEYWORDS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_NUM_KEYWORDS :** Number of keywords associated with the company.",
+                "Examples": "Sample value for ZI_C_NUM_KEYWORDS"
+            },
+            "ZI_C_EMPLOYEE_GROWTH_1YR": {
+                "Name": "ZI_C_EMPLOYEE_GROWTH_1YR",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_EMPLOYEE_GROWTH_1YR :** Employee growth rate in the past 1 year.",
+                "Examples": "Sample value for ZI_C_EMPLOYEE_GROWTH_1YR"
+            },
+            "ZI_C_EMPLOYEE_GROWTH_2YR": {
+                "Name": "ZI_C_EMPLOYEE_GROWTH_2YR",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_EMPLOYEE_GROWTH_2YR :** Employee growth rate in the past 2 years.",
+                "Examples": "Sample value for ZI_C_EMPLOYEE_GROWTH_2YR"
+            },
+            "ZI_ES_GROWTH": {
+                "Name": "ZI_ES_GROWTH",
+                "Type": "STRING",
+                "Description": "**ZI_ES_GROWTH :** Growth status of the company.",
+                "Examples": "Sample value for ZI_ES_GROWTH"
+            },
+            "ZI_ES_EMPLOYEE_GROWTH": {
+                "Name": "ZI_ES_EMPLOYEE_GROWTH",
+                "Type": "STRING",
+                "Description": "**ZI_ES_EMPLOYEE_GROWTH :** Encrypted employee growth rate.",
+                "Examples": "Sample value for ZI_ES_EMPLOYEE_GROWTH"
+            },
+            "ZI_ES_REVENUE_GROWTH": {
+                "Name": "ZI_ES_REVENUE_GROWTH",
+                "Type": "STRING",
+                "Description": "**ZI_ES_REVENUE_GROWTH :** Encrypted revenue growth rate.",
+                "Examples": "Sample value for ZI_ES_REVENUE_GROWTH"
+            },
+            "ZI_ES_PERCENT_EMPLOYEE_GROWTH": {
+                "Name": "ZI_ES_PERCENT_EMPLOYEE_GROWTH",
+                "Type": "FLOAT",
+                "Description": "**ZI_ES_PERCENT_EMPLOYEE_GROWTH :** Percentage employee growth rate.",
+                "Examples": "Sample value for ZI_ES_PERCENT_EMPLOYEE_GROWTH"
+            },
+            "ZI_ES_PERCENT_REVENUE_GROWTH": {
+                "Name": "ZI_ES_PERCENT_REVENUE_GROWTH",
+                "Type": "FLOAT",
+                "Description": "**ZI_ES_PERCENT_REVENUE_GROWTH :** Percentage revenue growth rate.",
+                "Examples": "Sample value for ZI_ES_PERCENT_REVENUE_GROWTH"
+            },
+            "ZI_C_NAME_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_NAME_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_NAME_CONFIDENCE_SCORE :** Confidence score of the company name.",
+                "Examples": "Sample value for ZI_C_NAME_CONFIDENCE_SCORE"
+            },
+            "ZI_C_URL_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_URL_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_URL_CONFIDENCE_SCORE :** Confidence score of the company URL.",
+                "Examples": "Sample value for ZI_C_URL_CONFIDENCE_SCORE"
+            },
+            "ZI_C_ADDRESS_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_ADDRESS_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_ADDRESS_CONFIDENCE_SCORE :** Confidence score of the company address.",
+                "Examples": "Sample value for ZI_C_ADDRESS_CONFIDENCE_SCORE"
+            },
+            "ZI_C_PHONE_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_PHONE_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_PHONE_CONFIDENCE_SCORE :** Confidence score of the company phone number.",
+                "Examples": "Sample value for ZI_C_PHONE_CONFIDENCE_SCORE"
+            },
+            "ZI_C_EMPLOYEES_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_EMPLOYEES_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_EMPLOYEES_CONFIDENCE_SCORE :** Confidence score of the company employee count.",
+                "Examples": "Sample value for ZI_C_EMPLOYEES_CONFIDENCE_SCORE"
+            },
+            "ZI_C_REVENUE_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_REVENUE_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_REVENUE_CONFIDENCE_SCORE :** Confidence score of the company revenue.",
+                "Examples": "Sample value for ZI_C_REVENUE_CONFIDENCE_SCORE"
+            },
+            "ZI_ES_INDUSTRY_CONFIDENCE_SCORE": {
+                "Name": "ZI_ES_INDUSTRY_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_ES_INDUSTRY_CONFIDENCE_SCORE :** Confidence score of the company industry classification.",
+                "Examples": "Sample value for ZI_ES_INDUSTRY_CONFIDENCE_SCORE"
+            },
+            "ZI_C_NAICS_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_NAICS_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_NAICS_CONFIDENCE_SCORE :** Confidence score of the company NAICS codes.",
+                "Examples": "Sample value for ZI_C_NAICS_CONFIDENCE_SCORE"
+            },
+            "ZI_C_SIC_CONFIDENCE_SCORE": {
+                "Name": "ZI_C_SIC_CONFIDENCE_SCORE",
+                "Type": "FLOAT",
+                "Description": "**ZI_C_SIC_CONFIDENCE_SCORE :** Confidence score of the company SIC codes.",
+                "Examples": "Sample value for ZI_C_SIC_CONFIDENCE_SCORE"
+            },
+            "ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES": {
+                "Name": "ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES",
+                "Type": "STRING",
+                "Description": "**ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES :** Confidence scores of the top 3 industries of the company.",
+                "Examples": "Sample value for ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES"
+            },
+            "ZI_C_NAICS_TOP3_CONFIDENCE_SCORES": {
+                "Name": "ZI_C_NAICS_TOP3_CONFIDENCE_SCORES",
+                "Type": "STRING",
+                "Description": "**ZI_C_NAICS_TOP3_CONFIDENCE_SCORES :** Confidence scores of the top 3 NAICS codes of the company.",
+                "Examples": "Sample value for ZI_C_NAICS_TOP3_CONFIDENCE_SCORES"
+            },
+            "ZI_C_SIC_TOP3_CONFIDENCE_SCORES": {
+                "Name": "ZI_C_SIC_TOP3_CONFIDENCE_SCORES",
+                "Type": "STRING",
+                "Description": "**ZI_C_SIC_TOP3_CONFIDENCE_SCORES :** Confidence scores of the top 3 SIC codes of the company.",
+                "Examples": "Sample value for ZI_C_SIC_TOP3_CONFIDENCE_SCORES"
+            },
+            "ZI_C_IDS_MERGED": {
+                "Name": "ZI_C_IDS_MERGED",
+                "Type": "STRING",
+                "Description": "**ZI_C_IDS_MERGED :** Merged IDs of the company.",
+                "Examples": "Sample value for ZI_C_IDS_MERGED"
+            },
+            "ZI_C_NAMES_OTHER": {
+                "Name": "ZI_C_NAMES_OTHER",
+                "Type": "STRING",
+                "Description": "**ZI_C_NAMES_OTHER :** Other names of the company.",
+                "Examples": "Sample value for ZI_C_NAMES_OTHER"
+            },
+            "ZI_C_URL_STATUS": {
+                "Name": "ZI_C_URL_STATUS",
+                "Type": "STRING",
+                "Description": "**ZI_C_URL_STATUS :** Status of the company URL.",
+                "Examples": "Sample value for ZI_C_URL_STATUS"
+            },
+            "ZI_C_URLS_ALT": {
+                "Name": "ZI_C_URLS_ALT",
+                "Type": "STRING",
+                "Description": "**ZI_C_URLS_ALT :** Alternative URLs of the company.",
+                "Examples": "Sample value for ZI_C_URLS_ALT"
+            },
+            "ZI_C_URL_LAST_UPDATED": {
+                "Name": "ZI_C_URL_LAST_UPDATED",
+                "Type": "DATE",
+                "Description": "**ZI_C_URL_LAST_UPDATED :** Date when the company URL was last updated.",
+                "Examples": "Sample value for ZI_C_URL_LAST_UPDATED"
+            },
+            "ZI_C_INACTIVE_FLAG": {
+                "Name": "ZI_C_INACTIVE_FLAG",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_INACTIVE_FLAG :** Flag for inactive company. (1 = inactive).",
+                "Examples": "Sample value for ZI_C_INACTIVE_FLAG"
+            },
+            "ZI_C_EIN": {
+                "Name": "ZI_C_EIN",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_EIN :** Employer Identification Number (EIN) of the company.",
+                "Examples": "Sample value for ZI_C_EIN"
+            },
+            "ZI_C_IS_SMALL_BUSINESS": {
+                "Name": "ZI_C_IS_SMALL_BUSINESS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_SMALL_BUSINESS :** Flag for small business. (1 = small business).",
+                "Examples": "Sample value for ZI_C_IS_SMALL_BUSINESS"
+            },
+            "ZI_C_IS_PUBLIC": {
+                "Name": "ZI_C_IS_PUBLIC",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_PUBLIC :** Flag for public company. (1 = public).",
+                "Examples": "Sample value for ZI_C_IS_PUBLIC"
+            },
+            "ZI_C_TICKER": {
+                "Name": "ZI_C_TICKER",
+                "Type": "STRING",
+                "Description": "**ZI_C_TICKER :** Ticker symbol of the company.",
+                "Examples": "Sample value for ZI_C_TICKER"
+            },
+            "ZI_C_TICKERS_ALT": {
+                "Name": "ZI_C_TICKERS_ALT",
+                "Type": "STRING",
+                "Description": "**ZI_C_TICKERS_ALT :** Alternative ticker symbols of the company.",
+                "Examples": "Sample value for ZI_C_TICKERS_ALT"
+            },
+            "ZI_C_HAS_MOBILE_APP": {
+                "Name": "ZI_C_HAS_MOBILE_APP",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_HAS_MOBILE_APP :** Flag for company with a mobile app. (1 = has mobile app).",
+                "Examples": "Sample value for ZI_C_HAS_MOBILE_APP"
+            },
+            "ZI_C_CURRENCY_CODE": {
+                "Name": "ZI_C_CURRENCY_CODE",
+                "Type": "STRING",
+                "Description": "**ZI_C_CURRENCY_CODE :** Currency code of the company.",
+                "Examples": "Sample value for ZI_C_CURRENCY_CODE"
+            },
+            "ZI_C_NUM_LOCATIONS": {
+                "Name": "ZI_C_NUM_LOCATIONS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_NUM_LOCATIONS :** Number of locations of the company.",
+                "Examples": "Sample value for ZI_C_NUM_LOCATIONS"
+            },
+            "ZI_C_HR_CONTACTS": {
+                "Name": "ZI_C_HR_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_HR_CONTACTS :** Number of HR contacts of the company.",
+                "Examples": "Sample value for ZI_C_HR_CONTACTS"
+            },
+            "ZI_C_SALES_CONTACTS": {
+                "Name": "ZI_C_SALES_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_SALES_CONTACTS :** Number of sales contacts of the company.",
+                "Examples": "Sample value for ZI_C_SALES_CONTACTS"
+            },
+            "ZI_C_MARKETING_CONTACTS": {
+                "Name": "ZI_C_MARKETING_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_MARKETING_CONTACTS :** Number of marketing contacts of the company.",
+                "Examples": "Sample value for ZI_C_MARKETING_CONTACTS"
+            },
+            "ZI_C_FINANCE_CONTACTS": {
+                "Name": "ZI_C_FINANCE_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_FINANCE_CONTACTS :** Number of finance contacts of the company.",
+                "Examples": "Sample value for ZI_C_FINANCE_CONTACTS"
+            },
+            "ZI_C_C_SUITE_CONTACTS": {
+                "Name": "ZI_C_C_SUITE_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_C_SUITE_CONTACTS :** Number of C-suite contacts of the company.",
+                "Examples": "Sample value for ZI_C_C_SUITE_CONTACTS"
+            },
+            "ZI_C_ENGINEERING_CONTACTS": {
+                "Name": "ZI_C_ENGINEERING_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_ENGINEERING_CONTACTS :** Number of engineering contacts of the company.",
+                "Examples": "Sample value for ZI_C_ENGINEERING_CONTACTS"
+            },
+            "ZI_C_IT_CONTACTS": {
+                "Name": "ZI_C_IT_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IT_CONTACTS :** Number of IT contacts of the company.",
+                "Examples": "Sample value for ZI_C_IT_CONTACTS"
+            },
+            "ZI_C_OPERATIONS_CONTACTS": {
+                "Name": "ZI_C_OPERATIONS_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_OPERATIONS_CONTACTS :** Number of operations contacts of the company.",
+                "Examples": "Sample value for ZI_C_OPERATIONS_CONTACTS"
+            },
+            "ZI_C_LEGAL_CONTACTS": {
+                "Name": "ZI_C_LEGAL_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_LEGAL_CONTACTS :** Number of legal contacts of the company.",
+                "Examples": "Sample value for ZI_C_LEGAL_CONTACTS"
+            },
+            "ZI_C_MEDICAL_CONTACTS": {
+                "Name": "ZI_C_MEDICAL_CONTACTS",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_MEDICAL_CONTACTS :** Number of medical contacts of the company.",
+                "Examples": "Sample value for ZI_C_MEDICAL_CONTACTS"
+            },
+            "ZI_C_TECH_IDS": {
+                "Name": "ZI_C_TECH_IDS",
+                "Type": "STRING",
+                "Description": "**ZI_C_TECH_IDS :** Tech IDs of the company.",
+                "Examples": "Sample value for ZI_C_TECH_IDS"
+            },
+            "ZI_C_LATEST_FUNDING_AGE": {
+                "Name": "ZI_C_LATEST_FUNDING_AGE",
+                "Type": "STRING",
+                "Description": "**ZI_C_LATEST_FUNDING_AGE :** Age of the latest funding of the company.",
+                "Examples": "Sample value for ZI_C_LATEST_FUNDING_AGE"
+            },
+            "ZI_C_NUM_OF_INVESTORS": {
+                "Name": "ZI_C_NUM_OF_INVESTORS",
+                "Type": "STRING",
+                "Description": "**ZI_C_NUM_OF_INVESTORS :** Number of investors of the company.",
+                "Examples": "Sample value for ZI_C_NUM_OF_INVESTORS"
+            },
+            "ZI_C_INVESTOR_NAMES": {
+                "Name": "ZI_C_INVESTOR_NAMES",
+                "Type": "STRING",
+                "Description": "**ZI_C_INVESTOR_NAMES :** Names of the investors of the company.",
+                "Examples": "Sample value for ZI_C_INVESTOR_NAMES"
+            },
+            "ZI_C_FUNDING_STRENGTH": {
+                "Name": "ZI_C_FUNDING_STRENGTH",
+                "Type": "STRING",
+                "Description": "**ZI_C_FUNDING_STRENGTH :** Funding strength of the company.",
+                "Examples": "Sample value for ZI_C_FUNDING_STRENGTH"
+            },
+            "ZI_C_FUNDING_TYPE": {
+                "Name": "ZI_C_FUNDING_TYPE",
+                "Type": "STRING",
+                "Description": "**ZI_C_FUNDING_TYPE :** Type of funding of the company.",
+                "Examples": "Sample value for ZI_C_FUNDING_TYPE"
+            },
+            "ZI_C_TOTAL_FUNDING_AMOUNT": {
+                "Name": "ZI_C_TOTAL_FUNDING_AMOUNT",
+                "Type": "STRING",
+                "Description": "**ZI_C_TOTAL_FUNDING_AMOUNT :** Total funding amount of the company.",
+                "Examples": "Sample value for ZI_C_TOTAL_FUNDING_AMOUNT"
+            },
+            "ZI_C_LATEST_FUNDING_AMOUNT": {
+                "Name": "ZI_C_LATEST_FUNDING_AMOUNT",
+                "Type": "STRING",
+                "Description": "**ZI_C_LATEST_FUNDING_AMOUNT :** Latest funding amount of the company.",
+                "Examples": "Sample value for ZI_C_LATEST_FUNDING_AMOUNT"
+            },
+            "ZI_C_LATEST_FUNDING_DATE": {
+                "Name": "ZI_C_LATEST_FUNDING_DATE",
+                "Type": "STRING",
+                "Description": "**ZI_C_LATEST_FUNDING_DATE :** Date of the latest funding of the company.",
+                "Examples": "Sample value for ZI_C_LATEST_FUNDING_DATE"
+            },
+            "ZI_C_NUM_FUNDING_ROUNDS": {
+                "Name": "ZI_C_NUM_FUNDING_ROUNDS",
+                "Type": "STRING",
+                "Description": "**ZI_C_NUM_FUNDING_ROUNDS :** Number of funding rounds of the company.",
+                "Examples": "Sample value for ZI_C_NUM_FUNDING_ROUNDS"
+            },
+            "ZI_C_IS_FORTUNE_100": {
+                "Name": "ZI_C_IS_FORTUNE_100",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_FORTUNE_100 :** Flag for Fortune 100 company. (1 = Fortune 100).",
+                "Examples": "Sample value for ZI_C_IS_FORTUNE_100"
+            },
+            "ZI_C_IS_FORTUNE_500": {
+                "Name": "ZI_C_IS_FORTUNE_500",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_FORTUNE_500 :** Flag for Fortune 500 company. (1 = Fortune 500).",
+                "Examples": "Sample value for ZI_C_IS_FORTUNE_500"
+            },
+            "ZI_C_IS_S_AND_P_500": {
+                "Name": "ZI_C_IS_S_AND_P_500",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_IS_S_AND_P_500 :** Flag for S&P 500 company. (1 = S&P 500).",
+                "Examples": "Sample value for ZI_C_IS_S_AND_P_500"
+            },
+            "ZI_C_LAST_UPDATED_DATE": {
+                "Name": "ZI_C_LAST_UPDATED_DATE",
+                "Type": "DATE",
+                "Description": "**ZI_C_LAST_UPDATED_DATE :** Date when the company record was last updated.",
+                "Examples": "Sample value for ZI_C_LAST_UPDATED_DATE"
+            },
+            "ZI_C_RELEASE_DATE": {
+                "Name": "ZI_C_RELEASE_DATE",
+                "Type": "INTEGER",
+                "Description": "**ZI_C_RELEASE_DATE :** Date when the company record was released.",
+                "Examples": "Sample value for ZI_C_RELEASE_DATE"
+            }
+        }
+    }
+}

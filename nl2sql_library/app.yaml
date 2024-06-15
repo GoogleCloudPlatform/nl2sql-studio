@@ -1,0 +1,22 @@
+runtime: python
+env: flex
+
+service: nl2sqlexecutors
+
+env_variables:
+  FLASK_APP: app.py
+
+entrypoint: gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
+
+runtime_config:
+    operating_system: "ubuntu22"
+    runtime_version: "3.10"
+
+resources:
+  cpu: 4
+  memory_gb: 8
+  disk_size_gb: 25
+  volumes:
+  - name: ramdisk1
+    volume_type: tmpfs
+    size_gb: 0.5
