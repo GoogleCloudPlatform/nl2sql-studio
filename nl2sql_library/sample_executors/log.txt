@@ -1,0 +1,1152 @@
+>>>>
+Model:text-bison 
+
+Question: What is the total revenue for constuction industry?                          
+
+Prompt:
+Only use the following tables meta-data:
+
+```
+
+Table Name : zi-companies-with-most-marketing-professionals
+
+Description: The table 'zi-companies-with-most-marketing-professionals' provides information about companies with a significant number of marketing professionals. Each row in the table represents a company, and the columns provide details about the company's name, industry, location, and the number of marketing professionals employed.
+
+Here's a breakdown of the data in the table:
+
+- **Company Name**: This column lists the names of the companies with a high concentration of marketing professionals.
+
+- **Industry**: This column specifies the industry sector in which each company operates. The industries represented in the table include technology, finance, healthcare, retail, and
+
+This table has the following columns : 
+ZI_C_LOCATION_ID                     (INTEGER) : ZI_C_LOCATION_ID : Unique identifier for the location of the company.. Sample value for ZI_C_LOCATION_ID
+ZI_C_COMPANY_ID                     (INTEGER) : ZI_C_COMPANY_ID : Unique identifier for the company.. Sample value for ZI_C_COMPANY_ID
+ZI_C_IS_HQ                     (INTEGER) : ZI_C_IS_HQ : Indicates whether the location is the headquarters of the company.. Sample value for ZI_C_IS_HQ
+ZI_ES_ECID                     (INTEGER) : ZI_ES_ECID : Unique identifier for the location in the external data source.. Sample value for ZI_ES_ECID
+ZI_ES_LOCATION_ID                     (STRING) : ZI_ES_LOCATION_ID : Location identifier in the external data source.. Sample value for ZI_ES_LOCATION_ID
+ZI_C_TIER_GRADE                     (STRING) : ZI_C_TIER_GRADE : Tier grade of the company.. Sample value for ZI_C_TIER_GRADE
+ZI_C_NAME                     (STRING) : ZI_C_NAME : Name of the company.. Sample value for ZI_C_NAME
+ZI_C_NAME_DISPLAY                     (STRING) : ZI_C_NAME_DISPLAY : Display name of the company.. Sample value for ZI_C_NAME_DISPLAY
+ZI_C_LEGAL_ENTITY_TYPE                     (STRING) : ZI_C_LEGAL_ENTITY_TYPE : Legal entity type of the company.. Sample value for ZI_C_LEGAL_ENTITY_TYPE
+ZI_C_URL                     (STRING) : ZI_C_URL : URL of the company.. Sample value for ZI_C_URL
+ZI_C_STREET                     (STRING) : ZI_C_STREET : Street address of the company.. Sample value for ZI_C_STREET
+ZI_C_STREET_2                     (STRING) : ZI_C_STREET_2 : Secondary street address of the company.. Sample value for ZI_C_STREET_2
+ZI_C_CITY                     (STRING) : ZI_C_CITY : City of the company.. Sample value for ZI_C_CITY
+ZI_C_STATE                     (STRING) : ZI_C_STATE : State of the company.. Sample value for ZI_C_STATE
+ZI_C_ZIP                     (INTEGER) : ZI_C_ZIP : ZIP code of the company.. Sample value for ZI_C_ZIP
+ZI_C_COUNTRY                     (STRING) : ZI_C_COUNTRY : Country of the company.. Sample value for ZI_C_COUNTRY
+ZI_C_CBSA_NAME                     (STRING) : ZI_C_CBSA_NAME : Core-Based Statistical Area (CBSA) name of the company.. Sample value for ZI_C_CBSA_NAME
+ZI_C_COUNTY                     (STRING) : ZI_C_COUNTY : County of the company.. Sample value for ZI_C_COUNTY
+ZI_C_LATITUDE                     (FLOAT) : ZI_C_LATITUDE : Latitude of the company location.. Sample value for ZI_C_LATITUDE
+ZI_C_LONGITUDE                     (FLOAT) : ZI_C_LONGITUDE : Longitude of the company location.. Sample value for ZI_C_LONGITUDE
+ZI_C_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_VERIFIED_ADDRESS : Flag indicating whether the address is verified.. Sample value for ZI_C_VERIFIED_ADDRESS
+ZI_C_EMPLOYEE_RANGE                     (STRING) : ZI_C_EMPLOYEE_RANGE : Range of employees in the company.. Sample value for ZI_C_EMPLOYEE_RANGE
+ZI_C_EMPLOYEES                     (INTEGER) : ZI_C_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_EMPLOYEES
+ZI_C_REVENUE_RANGE                     (STRING) : ZI_C_REVENUE_RANGE : Range of revenue in the company.. Sample value for ZI_C_REVENUE_RANGE
+ZI_C_REVENUE                     (INTEGER) : ZI_C_REVENUE : Revenue of the company.. Sample value for ZI_C_REVENUE
+ZI_C_PHONE                     (STRING) : ZI_C_PHONE : Phone number of the company.. Sample value for ZI_C_PHONE
+ZI_C_FAX                     (STRING) : ZI_C_FAX : Fax number of the company.. Sample value for ZI_C_FAX
+ZI_C_INDUSTRY_PRIMARY                     (STRING) : ZI_C_INDUSTRY_PRIMARY : Primary industry of the company.. Sample value for ZI_C_INDUSTRY_PRIMARY
+ZI_C_SUB_INDUSTRY_PRIMARY                     (STRING) : ZI_C_SUB_INDUSTRY_PRIMARY : Primary sub-industry of the company.. Sample value for ZI_C_SUB_INDUSTRY_PRIMARY
+ZI_C_INDUSTRIES                     (STRING) : ZI_C_INDUSTRIES : All industries associated with the company.. Sample value for ZI_C_INDUSTRIES
+ZI_C_SUB_INDUSTRIES                     (STRING) : ZI_C_SUB_INDUSTRIES : All sub-industries associated with the company.. Sample value for ZI_C_SUB_INDUSTRIES
+ZI_ES_INDUSTRY                     (STRING) : ZI_ES_INDUSTRY : Industry of the company according to the external data source.. Sample value for ZI_ES_INDUSTRY
+ZI_ES_INDUSTRIES_TOP3                     (STRING) : ZI_ES_INDUSTRIES_TOP3 : Top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3
+ZI_C_NAICS2                     (INTEGER) : ZI_C_NAICS2 : 2-digit NAICS code of the company.. Sample value for ZI_C_NAICS2
+ZI_C_NAICS4                     (INTEGER) : ZI_C_NAICS4 : 4-digit NAICS code of the company.. Sample value for ZI_C_NAICS4
+ZI_C_NAICS6                     (INTEGER) : ZI_C_NAICS6 : 6-digit NAICS code of the company.. Sample value for ZI_C_NAICS6
+ZI_C_NAICS_TOP3                     (STRING) : ZI_C_NAICS_TOP3 : Top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3
+ZI_C_SIC2                     (INTEGER) : ZI_C_SIC2 : 2-digit SIC code of the company.. Sample value for ZI_C_SIC2
+ZI_C_SIC3                     (INTEGER) : ZI_C_SIC3 : 3-digit SIC code of the company.. Sample value for ZI_C_SIC3
+ZI_C_SIC4                     (INTEGER) : ZI_C_SIC4 : 4-digit SIC code of the company.. Sample value for ZI_C_SIC4
+ZI_C_SIC_TOP3                     (STRING) : ZI_C_SIC_TOP3 : Top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3
+ZI_C_ESTIMATED_AGE                     (INTEGER) : ZI_C_ESTIMATED_AGE : Estimated age of the company.. Sample value for ZI_C_ESTIMATED_AGE
+ZI_C_YEAR_FOUNDED                     (INTEGER) : ZI_C_YEAR_FOUNDED : Year in which the company was founded.. Sample value for ZI_C_YEAR_FOUNDED
+ZI_C_IS_B2B                     (INTEGER) : ZI_C_IS_B2B : Flag indicating whether the company is business-to-business (B2B).. Sample value for ZI_C_IS_B2B
+ZI_C_IS_B2C                     (INTEGER) : ZI_C_IS_B2C : Flag indicating whether the company is business-to-consumer (B2C).. Sample value for ZI_C_IS_B2C
+ZI_ES_HQ_ECID                     (INTEGER) : ZI_ES_HQ_ECID : Unique identifier for the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_ECID
+ZI_ES_HQ_LOCATION_ID                     (STRING) : ZI_ES_HQ_LOCATION_ID : Location ID of the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_LOCATION_ID
+ZI_C_COMPANY_NAME                     (STRING) : ZI_C_COMPANY_NAME : Company name.. Sample value for ZI_C_COMPANY_NAME
+ZI_C_COMPANY_URL                     (STRING) : ZI_C_COMPANY_URL : Company URL.. Sample value for ZI_C_COMPANY_URL
+ZI_C_COMPANY_STREET                     (STRING) : ZI_C_COMPANY_STREET : Company street address.. Sample value for ZI_C_COMPANY_STREET
+ZI_C_COMPANY_STREET_2                     (STRING) : ZI_C_COMPANY_STREET_2 : Company secondary street address.. Sample value for ZI_C_COMPANY_STREET_2
+ZI_C_COMPANY_CITY                     (STRING) : ZI_C_COMPANY_CITY : Company city.. Sample value for ZI_C_COMPANY_CITY
+ZI_C_COMPANY_STATE                     (STRING) : ZI_C_COMPANY_STATE : Company state.. Sample value for ZI_C_COMPANY_STATE
+ZI_C_COMPANY_ZIP                     (INTEGER) : ZI_C_COMPANY_ZIP : Company ZIP code.. Sample value for ZI_C_COMPANY_ZIP
+ZI_C_COMPANY_COUNTRY                     (STRING) : ZI_C_COMPANY_COUNTRY : Company country.. Sample value for ZI_C_COMPANY_COUNTRY
+ZI_C_COMPANY_CBSA_NAME                     (STRING) : ZI_C_COMPANY_CBSA_NAME : Company Core-Based Statistical Area (CBSA) name.. Sample value for ZI_C_COMPANY_CBSA_NAME
+ZI_C_COMPANY_COUNTY                     (STRING) : ZI_C_COMPANY_COUNTY : Company county.. Sample value for ZI_C_COMPANY_COUNTY
+ZI_C_COMPANY_LATITUDE                     (FLOAT) : ZI_C_COMPANY_LATITUDE : Company latitude.. Sample value for ZI_C_COMPANY_LATITUDE
+ZI_C_COMPANY_LONGITUDE                     (FLOAT) : ZI_C_COMPANY_LONGITUDE : Company longitude.. Sample value for ZI_C_COMPANY_LONGITUDE
+ZI_C_COMPANY_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_COMPANY_VERIFIED_ADDRESS : Flag indicating whether the company address is verified.. Sample value for ZI_C_COMPANY_VERIFIED_ADDRESS
+ZI_C_COMPANY_EMPLOYEE_RANGE                     (STRING) : ZI_C_COMPANY_EMPLOYEE_RANGE : Company employee range.. Sample value for ZI_C_COMPANY_EMPLOYEE_RANGE
+ZI_C_COMPANY_EMPLOYEES                     (INTEGER) : ZI_C_COMPANY_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_COMPANY_EMPLOYEES
+ZI_C_COMPANY_REVENUE_RANGE                     (STRING) : ZI_C_COMPANY_REVENUE_RANGE : Company revenue range.. Sample value for ZI_C_COMPANY_REVENUE_RANGE
+ZI_C_COMPANY_REVENUE                     (INTEGER) : ZI_C_COMPANY_REVENUE : Company revenue.. Sample value for ZI_C_COMPANY_REVENUE
+ZI_C_COMPANY_PHONE                     (STRING) : ZI_C_COMPANY_PHONE : Company phone number.. Sample value for ZI_C_COMPANY_PHONE
+ZI_C_COMPANY_FAX                     (STRING) : ZI_C_COMPANY_FAX : Company fax number.. Sample value for ZI_C_COMPANY_FAX
+ZI_C_LINKEDIN_URL                     (STRING) : ZI_C_LINKEDIN_URL : LinkedIn URL of the company.. Sample value for ZI_C_LINKEDIN_URL
+ZI_C_FACEBOOK_URL                     (STRING) : ZI_C_FACEBOOK_URL : Facebook URL of the company.. Sample value for ZI_C_FACEBOOK_URL
+ZI_C_TWITTER_URL                     (STRING) : ZI_C_TWITTER_URL : Twitter URL of the company.. Sample value for ZI_C_TWITTER_URL
+ZI_C_YELP_URL                     (STRING) : ZI_C_YELP_URL : Yelp URL of the company.. Sample value for ZI_C_YELP_URL
+ZI_C_ALEXA_RANK                     (INTEGER) : ZI_C_ALEXA_RANK : Alexa rank of the company.. Sample value for ZI_C_ALEXA_RANK
+ZI_C_KEYWORDS                     (STRING) : ZI_C_KEYWORDS : Keywords associated with the company.. Sample value for ZI_C_KEYWORDS
+ZI_C_TOP_KEYWORDS                     (STRING) : ZI_C_TOP_KEYWORDS : Top keywords associated with the company.. Sample value for ZI_C_TOP_KEYWORDS
+ZI_C_NUM_KEYWORDS                     (INTEGER) : ZI_C_NUM_KEYWORDS : Number of keywords associated with the company.. Sample value for ZI_C_NUM_KEYWORDS
+ZI_C_EMPLOYEE_GROWTH_1YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_1YR : Employee growth rate of the company in the last 1 year.. Sample value for ZI_C_EMPLOYEE_GROWTH_1YR
+ZI_C_EMPLOYEE_GROWTH_2YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_2YR : Employee growth rate of the company in the last 2 years.. Sample value for ZI_C_EMPLOYEE_GROWTH_2YR
+ZI_ES_GROWTH                     (STRING) : ZI_ES_GROWTH : Growth indicator of the company according to the external data source.. Sample value for ZI_ES_GROWTH
+ZI_ES_EMPLOYEE_GROWTH                     (STRING) : ZI_ES_EMPLOYEE_GROWTH : Employee growth rate of the company according to the external data source.. Sample value for ZI_ES_EMPLOYEE_GROWTH
+ZI_ES_REVENUE_GROWTH                     (STRING) : ZI_ES_REVENUE_GROWTH : Revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_REVENUE_GROWTH
+ZI_ES_PERCENT_EMPLOYEE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_EMPLOYEE_GROWTH : Percentage employee growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_EMPLOYEE_GROWTH
+ZI_ES_PERCENT_REVENUE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_REVENUE_GROWTH : Percentage revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_REVENUE_GROWTH
+ZI_C_NAME_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_NAME_CONFIDENCE_SCORE : Confidence score for the company name.. Sample value for ZI_C_NAME_CONFIDENCE_SCORE
+ZI_C_URL_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_URL_CONFIDENCE_SCORE : Confidence score for the company URL.. Sample value for ZI_C_URL_CONFIDENCE_SCORE
+ZI_C_ADDRESS_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_ADDRESS_CONFIDENCE_SCORE : Confidence score for the company address.. Sample value for ZI_C_ADDRESS_CONFIDENCE_SCORE
+ZI_C_PHONE_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_PHONE_CONFIDENCE_SCORE : Confidence score for the company phone number.. Sample value for ZI_C_PHONE_CONFIDENCE_SCORE
+ZI_C_EMPLOYEES_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_EMPLOYEES_CONFIDENCE_SCORE : Confidence score for the company employee count.. Sample value for ZI_C_EMPLOYEES_CONFIDENCE_SCORE
+ZI_C_REVENUE_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_REVENUE_CONFIDENCE_SCORE : Confidence score for the company revenue.. Sample value for ZI_C_REVENUE_CONFIDENCE_SCORE
+ZI_ES_INDUSTRY_CONFIDENCE_SCORE                     (INTEGER) : ZI_ES_INDUSTRY_CONFIDENCE_SCORE : Confidence score for the company industry according to the external data source.. Sample value for ZI_ES_INDUSTRY_CONFIDENCE_SCORE
+ZI_C_NAICS_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_NAICS_CONFIDENCE_SCORE : Confidence score for the company NAICS codes.. Sample value for ZI_C_NAICS_CONFIDENCE_SCORE
+ZI_C_SIC_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_SIC_CONFIDENCE_SCORE : Confidence score for the company SIC codes.. Sample value for ZI_C_SIC_CONFIDENCE_SCORE
+ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES
+ZI_C_NAICS_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_NAICS_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3_CONFIDENCE_SCORES
+ZI_C_SIC_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_SIC_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3_CONFIDENCE_SCORES
+ZI_C_IDS_MERGED                     (STRING) : ZI_C_IDS_MERGED : Merged identifiers for the company.. Sample value for ZI_C_IDS_MERGED
+ZI_C_NAMES_OTHER                     (STRING) : ZI_C_NAMES_OTHER : Other names for the company.. Sample value for ZI_C_NAMES_OTHER
+ZI_C_URL_STATUS                     (STRING) : ZI_C_URL_STATUS : Status of the company URL.. Sample value for ZI_C_URL_STATUS
+ZI_C_URLS_ALT                     (STRING) : ZI_C_URLS_ALT : Alternate URLs for the company.. Sample value for ZI_C_URLS_ALT
+ZI_C_URL_LAST_UPDATED                     (DATE) : ZI_C_URL_LAST_UPDATED : Last updated date for the company URL.. Sample value for ZI_C_URL_LAST_UPDATED
+ZI_C_INACTIVE_FLAG                     (INTEGER) : ZI_C_INACTIVE_FLAG : Flag indicating whether the company is inactive.. Sample value for ZI_C_INACTIVE_FLAG
+ZI_C_EIN                     (INTEGER) : ZI_C_EIN : Employer Identification Number (EIN) of the company.. Sample value for ZI_C_EIN
+ZI_C_IS_SMALL_BUSINESS                     (INTEGER) : ZI_C_IS_SMALL_BUSINESS : Flag indicating whether the company is a small business.. Sample value for ZI_C_IS_SMALL_BUSINESS
+ZI_C_IS_PUBLIC                     (INTEGER) : ZI_C_IS_PUBLIC : Flag indicating whether the company is public.. Sample value for ZI_C_IS_PUBLIC
+ZI_C_TICKER                     (STRING) : ZI_C_TICKER : Ticker symbol of the company.. Sample value for ZI_C_TICKER
+ZI_C_TICKERS_ALT                     (STRING) : ZI_C_TICKERS_ALT : Alternate ticker symbols of the company.. Sample value for ZI_C_TICKERS_ALT
+ZI_C_HAS_MOBILE_APP                     (INTEGER) : ZI_C_HAS_MOBILE_APP : Flag indicating whether the company has a mobile app.. Sample value for ZI_C_HAS_MOBILE_APP
+ZI_C_CURRENCY_CODE                     (STRING) : ZI_C_CURRENCY_CODE : Currency code of the company.. Sample value for ZI_C_CURRENCY_CODE
+ZI_C_NUM_LOCATIONS                     (INTEGER) : ZI_C_NUM_LOCATIONS : Number of locations of the company.. Sample value for ZI_C_NUM_LOCATIONS
+ZI_C_HR_CONTACTS                     (INTEGER) : ZI_C_HR_CONTACTS : Number of HR contacts in the company.. Sample value for ZI_C_HR_CONTACTS
+ZI_C_SALES_CONTACTS                     (INTEGER) : ZI_C_SALES_CONTACTS : Number of sales contacts in the company.. Sample value for ZI_C_SALES_CONTACTS
+ZI_C_MARKETING_CONTACTS                     (INTEGER) : ZI_C_MARKETING_CONTACTS : Number of marketing contacts in the company.. Sample value for ZI_C_MARKETING_CONTACTS
+ZI_C_FINANCE_CONTACTS                     (INTEGER) : ZI_C_FINANCE_CONTACTS : Number of finance contacts in the company.. Sample value for ZI_C_FINANCE_CONTACTS
+ZI_C_C_SUITE_CONTACTS                     (INTEGER) : ZI_C_C_SUITE_CONTACTS : Number of C-suite contacts in the company.. Sample value for ZI_C_C_SUITE_CONTACTS
+ZI_C_ENGINEERING_CONTACTS                     (INTEGER) : ZI_C_ENGINEERING_CONTACTS : Number of engineering contacts in the company.. Sample value for ZI_C_ENGINEERING_CONTACTS
+ZI_C_IT_CONTACTS                     (INTEGER) : ZI_C_IT_CONTACTS : Number of IT contacts in the company.. Sample value for ZI_C_IT_CONTACTS
+ZI_C_OPERATIONS_CONTACTS                     (INTEGER) : ZI_C_OPERATIONS_CONTACTS : Number of operations contacts in the company.. Sample value for ZI_C_OPERATIONS_CONTACTS
+ZI_C_LEGAL_CONTACTS                     (INTEGER) : ZI_C_LEGAL_CONTACTS : Number of legal contacts in the company.. Sample value for ZI_C_LEGAL_CONTACTS
+ZI_C_MEDICAL_CONTACTS                     (INTEGER) : ZI_C_MEDICAL_CONTACTS : Number of medical contacts in the company.. Sample value for ZI_C_MEDICAL_CONTACTS
+ZI_C_TECH_IDS                     (STRING) : ZI_C_TECH_IDS : Technology IDs associated with the company.. Sample value for ZI_C_TECH_IDS
+ZI_C_LATEST_FUNDING_AGE                     (STRING) : ZI_C_LATEST_FUNDING_AGE : Age of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_AGE
+ZI_C_NUM_OF_INVESTORS                     (STRING) : ZI_C_NUM_OF_INVESTORS : Number of investors in the company.. Sample value for ZI_C_NUM_OF_INVESTORS
+ZI_C_INVESTOR_NAMES                     (STRING) : ZI_C_INVESTOR_NAMES : Names of investors in the company.. Sample value for ZI_C_INVESTOR_NAMES
+ZI_C_FUNDING_STRENGTH                     (STRING) : ZI_C_FUNDING_STRENGTH : Funding strength of the company.. Sample value for ZI_C_FUNDING_STRENGTH
+ZI_C_FUNDING_TYPE                     (STRING) : ZI_C_FUNDING_TYPE : Type of funding received by the company.. Sample value for ZI_C_FUNDING_TYPE
+ZI_C_TOTAL_FUNDING_AMOUNT                     (STRING) : ZI_C_TOTAL_FUNDING_AMOUNT : Total funding amount received by the company.. Sample value for ZI_C_TOTAL_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_AMOUNT                     (STRING) : ZI_C_LATEST_FUNDING_AMOUNT : Latest funding amount received by the company.. Sample value for ZI_C_LATEST_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_DATE                     (STRING) : ZI_C_LATEST_FUNDING_DATE : Date of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_DATE
+ZI_C_NUM_FUNDING_ROUNDS                     (STRING) : ZI_C_NUM_FUNDING_ROUNDS : Number of funding rounds of the company.. Sample value for ZI_C_NUM_FUNDING_ROUNDS
+ZI_C_IS_FORTUNE_100                     (INTEGER) : ZI_C_IS_FORTUNE_100 : Flag indicating whether the company is in the Fortune 100 list.. Sample value for ZI_C_IS_FORTUNE_100
+ZI_C_IS_FORTUNE_500                     (INTEGER) : ZI_C_IS_FORTUNE_500 : Flag indicating whether the company is in the Fortune 500 list.. Sample value for ZI_C_IS_FORTUNE_500
+ZI_C_IS_S_AND_P_500                     (INTEGER) : ZI_C_IS_S_AND_P_500 : Flag indicating whether the company is in the S&P 500 list.. Sample value for ZI_C_IS_S_AND_P_500
+ZI_C_LAST_UPDATED_DATE                     (DATE) : ZI_C_LAST_UPDATED_DATE : Last updated date for the company information. Sample value for ZI_C_LAST_UPDATED_DATE
+ZI_C_RELEASE_DATE                     (INTEGER) : ZI_C_RELEASE_DATE : Release date of the company information. Sample value for ZI_C_RELEASE_DATE
+
+
+
+
+```
+
+**Instructions:**
+* Generate syntactically correct BigQuery SQL for the following question.
+* Use only relevant columns from the schema. DO NOT use columns not mentioned in this meta-data.
+* Use only relevant table name as provided and do not qualify tablename with backticks(`).
+* Validate column names against the schema to avoid errors.
+* Use a maximum of 10 columns.
+* Prioritize keywords that indicate calculations.
+* Use the following examples as guidelines to generate the new BigQuery SQL accordingly
+
+Question: What county has the greatest enrollment in CalFresh per capita?
+SQL : SELECT Vendor_Location  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location, COALESCE(SUM(SAFE_CAST(( SUBSTR (Total_Cost_Vouchers,2,  (INSTR (Total_Cost_Vouchers, ".") -2))  ) AS INT64)), 0) AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 FROM `cdii-poc.HHS_Program_Counts.calfresh-redemption-by-county-by-participant-category-data-2010-2018`  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018 WHERE (Total_Cost_Vouchers) <> '*' OR (Total_Cost_Vouchers) IS NULL GROUP BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location ORDER BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 DESC limit 1; 
+
+Question: Which county has the greatest proportion of CalWorks recipients co-enrolled in at least one additional program?
+SQL : SELECT Number AS county, COALESCE(SUM(SAFE_CAST( Person   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file` WHERE ((_2_programs ) <> '*1' AND (_2_programs ) <> '*2' AND (_2_programs ) <> '0' OR (_2_programs ) IS NULL) AND (((_3_programs ) <> '*1' AND (_3_programs ) <> '*2' AND (_3_programs ) <> '0' OR (_3_programs ) IS NULL) AND ((_4_programs ) <> '*1' AND (_4_programs ) <> '*2' AND (_4_programs ) <> '0' OR (_4_programs ) IS NULL)) AND (((_5__programs ) <> '*1' AND (_5__programs ) <> '*2' AND (_5__programs ) <> '0' OR (_5__programs ) IS NULL) AND (Level ) = 'County' AND (((Number ) <> 'County Total' OR (Number ) IS NULL) AND (Program ) = 'CalWorks')) GROUP BY county ORDER BY calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 DESC LIMIT 1; 
+
+Question: How have these race and ethnicity trends changed over time?
+SQL : SELECT fileyear  AS calhhs_dashboard_2015_2020_annual_data_file_fileyear, COALESCE(SUM(SAFE_CAST( White   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_whites_1, COALESCE(SUM(SAFE_CAST( Black   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_blacks_1, COALESCE(SUM(SAFE_CAST( Hispanic   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_hispanics_1, COALESCE(SUM(SAFE_CAST( Asian_PI   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_asian_1, COALESCE(SUM(SAFE_CAST( Native_American   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_native_american_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file`  AS calhhs_dashboard_2015_2020_annual_data_file WHERE (Program ) = 'CalWorks' GROUP BY fileyear ORDER BY fileyear; 
+
+
+    
+
+For this question what would be the most accurate BigQuery SQL query?
+Question: What is the total revenue for constuction industry?  
+
+Sql_query: 
+SELECT 
+    SUM(CAST(ZI_C_REVENUE AS INT64)) AS total_revenue
+FROM sl-test-project-363109.sl-test-project-363109.zoominfo.`zi_companies_with_most_marketing_professionals`
+WHERE 
+    ZI_C_INDUSTRY_PRIMARY = 'Construction';
+<<<<
+
+
+>>>>
+Model:text-bison 
+
+Question: What is the total revenue for constuction industry?                          
+
+Prompt:
+Only use the following tables meta-data:
+
+```
+
+Table Name : zi-companies-with-most-marketing-professionals
+
+Description: The table 'zi-companies-with-most-marketing-professionals' provides information about companies with a significant number of marketing professionals. Each row in the table represents a company, and the columns provide details about the company's name, industry, location, and the number of marketing professionals employed.
+
+Here's a breakdown of the data in the table:
+
+- **Company Name**: This column lists the names of the companies with a high concentration of marketing professionals.
+
+- **Industry**: This column specifies the industry sector in which each company operates. The industries represented in the table include technology, finance, healthcare, retail, and
+
+This table has the following columns : 
+ZI_C_LOCATION_ID                     (INTEGER) : ZI_C_LOCATION_ID : Unique identifier for the location of the company.. Sample value for ZI_C_LOCATION_ID
+ZI_C_COMPANY_ID                     (INTEGER) : ZI_C_COMPANY_ID : Unique identifier for the company.. Sample value for ZI_C_COMPANY_ID
+ZI_C_IS_HQ                     (INTEGER) : ZI_C_IS_HQ : Indicates whether the location is the headquarters of the company.. Sample value for ZI_C_IS_HQ
+ZI_ES_ECID                     (INTEGER) : ZI_ES_ECID : Unique identifier for the location in the external data source.. Sample value for ZI_ES_ECID
+ZI_ES_LOCATION_ID                     (STRING) : ZI_ES_LOCATION_ID : Location identifier in the external data source.. Sample value for ZI_ES_LOCATION_ID
+ZI_C_TIER_GRADE                     (STRING) : ZI_C_TIER_GRADE : Tier grade of the company.. Sample value for ZI_C_TIER_GRADE
+ZI_C_NAME                     (STRING) : ZI_C_NAME : Name of the company.. Sample value for ZI_C_NAME
+ZI_C_NAME_DISPLAY                     (STRING) : ZI_C_NAME_DISPLAY : Display name of the company.. Sample value for ZI_C_NAME_DISPLAY
+ZI_C_LEGAL_ENTITY_TYPE                     (STRING) : ZI_C_LEGAL_ENTITY_TYPE : Legal entity type of the company.. Sample value for ZI_C_LEGAL_ENTITY_TYPE
+ZI_C_URL                     (STRING) : ZI_C_URL : URL of the company.. Sample value for ZI_C_URL
+ZI_C_STREET                     (STRING) : ZI_C_STREET : Street address of the company.. Sample value for ZI_C_STREET
+ZI_C_STREET_2                     (STRING) : ZI_C_STREET_2 : Secondary street address of the company.. Sample value for ZI_C_STREET_2
+ZI_C_CITY                     (STRING) : ZI_C_CITY : City of the company.. Sample value for ZI_C_CITY
+ZI_C_STATE                     (STRING) : ZI_C_STATE : State of the company.. Sample value for ZI_C_STATE
+ZI_C_ZIP                     (INTEGER) : ZI_C_ZIP : ZIP code of the company.. Sample value for ZI_C_ZIP
+ZI_C_COUNTRY                     (STRING) : ZI_C_COUNTRY : Country of the company.. Sample value for ZI_C_COUNTRY
+ZI_C_CBSA_NAME                     (STRING) : ZI_C_CBSA_NAME : Core-Based Statistical Area (CBSA) name of the company.. Sample value for ZI_C_CBSA_NAME
+ZI_C_COUNTY                     (STRING) : ZI_C_COUNTY : County of the company.. Sample value for ZI_C_COUNTY
+ZI_C_LATITUDE                     (FLOAT) : ZI_C_LATITUDE : Latitude of the company location.. Sample value for ZI_C_LATITUDE
+ZI_C_LONGITUDE                     (FLOAT) : ZI_C_LONGITUDE : Longitude of the company location.. Sample value for ZI_C_LONGITUDE
+ZI_C_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_VERIFIED_ADDRESS : Flag indicating whether the address is verified.. Sample value for ZI_C_VERIFIED_ADDRESS
+ZI_C_EMPLOYEE_RANGE                     (STRING) : ZI_C_EMPLOYEE_RANGE : Range of employees in the company.. Sample value for ZI_C_EMPLOYEE_RANGE
+ZI_C_EMPLOYEES                     (INTEGER) : ZI_C_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_EMPLOYEES
+ZI_C_REVENUE_RANGE                     (STRING) : ZI_C_REVENUE_RANGE : Range of revenue in the company.. Sample value for ZI_C_REVENUE_RANGE
+ZI_C_REVENUE                     (INTEGER) : ZI_C_REVENUE : Revenue of the company.. Sample value for ZI_C_REVENUE
+ZI_C_PHONE                     (STRING) : ZI_C_PHONE : Phone number of the company.. Sample value for ZI_C_PHONE
+ZI_C_FAX                     (STRING) : ZI_C_FAX : Fax number of the company.. Sample value for ZI_C_FAX
+ZI_C_INDUSTRY_PRIMARY                     (STRING) : ZI_C_INDUSTRY_PRIMARY : Primary industry of the company.. Sample value for ZI_C_INDUSTRY_PRIMARY
+ZI_C_SUB_INDUSTRY_PRIMARY                     (STRING) : ZI_C_SUB_INDUSTRY_PRIMARY : Primary sub-industry of the company.. Sample value for ZI_C_SUB_INDUSTRY_PRIMARY
+ZI_C_INDUSTRIES                     (STRING) : ZI_C_INDUSTRIES : All industries associated with the company.. Sample value for ZI_C_INDUSTRIES
+ZI_C_SUB_INDUSTRIES                     (STRING) : ZI_C_SUB_INDUSTRIES : All sub-industries associated with the company.. Sample value for ZI_C_SUB_INDUSTRIES
+ZI_ES_INDUSTRY                     (STRING) : ZI_ES_INDUSTRY : Industry of the company according to the external data source.. Sample value for ZI_ES_INDUSTRY
+ZI_ES_INDUSTRIES_TOP3                     (STRING) : ZI_ES_INDUSTRIES_TOP3 : Top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3
+ZI_C_NAICS2                     (INTEGER) : ZI_C_NAICS2 : 2-digit NAICS code of the company.. Sample value for ZI_C_NAICS2
+ZI_C_NAICS4                     (INTEGER) : ZI_C_NAICS4 : 4-digit NAICS code of the company.. Sample value for ZI_C_NAICS4
+ZI_C_NAICS6                     (INTEGER) : ZI_C_NAICS6 : 6-digit NAICS code of the company.. Sample value for ZI_C_NAICS6
+ZI_C_NAICS_TOP3                     (STRING) : ZI_C_NAICS_TOP3 : Top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3
+ZI_C_SIC2                     (INTEGER) : ZI_C_SIC2 : 2-digit SIC code of the company.. Sample value for ZI_C_SIC2
+ZI_C_SIC3                     (INTEGER) : ZI_C_SIC3 : 3-digit SIC code of the company.. Sample value for ZI_C_SIC3
+ZI_C_SIC4                     (INTEGER) : ZI_C_SIC4 : 4-digit SIC code of the company.. Sample value for ZI_C_SIC4
+ZI_C_SIC_TOP3                     (STRING) : ZI_C_SIC_TOP3 : Top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3
+ZI_C_ESTIMATED_AGE                     (INTEGER) : ZI_C_ESTIMATED_AGE : Estimated age of the company.. Sample value for ZI_C_ESTIMATED_AGE
+ZI_C_YEAR_FOUNDED                     (INTEGER) : ZI_C_YEAR_FOUNDED : Year in which the company was founded.. Sample value for ZI_C_YEAR_FOUNDED
+ZI_C_IS_B2B                     (INTEGER) : ZI_C_IS_B2B : Flag indicating whether the company is business-to-business (B2B).. Sample value for ZI_C_IS_B2B
+ZI_C_IS_B2C                     (INTEGER) : ZI_C_IS_B2C : Flag indicating whether the company is business-to-consumer (B2C).. Sample value for ZI_C_IS_B2C
+ZI_ES_HQ_ECID                     (INTEGER) : ZI_ES_HQ_ECID : Unique identifier for the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_ECID
+ZI_ES_HQ_LOCATION_ID                     (STRING) : ZI_ES_HQ_LOCATION_ID : Location ID of the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_LOCATION_ID
+ZI_C_COMPANY_NAME                     (STRING) : ZI_C_COMPANY_NAME : Company name.. Sample value for ZI_C_COMPANY_NAME
+ZI_C_COMPANY_URL                     (STRING) : ZI_C_COMPANY_URL : Company URL.. Sample value for ZI_C_COMPANY_URL
+ZI_C_COMPANY_STREET                     (STRING) : ZI_C_COMPANY_STREET : Company street address.. Sample value for ZI_C_COMPANY_STREET
+ZI_C_COMPANY_STREET_2                     (STRING) : ZI_C_COMPANY_STREET_2 : Company secondary street address.. Sample value for ZI_C_COMPANY_STREET_2
+ZI_C_COMPANY_CITY                     (STRING) : ZI_C_COMPANY_CITY : Company city.. Sample value for ZI_C_COMPANY_CITY
+ZI_C_COMPANY_STATE                     (STRING) : ZI_C_COMPANY_STATE : Company state.. Sample value for ZI_C_COMPANY_STATE
+ZI_C_COMPANY_ZIP                     (INTEGER) : ZI_C_COMPANY_ZIP : Company ZIP code.. Sample value for ZI_C_COMPANY_ZIP
+ZI_C_COMPANY_COUNTRY                     (STRING) : ZI_C_COMPANY_COUNTRY : Company country.. Sample value for ZI_C_COMPANY_COUNTRY
+ZI_C_COMPANY_CBSA_NAME                     (STRING) : ZI_C_COMPANY_CBSA_NAME : Company Core-Based Statistical Area (CBSA) name.. Sample value for ZI_C_COMPANY_CBSA_NAME
+ZI_C_COMPANY_COUNTY                     (STRING) : ZI_C_COMPANY_COUNTY : Company county.. Sample value for ZI_C_COMPANY_COUNTY
+ZI_C_COMPANY_LATITUDE                     (FLOAT) : ZI_C_COMPANY_LATITUDE : Company latitude.. Sample value for ZI_C_COMPANY_LATITUDE
+ZI_C_COMPANY_LONGITUDE                     (FLOAT) : ZI_C_COMPANY_LONGITUDE : Company longitude.. Sample value for ZI_C_COMPANY_LONGITUDE
+ZI_C_COMPANY_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_COMPANY_VERIFIED_ADDRESS : Flag indicating whether the company address is verified.. Sample value for ZI_C_COMPANY_VERIFIED_ADDRESS
+ZI_C_COMPANY_EMPLOYEE_RANGE                     (STRING) : ZI_C_COMPANY_EMPLOYEE_RANGE : Company employee range.. Sample value for ZI_C_COMPANY_EMPLOYEE_RANGE
+ZI_C_COMPANY_EMPLOYEES                     (INTEGER) : ZI_C_COMPANY_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_COMPANY_EMPLOYEES
+ZI_C_COMPANY_REVENUE_RANGE                     (STRING) : ZI_C_COMPANY_REVENUE_RANGE : Company revenue range.. Sample value for ZI_C_COMPANY_REVENUE_RANGE
+ZI_C_COMPANY_REVENUE                     (INTEGER) : ZI_C_COMPANY_REVENUE : Company revenue.. Sample value for ZI_C_COMPANY_REVENUE
+ZI_C_COMPANY_PHONE                     (STRING) : ZI_C_COMPANY_PHONE : Company phone number.. Sample value for ZI_C_COMPANY_PHONE
+ZI_C_COMPANY_FAX                     (STRING) : ZI_C_COMPANY_FAX : Company fax number.. Sample value for ZI_C_COMPANY_FAX
+ZI_C_LINKEDIN_URL                     (STRING) : ZI_C_LINKEDIN_URL : LinkedIn URL of the company.. Sample value for ZI_C_LINKEDIN_URL
+ZI_C_FACEBOOK_URL                     (STRING) : ZI_C_FACEBOOK_URL : Facebook URL of the company.. Sample value for ZI_C_FACEBOOK_URL
+ZI_C_TWITTER_URL                     (STRING) : ZI_C_TWITTER_URL : Twitter URL of the company.. Sample value for ZI_C_TWITTER_URL
+ZI_C_YELP_URL                     (STRING) : ZI_C_YELP_URL : Yelp URL of the company.. Sample value for ZI_C_YELP_URL
+ZI_C_ALEXA_RANK                     (INTEGER) : ZI_C_ALEXA_RANK : Alexa rank of the company.. Sample value for ZI_C_ALEXA_RANK
+ZI_C_KEYWORDS                     (STRING) : ZI_C_KEYWORDS : Keywords associated with the company.. Sample value for ZI_C_KEYWORDS
+ZI_C_TOP_KEYWORDS                     (STRING) : ZI_C_TOP_KEYWORDS : Top keywords associated with the company.. Sample value for ZI_C_TOP_KEYWORDS
+ZI_C_NUM_KEYWORDS                     (INTEGER) : ZI_C_NUM_KEYWORDS : Number of keywords associated with the company.. Sample value for ZI_C_NUM_KEYWORDS
+ZI_C_EMPLOYEE_GROWTH_1YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_1YR : Employee growth rate of the company in the last 1 year.. Sample value for ZI_C_EMPLOYEE_GROWTH_1YR
+ZI_C_EMPLOYEE_GROWTH_2YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_2YR : Employee growth rate of the company in the last 2 years.. Sample value for ZI_C_EMPLOYEE_GROWTH_2YR
+ZI_ES_GROWTH                     (STRING) : ZI_ES_GROWTH : Growth indicator of the company according to the external data source.. Sample value for ZI_ES_GROWTH
+ZI_ES_EMPLOYEE_GROWTH                     (STRING) : ZI_ES_EMPLOYEE_GROWTH : Employee growth rate of the company according to the external data source.. Sample value for ZI_ES_EMPLOYEE_GROWTH
+ZI_ES_REVENUE_GROWTH                     (STRING) : ZI_ES_REVENUE_GROWTH : Revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_REVENUE_GROWTH
+ZI_ES_PERCENT_EMPLOYEE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_EMPLOYEE_GROWTH : Percentage employee growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_EMPLOYEE_GROWTH
+ZI_ES_PERCENT_REVENUE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_REVENUE_GROWTH : Percentage revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_REVENUE_GROWTH
+ZI_C_NAME_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_NAME_CONFIDENCE_SCORE : Confidence score for the company name.. Sample value for ZI_C_NAME_CONFIDENCE_SCORE
+ZI_C_URL_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_URL_CONFIDENCE_SCORE : Confidence score for the company URL.. Sample value for ZI_C_URL_CONFIDENCE_SCORE
+ZI_C_ADDRESS_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_ADDRESS_CONFIDENCE_SCORE : Confidence score for the company address.. Sample value for ZI_C_ADDRESS_CONFIDENCE_SCORE
+ZI_C_PHONE_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_PHONE_CONFIDENCE_SCORE : Confidence score for the company phone number.. Sample value for ZI_C_PHONE_CONFIDENCE_SCORE
+ZI_C_EMPLOYEES_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_EMPLOYEES_CONFIDENCE_SCORE : Confidence score for the company employee count.. Sample value for ZI_C_EMPLOYEES_CONFIDENCE_SCORE
+ZI_C_REVENUE_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_REVENUE_CONFIDENCE_SCORE : Confidence score for the company revenue.. Sample value for ZI_C_REVENUE_CONFIDENCE_SCORE
+ZI_ES_INDUSTRY_CONFIDENCE_SCORE                     (INTEGER) : ZI_ES_INDUSTRY_CONFIDENCE_SCORE : Confidence score for the company industry according to the external data source.. Sample value for ZI_ES_INDUSTRY_CONFIDENCE_SCORE
+ZI_C_NAICS_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_NAICS_CONFIDENCE_SCORE : Confidence score for the company NAICS codes.. Sample value for ZI_C_NAICS_CONFIDENCE_SCORE
+ZI_C_SIC_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_SIC_CONFIDENCE_SCORE : Confidence score for the company SIC codes.. Sample value for ZI_C_SIC_CONFIDENCE_SCORE
+ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES
+ZI_C_NAICS_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_NAICS_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3_CONFIDENCE_SCORES
+ZI_C_SIC_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_SIC_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3_CONFIDENCE_SCORES
+ZI_C_IDS_MERGED                     (STRING) : ZI_C_IDS_MERGED : Merged identifiers for the company.. Sample value for ZI_C_IDS_MERGED
+ZI_C_NAMES_OTHER                     (STRING) : ZI_C_NAMES_OTHER : Other names for the company.. Sample value for ZI_C_NAMES_OTHER
+ZI_C_URL_STATUS                     (STRING) : ZI_C_URL_STATUS : Status of the company URL.. Sample value for ZI_C_URL_STATUS
+ZI_C_URLS_ALT                     (STRING) : ZI_C_URLS_ALT : Alternate URLs for the company.. Sample value for ZI_C_URLS_ALT
+ZI_C_URL_LAST_UPDATED                     (DATE) : ZI_C_URL_LAST_UPDATED : Last updated date for the company URL.. Sample value for ZI_C_URL_LAST_UPDATED
+ZI_C_INACTIVE_FLAG                     (INTEGER) : ZI_C_INACTIVE_FLAG : Flag indicating whether the company is inactive.. Sample value for ZI_C_INACTIVE_FLAG
+ZI_C_EIN                     (INTEGER) : ZI_C_EIN : Employer Identification Number (EIN) of the company.. Sample value for ZI_C_EIN
+ZI_C_IS_SMALL_BUSINESS                     (INTEGER) : ZI_C_IS_SMALL_BUSINESS : Flag indicating whether the company is a small business.. Sample value for ZI_C_IS_SMALL_BUSINESS
+ZI_C_IS_PUBLIC                     (INTEGER) : ZI_C_IS_PUBLIC : Flag indicating whether the company is public.. Sample value for ZI_C_IS_PUBLIC
+ZI_C_TICKER                     (STRING) : ZI_C_TICKER : Ticker symbol of the company.. Sample value for ZI_C_TICKER
+ZI_C_TICKERS_ALT                     (STRING) : ZI_C_TICKERS_ALT : Alternate ticker symbols of the company.. Sample value for ZI_C_TICKERS_ALT
+ZI_C_HAS_MOBILE_APP                     (INTEGER) : ZI_C_HAS_MOBILE_APP : Flag indicating whether the company has a mobile app.. Sample value for ZI_C_HAS_MOBILE_APP
+ZI_C_CURRENCY_CODE                     (STRING) : ZI_C_CURRENCY_CODE : Currency code of the company.. Sample value for ZI_C_CURRENCY_CODE
+ZI_C_NUM_LOCATIONS                     (INTEGER) : ZI_C_NUM_LOCATIONS : Number of locations of the company.. Sample value for ZI_C_NUM_LOCATIONS
+ZI_C_HR_CONTACTS                     (INTEGER) : ZI_C_HR_CONTACTS : Number of HR contacts in the company.. Sample value for ZI_C_HR_CONTACTS
+ZI_C_SALES_CONTACTS                     (INTEGER) : ZI_C_SALES_CONTACTS : Number of sales contacts in the company.. Sample value for ZI_C_SALES_CONTACTS
+ZI_C_MARKETING_CONTACTS                     (INTEGER) : ZI_C_MARKETING_CONTACTS : Number of marketing contacts in the company.. Sample value for ZI_C_MARKETING_CONTACTS
+ZI_C_FINANCE_CONTACTS                     (INTEGER) : ZI_C_FINANCE_CONTACTS : Number of finance contacts in the company.. Sample value for ZI_C_FINANCE_CONTACTS
+ZI_C_C_SUITE_CONTACTS                     (INTEGER) : ZI_C_C_SUITE_CONTACTS : Number of C-suite contacts in the company.. Sample value for ZI_C_C_SUITE_CONTACTS
+ZI_C_ENGINEERING_CONTACTS                     (INTEGER) : ZI_C_ENGINEERING_CONTACTS : Number of engineering contacts in the company.. Sample value for ZI_C_ENGINEERING_CONTACTS
+ZI_C_IT_CONTACTS                     (INTEGER) : ZI_C_IT_CONTACTS : Number of IT contacts in the company.. Sample value for ZI_C_IT_CONTACTS
+ZI_C_OPERATIONS_CONTACTS                     (INTEGER) : ZI_C_OPERATIONS_CONTACTS : Number of operations contacts in the company.. Sample value for ZI_C_OPERATIONS_CONTACTS
+ZI_C_LEGAL_CONTACTS                     (INTEGER) : ZI_C_LEGAL_CONTACTS : Number of legal contacts in the company.. Sample value for ZI_C_LEGAL_CONTACTS
+ZI_C_MEDICAL_CONTACTS                     (INTEGER) : ZI_C_MEDICAL_CONTACTS : Number of medical contacts in the company.. Sample value for ZI_C_MEDICAL_CONTACTS
+ZI_C_TECH_IDS                     (STRING) : ZI_C_TECH_IDS : Technology IDs associated with the company.. Sample value for ZI_C_TECH_IDS
+ZI_C_LATEST_FUNDING_AGE                     (STRING) : ZI_C_LATEST_FUNDING_AGE : Age of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_AGE
+ZI_C_NUM_OF_INVESTORS                     (STRING) : ZI_C_NUM_OF_INVESTORS : Number of investors in the company.. Sample value for ZI_C_NUM_OF_INVESTORS
+ZI_C_INVESTOR_NAMES                     (STRING) : ZI_C_INVESTOR_NAMES : Names of investors in the company.. Sample value for ZI_C_INVESTOR_NAMES
+ZI_C_FUNDING_STRENGTH                     (STRING) : ZI_C_FUNDING_STRENGTH : Funding strength of the company.. Sample value for ZI_C_FUNDING_STRENGTH
+ZI_C_FUNDING_TYPE                     (STRING) : ZI_C_FUNDING_TYPE : Type of funding received by the company.. Sample value for ZI_C_FUNDING_TYPE
+ZI_C_TOTAL_FUNDING_AMOUNT                     (STRING) : ZI_C_TOTAL_FUNDING_AMOUNT : Total funding amount received by the company.. Sample value for ZI_C_TOTAL_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_AMOUNT                     (STRING) : ZI_C_LATEST_FUNDING_AMOUNT : Latest funding amount received by the company.. Sample value for ZI_C_LATEST_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_DATE                     (STRING) : ZI_C_LATEST_FUNDING_DATE : Date of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_DATE
+ZI_C_NUM_FUNDING_ROUNDS                     (STRING) : ZI_C_NUM_FUNDING_ROUNDS : Number of funding rounds of the company.. Sample value for ZI_C_NUM_FUNDING_ROUNDS
+ZI_C_IS_FORTUNE_100                     (INTEGER) : ZI_C_IS_FORTUNE_100 : Flag indicating whether the company is in the Fortune 100 list.. Sample value for ZI_C_IS_FORTUNE_100
+ZI_C_IS_FORTUNE_500                     (INTEGER) : ZI_C_IS_FORTUNE_500 : Flag indicating whether the company is in the Fortune 500 list.. Sample value for ZI_C_IS_FORTUNE_500
+ZI_C_IS_S_AND_P_500                     (INTEGER) : ZI_C_IS_S_AND_P_500 : Flag indicating whether the company is in the S&P 500 list.. Sample value for ZI_C_IS_S_AND_P_500
+ZI_C_LAST_UPDATED_DATE                     (DATE) : ZI_C_LAST_UPDATED_DATE : Last updated date for the company information. Sample value for ZI_C_LAST_UPDATED_DATE
+ZI_C_RELEASE_DATE                     (INTEGER) : ZI_C_RELEASE_DATE : Release date of the company information. Sample value for ZI_C_RELEASE_DATE
+
+
+
+
+```
+
+**Instructions:**
+* Generate syntactically correct BigQuery SQL for the following question.
+* Use only relevant columns from the schema. DO NOT use columns not mentioned in this meta-data.
+* Use only relevant table name as provided and do not qualify tablename with backticks(`).
+* Validate column names against the schema to avoid errors.
+* Use a maximum of 10 columns.
+* Prioritize keywords that indicate calculations.
+* Use the following examples as guidelines to generate the new BigQuery SQL accordingly
+
+Question: What county has the greatest enrollment in CalFresh per capita?
+SQL : SELECT Vendor_Location  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location, COALESCE(SUM(SAFE_CAST(( SUBSTR (Total_Cost_Vouchers,2,  (INSTR (Total_Cost_Vouchers, ".") -2))  ) AS INT64)), 0) AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 FROM `cdii-poc.HHS_Program_Counts.calfresh-redemption-by-county-by-participant-category-data-2010-2018`  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018 WHERE (Total_Cost_Vouchers) <> '*' OR (Total_Cost_Vouchers) IS NULL GROUP BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location ORDER BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 DESC limit 1; 
+
+Question: Which county has the greatest proportion of CalWorks recipients co-enrolled in at least one additional program?
+SQL : SELECT Number AS county, COALESCE(SUM(SAFE_CAST( Person   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file` WHERE ((_2_programs ) <> '*1' AND (_2_programs ) <> '*2' AND (_2_programs ) <> '0' OR (_2_programs ) IS NULL) AND (((_3_programs ) <> '*1' AND (_3_programs ) <> '*2' AND (_3_programs ) <> '0' OR (_3_programs ) IS NULL) AND ((_4_programs ) <> '*1' AND (_4_programs ) <> '*2' AND (_4_programs ) <> '0' OR (_4_programs ) IS NULL)) AND (((_5__programs ) <> '*1' AND (_5__programs ) <> '*2' AND (_5__programs ) <> '0' OR (_5__programs ) IS NULL) AND (Level ) = 'County' AND (((Number ) <> 'County Total' OR (Number ) IS NULL) AND (Program ) = 'CalWorks')) GROUP BY county ORDER BY calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 DESC LIMIT 1; 
+
+Question: How have these race and ethnicity trends changed over time?
+SQL : SELECT fileyear  AS calhhs_dashboard_2015_2020_annual_data_file_fileyear, COALESCE(SUM(SAFE_CAST( White   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_whites_1, COALESCE(SUM(SAFE_CAST( Black   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_blacks_1, COALESCE(SUM(SAFE_CAST( Hispanic   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_hispanics_1, COALESCE(SUM(SAFE_CAST( Asian_PI   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_asian_1, COALESCE(SUM(SAFE_CAST( Native_American   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_native_american_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file`  AS calhhs_dashboard_2015_2020_annual_data_file WHERE (Program ) = 'CalWorks' GROUP BY fileyear ORDER BY fileyear; 
+
+
+    
+
+For this question what would be the most accurate BigQuery SQL query?
+Question: What is the total revenue for constuction industry?  
+
+Sql_query: 
+SELECT 
+    SUM(CAST(ZI_C_REVENUE AS INT64)) AS total_revenue
+FROM sl-test-project-363109.sl-test-project-363109.zoominfo.`zi_companies_with_most_marketing_professionals`
+WHERE 
+    ZI_C_INDUSTRY_PRIMARY = 'Construction';
+<<<<
+
+
+>>>>
+Model:text-bison 
+
+Question: What is the total revenue for constuction industry?                          
+
+Prompt:
+Only use the following tables meta-data:
+
+```
+
+Table Name : zi-companies-with-most-marketing-professionals
+
+Description: The table 'zi-companies-with-most-marketing-professionals' provides information about companies with a significant number of marketing professionals. Each row in the table represents a company, and the columns provide details about the company's name, industry, location, and the number of marketing professionals employed.
+
+Here's a breakdown of the data in the table:
+
+- **Company Name**: This column lists the names of the companies with a high concentration of marketing professionals.
+
+- **Industry**: This column specifies the industry sector in which each company operates. The industries represented in the table include technology, finance, healthcare, retail, and
+
+This table has the following columns : 
+ZI_C_LOCATION_ID                     (INTEGER) : ZI_C_LOCATION_ID : Unique identifier for the location of the company.. Sample value for ZI_C_LOCATION_ID
+ZI_C_COMPANY_ID                     (INTEGER) : ZI_C_COMPANY_ID : Unique identifier for the company.. Sample value for ZI_C_COMPANY_ID
+ZI_C_IS_HQ                     (INTEGER) : ZI_C_IS_HQ : Indicates whether the location is the headquarters of the company.. Sample value for ZI_C_IS_HQ
+ZI_ES_ECID                     (INTEGER) : ZI_ES_ECID : Unique identifier for the location in the external data source.. Sample value for ZI_ES_ECID
+ZI_ES_LOCATION_ID                     (STRING) : ZI_ES_LOCATION_ID : Location identifier in the external data source.. Sample value for ZI_ES_LOCATION_ID
+ZI_C_TIER_GRADE                     (STRING) : ZI_C_TIER_GRADE : Tier grade of the company.. Sample value for ZI_C_TIER_GRADE
+ZI_C_NAME                     (STRING) : ZI_C_NAME : Name of the company.. Sample value for ZI_C_NAME
+ZI_C_NAME_DISPLAY                     (STRING) : ZI_C_NAME_DISPLAY : Display name of the company.. Sample value for ZI_C_NAME_DISPLAY
+ZI_C_LEGAL_ENTITY_TYPE                     (STRING) : ZI_C_LEGAL_ENTITY_TYPE : Legal entity type of the company.. Sample value for ZI_C_LEGAL_ENTITY_TYPE
+ZI_C_URL                     (STRING) : ZI_C_URL : URL of the company.. Sample value for ZI_C_URL
+ZI_C_STREET                     (STRING) : ZI_C_STREET : Street address of the company.. Sample value for ZI_C_STREET
+ZI_C_STREET_2                     (STRING) : ZI_C_STREET_2 : Secondary street address of the company.. Sample value for ZI_C_STREET_2
+ZI_C_CITY                     (STRING) : ZI_C_CITY : City of the company.. Sample value for ZI_C_CITY
+ZI_C_STATE                     (STRING) : ZI_C_STATE : State of the company.. Sample value for ZI_C_STATE
+ZI_C_ZIP                     (INTEGER) : ZI_C_ZIP : ZIP code of the company.. Sample value for ZI_C_ZIP
+ZI_C_COUNTRY                     (STRING) : ZI_C_COUNTRY : Country of the company.. Sample value for ZI_C_COUNTRY
+ZI_C_CBSA_NAME                     (STRING) : ZI_C_CBSA_NAME : Core-Based Statistical Area (CBSA) name of the company.. Sample value for ZI_C_CBSA_NAME
+ZI_C_COUNTY                     (STRING) : ZI_C_COUNTY : County of the company.. Sample value for ZI_C_COUNTY
+ZI_C_LATITUDE                     (FLOAT) : ZI_C_LATITUDE : Latitude of the company location.. Sample value for ZI_C_LATITUDE
+ZI_C_LONGITUDE                     (FLOAT) : ZI_C_LONGITUDE : Longitude of the company location.. Sample value for ZI_C_LONGITUDE
+ZI_C_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_VERIFIED_ADDRESS : Flag indicating whether the address is verified.. Sample value for ZI_C_VERIFIED_ADDRESS
+ZI_C_EMPLOYEE_RANGE                     (STRING) : ZI_C_EMPLOYEE_RANGE : Range of employees in the company.. Sample value for ZI_C_EMPLOYEE_RANGE
+ZI_C_EMPLOYEES                     (INTEGER) : ZI_C_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_EMPLOYEES
+ZI_C_REVENUE_RANGE                     (STRING) : ZI_C_REVENUE_RANGE : Range of revenue in the company.. Sample value for ZI_C_REVENUE_RANGE
+ZI_C_REVENUE                     (INTEGER) : ZI_C_REVENUE : Revenue of the company.. Sample value for ZI_C_REVENUE
+ZI_C_PHONE                     (STRING) : ZI_C_PHONE : Phone number of the company.. Sample value for ZI_C_PHONE
+ZI_C_FAX                     (STRING) : ZI_C_FAX : Fax number of the company.. Sample value for ZI_C_FAX
+ZI_C_INDUSTRY_PRIMARY                     (STRING) : ZI_C_INDUSTRY_PRIMARY : Primary industry of the company.. Sample value for ZI_C_INDUSTRY_PRIMARY
+ZI_C_SUB_INDUSTRY_PRIMARY                     (STRING) : ZI_C_SUB_INDUSTRY_PRIMARY : Primary sub-industry of the company.. Sample value for ZI_C_SUB_INDUSTRY_PRIMARY
+ZI_C_INDUSTRIES                     (STRING) : ZI_C_INDUSTRIES : All industries associated with the company.. Sample value for ZI_C_INDUSTRIES
+ZI_C_SUB_INDUSTRIES                     (STRING) : ZI_C_SUB_INDUSTRIES : All sub-industries associated with the company.. Sample value for ZI_C_SUB_INDUSTRIES
+ZI_ES_INDUSTRY                     (STRING) : ZI_ES_INDUSTRY : Industry of the company according to the external data source.. Sample value for ZI_ES_INDUSTRY
+ZI_ES_INDUSTRIES_TOP3                     (STRING) : ZI_ES_INDUSTRIES_TOP3 : Top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3
+ZI_C_NAICS2                     (INTEGER) : ZI_C_NAICS2 : 2-digit NAICS code of the company.. Sample value for ZI_C_NAICS2
+ZI_C_NAICS4                     (INTEGER) : ZI_C_NAICS4 : 4-digit NAICS code of the company.. Sample value for ZI_C_NAICS4
+ZI_C_NAICS6                     (INTEGER) : ZI_C_NAICS6 : 6-digit NAICS code of the company.. Sample value for ZI_C_NAICS6
+ZI_C_NAICS_TOP3                     (STRING) : ZI_C_NAICS_TOP3 : Top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3
+ZI_C_SIC2                     (INTEGER) : ZI_C_SIC2 : 2-digit SIC code of the company.. Sample value for ZI_C_SIC2
+ZI_C_SIC3                     (INTEGER) : ZI_C_SIC3 : 3-digit SIC code of the company.. Sample value for ZI_C_SIC3
+ZI_C_SIC4                     (INTEGER) : ZI_C_SIC4 : 4-digit SIC code of the company.. Sample value for ZI_C_SIC4
+ZI_C_SIC_TOP3                     (STRING) : ZI_C_SIC_TOP3 : Top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3
+ZI_C_ESTIMATED_AGE                     (INTEGER) : ZI_C_ESTIMATED_AGE : Estimated age of the company.. Sample value for ZI_C_ESTIMATED_AGE
+ZI_C_YEAR_FOUNDED                     (INTEGER) : ZI_C_YEAR_FOUNDED : Year in which the company was founded.. Sample value for ZI_C_YEAR_FOUNDED
+ZI_C_IS_B2B                     (INTEGER) : ZI_C_IS_B2B : Flag indicating whether the company is business-to-business (B2B).. Sample value for ZI_C_IS_B2B
+ZI_C_IS_B2C                     (INTEGER) : ZI_C_IS_B2C : Flag indicating whether the company is business-to-consumer (B2C).. Sample value for ZI_C_IS_B2C
+ZI_ES_HQ_ECID                     (INTEGER) : ZI_ES_HQ_ECID : Unique identifier for the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_ECID
+ZI_ES_HQ_LOCATION_ID                     (STRING) : ZI_ES_HQ_LOCATION_ID : Location ID of the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_LOCATION_ID
+ZI_C_COMPANY_NAME                     (STRING) : ZI_C_COMPANY_NAME : Company name.. Sample value for ZI_C_COMPANY_NAME
+ZI_C_COMPANY_URL                     (STRING) : ZI_C_COMPANY_URL : Company URL.. Sample value for ZI_C_COMPANY_URL
+ZI_C_COMPANY_STREET                     (STRING) : ZI_C_COMPANY_STREET : Company street address.. Sample value for ZI_C_COMPANY_STREET
+ZI_C_COMPANY_STREET_2                     (STRING) : ZI_C_COMPANY_STREET_2 : Company secondary street address.. Sample value for ZI_C_COMPANY_STREET_2
+ZI_C_COMPANY_CITY                     (STRING) : ZI_C_COMPANY_CITY : Company city.. Sample value for ZI_C_COMPANY_CITY
+ZI_C_COMPANY_STATE                     (STRING) : ZI_C_COMPANY_STATE : Company state.. Sample value for ZI_C_COMPANY_STATE
+ZI_C_COMPANY_ZIP                     (INTEGER) : ZI_C_COMPANY_ZIP : Company ZIP code.. Sample value for ZI_C_COMPANY_ZIP
+ZI_C_COMPANY_COUNTRY                     (STRING) : ZI_C_COMPANY_COUNTRY : Company country.. Sample value for ZI_C_COMPANY_COUNTRY
+ZI_C_COMPANY_CBSA_NAME                     (STRING) : ZI_C_COMPANY_CBSA_NAME : Company Core-Based Statistical Area (CBSA) name.. Sample value for ZI_C_COMPANY_CBSA_NAME
+ZI_C_COMPANY_COUNTY                     (STRING) : ZI_C_COMPANY_COUNTY : Company county.. Sample value for ZI_C_COMPANY_COUNTY
+ZI_C_COMPANY_LATITUDE                     (FLOAT) : ZI_C_COMPANY_LATITUDE : Company latitude.. Sample value for ZI_C_COMPANY_LATITUDE
+ZI_C_COMPANY_LONGITUDE                     (FLOAT) : ZI_C_COMPANY_LONGITUDE : Company longitude.. Sample value for ZI_C_COMPANY_LONGITUDE
+ZI_C_COMPANY_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_COMPANY_VERIFIED_ADDRESS : Flag indicating whether the company address is verified.. Sample value for ZI_C_COMPANY_VERIFIED_ADDRESS
+ZI_C_COMPANY_EMPLOYEE_RANGE                     (STRING) : ZI_C_COMPANY_EMPLOYEE_RANGE : Company employee range.. Sample value for ZI_C_COMPANY_EMPLOYEE_RANGE
+ZI_C_COMPANY_EMPLOYEES                     (INTEGER) : ZI_C_COMPANY_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_COMPANY_EMPLOYEES
+ZI_C_COMPANY_REVENUE_RANGE                     (STRING) : ZI_C_COMPANY_REVENUE_RANGE : Company revenue range.. Sample value for ZI_C_COMPANY_REVENUE_RANGE
+ZI_C_COMPANY_REVENUE                     (INTEGER) : ZI_C_COMPANY_REVENUE : Company revenue.. Sample value for ZI_C_COMPANY_REVENUE
+ZI_C_COMPANY_PHONE                     (STRING) : ZI_C_COMPANY_PHONE : Company phone number.. Sample value for ZI_C_COMPANY_PHONE
+ZI_C_COMPANY_FAX                     (STRING) : ZI_C_COMPANY_FAX : Company fax number.. Sample value for ZI_C_COMPANY_FAX
+ZI_C_LINKEDIN_URL                     (STRING) : ZI_C_LINKEDIN_URL : LinkedIn URL of the company.. Sample value for ZI_C_LINKEDIN_URL
+ZI_C_FACEBOOK_URL                     (STRING) : ZI_C_FACEBOOK_URL : Facebook URL of the company.. Sample value for ZI_C_FACEBOOK_URL
+ZI_C_TWITTER_URL                     (STRING) : ZI_C_TWITTER_URL : Twitter URL of the company.. Sample value for ZI_C_TWITTER_URL
+ZI_C_YELP_URL                     (STRING) : ZI_C_YELP_URL : Yelp URL of the company.. Sample value for ZI_C_YELP_URL
+ZI_C_ALEXA_RANK                     (INTEGER) : ZI_C_ALEXA_RANK : Alexa rank of the company.. Sample value for ZI_C_ALEXA_RANK
+ZI_C_KEYWORDS                     (STRING) : ZI_C_KEYWORDS : Keywords associated with the company.. Sample value for ZI_C_KEYWORDS
+ZI_C_TOP_KEYWORDS                     (STRING) : ZI_C_TOP_KEYWORDS : Top keywords associated with the company.. Sample value for ZI_C_TOP_KEYWORDS
+ZI_C_NUM_KEYWORDS                     (INTEGER) : ZI_C_NUM_KEYWORDS : Number of keywords associated with the company.. Sample value for ZI_C_NUM_KEYWORDS
+ZI_C_EMPLOYEE_GROWTH_1YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_1YR : Employee growth rate of the company in the last 1 year.. Sample value for ZI_C_EMPLOYEE_GROWTH_1YR
+ZI_C_EMPLOYEE_GROWTH_2YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_2YR : Employee growth rate of the company in the last 2 years.. Sample value for ZI_C_EMPLOYEE_GROWTH_2YR
+ZI_ES_GROWTH                     (STRING) : ZI_ES_GROWTH : Growth indicator of the company according to the external data source.. Sample value for ZI_ES_GROWTH
+ZI_ES_EMPLOYEE_GROWTH                     (STRING) : ZI_ES_EMPLOYEE_GROWTH : Employee growth rate of the company according to the external data source.. Sample value for ZI_ES_EMPLOYEE_GROWTH
+ZI_ES_REVENUE_GROWTH                     (STRING) : ZI_ES_REVENUE_GROWTH : Revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_REVENUE_GROWTH
+ZI_ES_PERCENT_EMPLOYEE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_EMPLOYEE_GROWTH : Percentage employee growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_EMPLOYEE_GROWTH
+ZI_ES_PERCENT_REVENUE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_REVENUE_GROWTH : Percentage revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_REVENUE_GROWTH
+ZI_C_NAME_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_NAME_CONFIDENCE_SCORE : Confidence score for the company name.. Sample value for ZI_C_NAME_CONFIDENCE_SCORE
+ZI_C_URL_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_URL_CONFIDENCE_SCORE : Confidence score for the company URL.. Sample value for ZI_C_URL_CONFIDENCE_SCORE
+ZI_C_ADDRESS_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_ADDRESS_CONFIDENCE_SCORE : Confidence score for the company address.. Sample value for ZI_C_ADDRESS_CONFIDENCE_SCORE
+ZI_C_PHONE_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_PHONE_CONFIDENCE_SCORE : Confidence score for the company phone number.. Sample value for ZI_C_PHONE_CONFIDENCE_SCORE
+ZI_C_EMPLOYEES_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_EMPLOYEES_CONFIDENCE_SCORE : Confidence score for the company employee count.. Sample value for ZI_C_EMPLOYEES_CONFIDENCE_SCORE
+ZI_C_REVENUE_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_REVENUE_CONFIDENCE_SCORE : Confidence score for the company revenue.. Sample value for ZI_C_REVENUE_CONFIDENCE_SCORE
+ZI_ES_INDUSTRY_CONFIDENCE_SCORE                     (INTEGER) : ZI_ES_INDUSTRY_CONFIDENCE_SCORE : Confidence score for the company industry according to the external data source.. Sample value for ZI_ES_INDUSTRY_CONFIDENCE_SCORE
+ZI_C_NAICS_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_NAICS_CONFIDENCE_SCORE : Confidence score for the company NAICS codes.. Sample value for ZI_C_NAICS_CONFIDENCE_SCORE
+ZI_C_SIC_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_SIC_CONFIDENCE_SCORE : Confidence score for the company SIC codes.. Sample value for ZI_C_SIC_CONFIDENCE_SCORE
+ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES
+ZI_C_NAICS_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_NAICS_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3_CONFIDENCE_SCORES
+ZI_C_SIC_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_SIC_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3_CONFIDENCE_SCORES
+ZI_C_IDS_MERGED                     (STRING) : ZI_C_IDS_MERGED : Merged identifiers for the company.. Sample value for ZI_C_IDS_MERGED
+ZI_C_NAMES_OTHER                     (STRING) : ZI_C_NAMES_OTHER : Other names for the company.. Sample value for ZI_C_NAMES_OTHER
+ZI_C_URL_STATUS                     (STRING) : ZI_C_URL_STATUS : Status of the company URL.. Sample value for ZI_C_URL_STATUS
+ZI_C_URLS_ALT                     (STRING) : ZI_C_URLS_ALT : Alternate URLs for the company.. Sample value for ZI_C_URLS_ALT
+ZI_C_URL_LAST_UPDATED                     (DATE) : ZI_C_URL_LAST_UPDATED : Last updated date for the company URL.. Sample value for ZI_C_URL_LAST_UPDATED
+ZI_C_INACTIVE_FLAG                     (INTEGER) : ZI_C_INACTIVE_FLAG : Flag indicating whether the company is inactive.. Sample value for ZI_C_INACTIVE_FLAG
+ZI_C_EIN                     (INTEGER) : ZI_C_EIN : Employer Identification Number (EIN) of the company.. Sample value for ZI_C_EIN
+ZI_C_IS_SMALL_BUSINESS                     (INTEGER) : ZI_C_IS_SMALL_BUSINESS : Flag indicating whether the company is a small business.. Sample value for ZI_C_IS_SMALL_BUSINESS
+ZI_C_IS_PUBLIC                     (INTEGER) : ZI_C_IS_PUBLIC : Flag indicating whether the company is public.. Sample value for ZI_C_IS_PUBLIC
+ZI_C_TICKER                     (STRING) : ZI_C_TICKER : Ticker symbol of the company.. Sample value for ZI_C_TICKER
+ZI_C_TICKERS_ALT                     (STRING) : ZI_C_TICKERS_ALT : Alternate ticker symbols of the company.. Sample value for ZI_C_TICKERS_ALT
+ZI_C_HAS_MOBILE_APP                     (INTEGER) : ZI_C_HAS_MOBILE_APP : Flag indicating whether the company has a mobile app.. Sample value for ZI_C_HAS_MOBILE_APP
+ZI_C_CURRENCY_CODE                     (STRING) : ZI_C_CURRENCY_CODE : Currency code of the company.. Sample value for ZI_C_CURRENCY_CODE
+ZI_C_NUM_LOCATIONS                     (INTEGER) : ZI_C_NUM_LOCATIONS : Number of locations of the company.. Sample value for ZI_C_NUM_LOCATIONS
+ZI_C_HR_CONTACTS                     (INTEGER) : ZI_C_HR_CONTACTS : Number of HR contacts in the company.. Sample value for ZI_C_HR_CONTACTS
+ZI_C_SALES_CONTACTS                     (INTEGER) : ZI_C_SALES_CONTACTS : Number of sales contacts in the company.. Sample value for ZI_C_SALES_CONTACTS
+ZI_C_MARKETING_CONTACTS                     (INTEGER) : ZI_C_MARKETING_CONTACTS : Number of marketing contacts in the company.. Sample value for ZI_C_MARKETING_CONTACTS
+ZI_C_FINANCE_CONTACTS                     (INTEGER) : ZI_C_FINANCE_CONTACTS : Number of finance contacts in the company.. Sample value for ZI_C_FINANCE_CONTACTS
+ZI_C_C_SUITE_CONTACTS                     (INTEGER) : ZI_C_C_SUITE_CONTACTS : Number of C-suite contacts in the company.. Sample value for ZI_C_C_SUITE_CONTACTS
+ZI_C_ENGINEERING_CONTACTS                     (INTEGER) : ZI_C_ENGINEERING_CONTACTS : Number of engineering contacts in the company.. Sample value for ZI_C_ENGINEERING_CONTACTS
+ZI_C_IT_CONTACTS                     (INTEGER) : ZI_C_IT_CONTACTS : Number of IT contacts in the company.. Sample value for ZI_C_IT_CONTACTS
+ZI_C_OPERATIONS_CONTACTS                     (INTEGER) : ZI_C_OPERATIONS_CONTACTS : Number of operations contacts in the company.. Sample value for ZI_C_OPERATIONS_CONTACTS
+ZI_C_LEGAL_CONTACTS                     (INTEGER) : ZI_C_LEGAL_CONTACTS : Number of legal contacts in the company.. Sample value for ZI_C_LEGAL_CONTACTS
+ZI_C_MEDICAL_CONTACTS                     (INTEGER) : ZI_C_MEDICAL_CONTACTS : Number of medical contacts in the company.. Sample value for ZI_C_MEDICAL_CONTACTS
+ZI_C_TECH_IDS                     (STRING) : ZI_C_TECH_IDS : Technology IDs associated with the company.. Sample value for ZI_C_TECH_IDS
+ZI_C_LATEST_FUNDING_AGE                     (STRING) : ZI_C_LATEST_FUNDING_AGE : Age of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_AGE
+ZI_C_NUM_OF_INVESTORS                     (STRING) : ZI_C_NUM_OF_INVESTORS : Number of investors in the company.. Sample value for ZI_C_NUM_OF_INVESTORS
+ZI_C_INVESTOR_NAMES                     (STRING) : ZI_C_INVESTOR_NAMES : Names of investors in the company.. Sample value for ZI_C_INVESTOR_NAMES
+ZI_C_FUNDING_STRENGTH                     (STRING) : ZI_C_FUNDING_STRENGTH : Funding strength of the company.. Sample value for ZI_C_FUNDING_STRENGTH
+ZI_C_FUNDING_TYPE                     (STRING) : ZI_C_FUNDING_TYPE : Type of funding received by the company.. Sample value for ZI_C_FUNDING_TYPE
+ZI_C_TOTAL_FUNDING_AMOUNT                     (STRING) : ZI_C_TOTAL_FUNDING_AMOUNT : Total funding amount received by the company.. Sample value for ZI_C_TOTAL_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_AMOUNT                     (STRING) : ZI_C_LATEST_FUNDING_AMOUNT : Latest funding amount received by the company.. Sample value for ZI_C_LATEST_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_DATE                     (STRING) : ZI_C_LATEST_FUNDING_DATE : Date of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_DATE
+ZI_C_NUM_FUNDING_ROUNDS                     (STRING) : ZI_C_NUM_FUNDING_ROUNDS : Number of funding rounds of the company.. Sample value for ZI_C_NUM_FUNDING_ROUNDS
+ZI_C_IS_FORTUNE_100                     (INTEGER) : ZI_C_IS_FORTUNE_100 : Flag indicating whether the company is in the Fortune 100 list.. Sample value for ZI_C_IS_FORTUNE_100
+ZI_C_IS_FORTUNE_500                     (INTEGER) : ZI_C_IS_FORTUNE_500 : Flag indicating whether the company is in the Fortune 500 list.. Sample value for ZI_C_IS_FORTUNE_500
+ZI_C_IS_S_AND_P_500                     (INTEGER) : ZI_C_IS_S_AND_P_500 : Flag indicating whether the company is in the S&P 500 list.. Sample value for ZI_C_IS_S_AND_P_500
+ZI_C_LAST_UPDATED_DATE                     (DATE) : ZI_C_LAST_UPDATED_DATE : Last updated date for the company information. Sample value for ZI_C_LAST_UPDATED_DATE
+ZI_C_RELEASE_DATE                     (INTEGER) : ZI_C_RELEASE_DATE : Release date of the company information. Sample value for ZI_C_RELEASE_DATE
+
+
+
+
+```
+
+**Instructions:**
+* Generate syntactically correct BigQuery SQL for the following question.
+* Use only relevant columns from the schema. DO NOT use columns not mentioned in this meta-data.
+* Use only relevant table name as provided and do not qualify tablename with backticks(`).
+* Validate column names against the schema to avoid errors.
+* Use a maximum of 10 columns.
+* Prioritize keywords that indicate calculations.
+* Use the following examples as guidelines to generate the new BigQuery SQL accordingly
+
+Question: What county has the greatest enrollment in CalFresh per capita?
+SQL : SELECT Vendor_Location  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location, COALESCE(SUM(SAFE_CAST(( SUBSTR (Total_Cost_Vouchers,2,  (INSTR (Total_Cost_Vouchers, ".") -2))  ) AS INT64)), 0) AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 FROM `cdii-poc.HHS_Program_Counts.calfresh-redemption-by-county-by-participant-category-data-2010-2018`  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018 WHERE (Total_Cost_Vouchers) <> '*' OR (Total_Cost_Vouchers) IS NULL GROUP BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location ORDER BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 DESC limit 1; 
+
+Question: Which county has the greatest proportion of CalWorks recipients co-enrolled in at least one additional program?
+SQL : SELECT Number AS county, COALESCE(SUM(SAFE_CAST( Person   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file` WHERE ((_2_programs ) <> '*1' AND (_2_programs ) <> '*2' AND (_2_programs ) <> '0' OR (_2_programs ) IS NULL) AND (((_3_programs ) <> '*1' AND (_3_programs ) <> '*2' AND (_3_programs ) <> '0' OR (_3_programs ) IS NULL) AND ((_4_programs ) <> '*1' AND (_4_programs ) <> '*2' AND (_4_programs ) <> '0' OR (_4_programs ) IS NULL)) AND (((_5__programs ) <> '*1' AND (_5__programs ) <> '*2' AND (_5__programs ) <> '0' OR (_5__programs ) IS NULL) AND (Level ) = 'County' AND (((Number ) <> 'County Total' OR (Number ) IS NULL) AND (Program ) = 'CalWorks')) GROUP BY county ORDER BY calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 DESC LIMIT 1; 
+
+Question: How have these race and ethnicity trends changed over time?
+SQL : SELECT fileyear  AS calhhs_dashboard_2015_2020_annual_data_file_fileyear, COALESCE(SUM(SAFE_CAST( White   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_whites_1, COALESCE(SUM(SAFE_CAST( Black   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_blacks_1, COALESCE(SUM(SAFE_CAST( Hispanic   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_hispanics_1, COALESCE(SUM(SAFE_CAST( Asian_PI   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_asian_1, COALESCE(SUM(SAFE_CAST( Native_American   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_native_american_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file`  AS calhhs_dashboard_2015_2020_annual_data_file WHERE (Program ) = 'CalWorks' GROUP BY fileyear ORDER BY fileyear; 
+
+
+    
+
+For this question what would be the most accurate BigQuery SQL query?
+Question: What is the total revenue for constuction industry?  
+
+Sql_query: 
+SELECT 
+    SUM(CAST(ZI_C_REVENUE AS INT64)) AS total_revenue
+FROM sl-test-project-363109.sl-test-project-363109.zoominfo.`zi_companies_with_most_marketing_professionals`
+WHERE 
+    ZI_C_INDUSTRY_PRIMARY = 'Construction';
+<<<<
+
+
+>>>>
+Model:text-bison 
+
+Question: What is the total revenue for constuction industry?                          
+
+Prompt:
+Only use the following tables meta-data:
+
+```
+
+Table Name : zi-companies-with-most-marketing-professionals
+
+Description: The table 'zi-companies-with-most-marketing-professionals' provides information about companies with a significant number of marketing professionals. Each row in the table represents a company, and the columns provide details about the company's name, industry, location, and the number of marketing professionals employed.
+
+Here's a breakdown of the data in the table:
+
+- **Company Name**: This column lists the names of the companies with a high concentration of marketing professionals.
+
+- **Industry**: This column specifies the industry sector in which each company operates. The industries represented in the table include technology, finance, healthcare, retail, and
+
+This table has the following columns : 
+ZI_C_LOCATION_ID                     (INTEGER) : ZI_C_LOCATION_ID : Unique identifier for the location of the company.. Sample value for ZI_C_LOCATION_ID
+ZI_C_COMPANY_ID                     (INTEGER) : ZI_C_COMPANY_ID : Unique identifier for the company.. Sample value for ZI_C_COMPANY_ID
+ZI_C_IS_HQ                     (INTEGER) : ZI_C_IS_HQ : Indicates whether the location is the headquarters of the company.. Sample value for ZI_C_IS_HQ
+ZI_ES_ECID                     (INTEGER) : ZI_ES_ECID : Unique identifier for the location in the external data source.. Sample value for ZI_ES_ECID
+ZI_ES_LOCATION_ID                     (STRING) : ZI_ES_LOCATION_ID : Location identifier in the external data source.. Sample value for ZI_ES_LOCATION_ID
+ZI_C_TIER_GRADE                     (STRING) : ZI_C_TIER_GRADE : Tier grade of the company.. Sample value for ZI_C_TIER_GRADE
+ZI_C_NAME                     (STRING) : ZI_C_NAME : Name of the company.. Sample value for ZI_C_NAME
+ZI_C_NAME_DISPLAY                     (STRING) : ZI_C_NAME_DISPLAY : Display name of the company.. Sample value for ZI_C_NAME_DISPLAY
+ZI_C_LEGAL_ENTITY_TYPE                     (STRING) : ZI_C_LEGAL_ENTITY_TYPE : Legal entity type of the company.. Sample value for ZI_C_LEGAL_ENTITY_TYPE
+ZI_C_URL                     (STRING) : ZI_C_URL : URL of the company.. Sample value for ZI_C_URL
+ZI_C_STREET                     (STRING) : ZI_C_STREET : Street address of the company.. Sample value for ZI_C_STREET
+ZI_C_STREET_2                     (STRING) : ZI_C_STREET_2 : Secondary street address of the company.. Sample value for ZI_C_STREET_2
+ZI_C_CITY                     (STRING) : ZI_C_CITY : City of the company.. Sample value for ZI_C_CITY
+ZI_C_STATE                     (STRING) : ZI_C_STATE : State of the company.. Sample value for ZI_C_STATE
+ZI_C_ZIP                     (INTEGER) : ZI_C_ZIP : ZIP code of the company.. Sample value for ZI_C_ZIP
+ZI_C_COUNTRY                     (STRING) : ZI_C_COUNTRY : Country of the company.. Sample value for ZI_C_COUNTRY
+ZI_C_CBSA_NAME                     (STRING) : ZI_C_CBSA_NAME : Core-Based Statistical Area (CBSA) name of the company.. Sample value for ZI_C_CBSA_NAME
+ZI_C_COUNTY                     (STRING) : ZI_C_COUNTY : County of the company.. Sample value for ZI_C_COUNTY
+ZI_C_LATITUDE                     (FLOAT) : ZI_C_LATITUDE : Latitude of the company location.. Sample value for ZI_C_LATITUDE
+ZI_C_LONGITUDE                     (FLOAT) : ZI_C_LONGITUDE : Longitude of the company location.. Sample value for ZI_C_LONGITUDE
+ZI_C_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_VERIFIED_ADDRESS : Flag indicating whether the address is verified.. Sample value for ZI_C_VERIFIED_ADDRESS
+ZI_C_EMPLOYEE_RANGE                     (STRING) : ZI_C_EMPLOYEE_RANGE : Range of employees in the company.. Sample value for ZI_C_EMPLOYEE_RANGE
+ZI_C_EMPLOYEES                     (INTEGER) : ZI_C_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_EMPLOYEES
+ZI_C_REVENUE_RANGE                     (STRING) : ZI_C_REVENUE_RANGE : Range of revenue in the company.. Sample value for ZI_C_REVENUE_RANGE
+ZI_C_REVENUE                     (INTEGER) : ZI_C_REVENUE : Revenue of the company.. Sample value for ZI_C_REVENUE
+ZI_C_PHONE                     (STRING) : ZI_C_PHONE : Phone number of the company.. Sample value for ZI_C_PHONE
+ZI_C_FAX                     (STRING) : ZI_C_FAX : Fax number of the company.. Sample value for ZI_C_FAX
+ZI_C_INDUSTRY_PRIMARY                     (STRING) : ZI_C_INDUSTRY_PRIMARY : Primary industry of the company.. Sample value for ZI_C_INDUSTRY_PRIMARY
+ZI_C_SUB_INDUSTRY_PRIMARY                     (STRING) : ZI_C_SUB_INDUSTRY_PRIMARY : Primary sub-industry of the company.. Sample value for ZI_C_SUB_INDUSTRY_PRIMARY
+ZI_C_INDUSTRIES                     (STRING) : ZI_C_INDUSTRIES : All industries associated with the company.. Sample value for ZI_C_INDUSTRIES
+ZI_C_SUB_INDUSTRIES                     (STRING) : ZI_C_SUB_INDUSTRIES : All sub-industries associated with the company.. Sample value for ZI_C_SUB_INDUSTRIES
+ZI_ES_INDUSTRY                     (STRING) : ZI_ES_INDUSTRY : Industry of the company according to the external data source.. Sample value for ZI_ES_INDUSTRY
+ZI_ES_INDUSTRIES_TOP3                     (STRING) : ZI_ES_INDUSTRIES_TOP3 : Top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3
+ZI_C_NAICS2                     (INTEGER) : ZI_C_NAICS2 : 2-digit NAICS code of the company.. Sample value for ZI_C_NAICS2
+ZI_C_NAICS4                     (INTEGER) : ZI_C_NAICS4 : 4-digit NAICS code of the company.. Sample value for ZI_C_NAICS4
+ZI_C_NAICS6                     (INTEGER) : ZI_C_NAICS6 : 6-digit NAICS code of the company.. Sample value for ZI_C_NAICS6
+ZI_C_NAICS_TOP3                     (STRING) : ZI_C_NAICS_TOP3 : Top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3
+ZI_C_SIC2                     (INTEGER) : ZI_C_SIC2 : 2-digit SIC code of the company.. Sample value for ZI_C_SIC2
+ZI_C_SIC3                     (INTEGER) : ZI_C_SIC3 : 3-digit SIC code of the company.. Sample value for ZI_C_SIC3
+ZI_C_SIC4                     (INTEGER) : ZI_C_SIC4 : 4-digit SIC code of the company.. Sample value for ZI_C_SIC4
+ZI_C_SIC_TOP3                     (STRING) : ZI_C_SIC_TOP3 : Top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3
+ZI_C_ESTIMATED_AGE                     (INTEGER) : ZI_C_ESTIMATED_AGE : Estimated age of the company.. Sample value for ZI_C_ESTIMATED_AGE
+ZI_C_YEAR_FOUNDED                     (INTEGER) : ZI_C_YEAR_FOUNDED : Year in which the company was founded.. Sample value for ZI_C_YEAR_FOUNDED
+ZI_C_IS_B2B                     (INTEGER) : ZI_C_IS_B2B : Flag indicating whether the company is business-to-business (B2B).. Sample value for ZI_C_IS_B2B
+ZI_C_IS_B2C                     (INTEGER) : ZI_C_IS_B2C : Flag indicating whether the company is business-to-consumer (B2C).. Sample value for ZI_C_IS_B2C
+ZI_ES_HQ_ECID                     (INTEGER) : ZI_ES_HQ_ECID : Unique identifier for the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_ECID
+ZI_ES_HQ_LOCATION_ID                     (STRING) : ZI_ES_HQ_LOCATION_ID : Location ID of the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_LOCATION_ID
+ZI_C_COMPANY_NAME                     (STRING) : ZI_C_COMPANY_NAME : Company name.. Sample value for ZI_C_COMPANY_NAME
+ZI_C_COMPANY_URL                     (STRING) : ZI_C_COMPANY_URL : Company URL.. Sample value for ZI_C_COMPANY_URL
+ZI_C_COMPANY_STREET                     (STRING) : ZI_C_COMPANY_STREET : Company street address.. Sample value for ZI_C_COMPANY_STREET
+ZI_C_COMPANY_STREET_2                     (STRING) : ZI_C_COMPANY_STREET_2 : Company secondary street address.. Sample value for ZI_C_COMPANY_STREET_2
+ZI_C_COMPANY_CITY                     (STRING) : ZI_C_COMPANY_CITY : Company city.. Sample value for ZI_C_COMPANY_CITY
+ZI_C_COMPANY_STATE                     (STRING) : ZI_C_COMPANY_STATE : Company state.. Sample value for ZI_C_COMPANY_STATE
+ZI_C_COMPANY_ZIP                     (INTEGER) : ZI_C_COMPANY_ZIP : Company ZIP code.. Sample value for ZI_C_COMPANY_ZIP
+ZI_C_COMPANY_COUNTRY                     (STRING) : ZI_C_COMPANY_COUNTRY : Company country.. Sample value for ZI_C_COMPANY_COUNTRY
+ZI_C_COMPANY_CBSA_NAME                     (STRING) : ZI_C_COMPANY_CBSA_NAME : Company Core-Based Statistical Area (CBSA) name.. Sample value for ZI_C_COMPANY_CBSA_NAME
+ZI_C_COMPANY_COUNTY                     (STRING) : ZI_C_COMPANY_COUNTY : Company county.. Sample value for ZI_C_COMPANY_COUNTY
+ZI_C_COMPANY_LATITUDE                     (FLOAT) : ZI_C_COMPANY_LATITUDE : Company latitude.. Sample value for ZI_C_COMPANY_LATITUDE
+ZI_C_COMPANY_LONGITUDE                     (FLOAT) : ZI_C_COMPANY_LONGITUDE : Company longitude.. Sample value for ZI_C_COMPANY_LONGITUDE
+ZI_C_COMPANY_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_COMPANY_VERIFIED_ADDRESS : Flag indicating whether the company address is verified.. Sample value for ZI_C_COMPANY_VERIFIED_ADDRESS
+ZI_C_COMPANY_EMPLOYEE_RANGE                     (STRING) : ZI_C_COMPANY_EMPLOYEE_RANGE : Company employee range.. Sample value for ZI_C_COMPANY_EMPLOYEE_RANGE
+ZI_C_COMPANY_EMPLOYEES                     (INTEGER) : ZI_C_COMPANY_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_COMPANY_EMPLOYEES
+ZI_C_COMPANY_REVENUE_RANGE                     (STRING) : ZI_C_COMPANY_REVENUE_RANGE : Company revenue range.. Sample value for ZI_C_COMPANY_REVENUE_RANGE
+ZI_C_COMPANY_REVENUE                     (INTEGER) : ZI_C_COMPANY_REVENUE : Company revenue.. Sample value for ZI_C_COMPANY_REVENUE
+ZI_C_COMPANY_PHONE                     (STRING) : ZI_C_COMPANY_PHONE : Company phone number.. Sample value for ZI_C_COMPANY_PHONE
+ZI_C_COMPANY_FAX                     (STRING) : ZI_C_COMPANY_FAX : Company fax number.. Sample value for ZI_C_COMPANY_FAX
+ZI_C_LINKEDIN_URL                     (STRING) : ZI_C_LINKEDIN_URL : LinkedIn URL of the company.. Sample value for ZI_C_LINKEDIN_URL
+ZI_C_FACEBOOK_URL                     (STRING) : ZI_C_FACEBOOK_URL : Facebook URL of the company.. Sample value for ZI_C_FACEBOOK_URL
+ZI_C_TWITTER_URL                     (STRING) : ZI_C_TWITTER_URL : Twitter URL of the company.. Sample value for ZI_C_TWITTER_URL
+ZI_C_YELP_URL                     (STRING) : ZI_C_YELP_URL : Yelp URL of the company.. Sample value for ZI_C_YELP_URL
+ZI_C_ALEXA_RANK                     (INTEGER) : ZI_C_ALEXA_RANK : Alexa rank of the company.. Sample value for ZI_C_ALEXA_RANK
+ZI_C_KEYWORDS                     (STRING) : ZI_C_KEYWORDS : Keywords associated with the company.. Sample value for ZI_C_KEYWORDS
+ZI_C_TOP_KEYWORDS                     (STRING) : ZI_C_TOP_KEYWORDS : Top keywords associated with the company.. Sample value for ZI_C_TOP_KEYWORDS
+ZI_C_NUM_KEYWORDS                     (INTEGER) : ZI_C_NUM_KEYWORDS : Number of keywords associated with the company.. Sample value for ZI_C_NUM_KEYWORDS
+ZI_C_EMPLOYEE_GROWTH_1YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_1YR : Employee growth rate of the company in the last 1 year.. Sample value for ZI_C_EMPLOYEE_GROWTH_1YR
+ZI_C_EMPLOYEE_GROWTH_2YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_2YR : Employee growth rate of the company in the last 2 years.. Sample value for ZI_C_EMPLOYEE_GROWTH_2YR
+ZI_ES_GROWTH                     (STRING) : ZI_ES_GROWTH : Growth indicator of the company according to the external data source.. Sample value for ZI_ES_GROWTH
+ZI_ES_EMPLOYEE_GROWTH                     (STRING) : ZI_ES_EMPLOYEE_GROWTH : Employee growth rate of the company according to the external data source.. Sample value for ZI_ES_EMPLOYEE_GROWTH
+ZI_ES_REVENUE_GROWTH                     (STRING) : ZI_ES_REVENUE_GROWTH : Revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_REVENUE_GROWTH
+ZI_ES_PERCENT_EMPLOYEE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_EMPLOYEE_GROWTH : Percentage employee growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_EMPLOYEE_GROWTH
+ZI_ES_PERCENT_REVENUE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_REVENUE_GROWTH : Percentage revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_REVENUE_GROWTH
+ZI_C_NAME_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_NAME_CONFIDENCE_SCORE : Confidence score for the company name.. Sample value for ZI_C_NAME_CONFIDENCE_SCORE
+ZI_C_URL_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_URL_CONFIDENCE_SCORE : Confidence score for the company URL.. Sample value for ZI_C_URL_CONFIDENCE_SCORE
+ZI_C_ADDRESS_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_ADDRESS_CONFIDENCE_SCORE : Confidence score for the company address.. Sample value for ZI_C_ADDRESS_CONFIDENCE_SCORE
+ZI_C_PHONE_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_PHONE_CONFIDENCE_SCORE : Confidence score for the company phone number.. Sample value for ZI_C_PHONE_CONFIDENCE_SCORE
+ZI_C_EMPLOYEES_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_EMPLOYEES_CONFIDENCE_SCORE : Confidence score for the company employee count.. Sample value for ZI_C_EMPLOYEES_CONFIDENCE_SCORE
+ZI_C_REVENUE_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_REVENUE_CONFIDENCE_SCORE : Confidence score for the company revenue.. Sample value for ZI_C_REVENUE_CONFIDENCE_SCORE
+ZI_ES_INDUSTRY_CONFIDENCE_SCORE                     (INTEGER) : ZI_ES_INDUSTRY_CONFIDENCE_SCORE : Confidence score for the company industry according to the external data source.. Sample value for ZI_ES_INDUSTRY_CONFIDENCE_SCORE
+ZI_C_NAICS_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_NAICS_CONFIDENCE_SCORE : Confidence score for the company NAICS codes.. Sample value for ZI_C_NAICS_CONFIDENCE_SCORE
+ZI_C_SIC_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_SIC_CONFIDENCE_SCORE : Confidence score for the company SIC codes.. Sample value for ZI_C_SIC_CONFIDENCE_SCORE
+ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES
+ZI_C_NAICS_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_NAICS_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3_CONFIDENCE_SCORES
+ZI_C_SIC_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_SIC_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3_CONFIDENCE_SCORES
+ZI_C_IDS_MERGED                     (STRING) : ZI_C_IDS_MERGED : Merged identifiers for the company.. Sample value for ZI_C_IDS_MERGED
+ZI_C_NAMES_OTHER                     (STRING) : ZI_C_NAMES_OTHER : Other names for the company.. Sample value for ZI_C_NAMES_OTHER
+ZI_C_URL_STATUS                     (STRING) : ZI_C_URL_STATUS : Status of the company URL.. Sample value for ZI_C_URL_STATUS
+ZI_C_URLS_ALT                     (STRING) : ZI_C_URLS_ALT : Alternate URLs for the company.. Sample value for ZI_C_URLS_ALT
+ZI_C_URL_LAST_UPDATED                     (DATE) : ZI_C_URL_LAST_UPDATED : Last updated date for the company URL.. Sample value for ZI_C_URL_LAST_UPDATED
+ZI_C_INACTIVE_FLAG                     (INTEGER) : ZI_C_INACTIVE_FLAG : Flag indicating whether the company is inactive.. Sample value for ZI_C_INACTIVE_FLAG
+ZI_C_EIN                     (INTEGER) : ZI_C_EIN : Employer Identification Number (EIN) of the company.. Sample value for ZI_C_EIN
+ZI_C_IS_SMALL_BUSINESS                     (INTEGER) : ZI_C_IS_SMALL_BUSINESS : Flag indicating whether the company is a small business.. Sample value for ZI_C_IS_SMALL_BUSINESS
+ZI_C_IS_PUBLIC                     (INTEGER) : ZI_C_IS_PUBLIC : Flag indicating whether the company is public.. Sample value for ZI_C_IS_PUBLIC
+ZI_C_TICKER                     (STRING) : ZI_C_TICKER : Ticker symbol of the company.. Sample value for ZI_C_TICKER
+ZI_C_TICKERS_ALT                     (STRING) : ZI_C_TICKERS_ALT : Alternate ticker symbols of the company.. Sample value for ZI_C_TICKERS_ALT
+ZI_C_HAS_MOBILE_APP                     (INTEGER) : ZI_C_HAS_MOBILE_APP : Flag indicating whether the company has a mobile app.. Sample value for ZI_C_HAS_MOBILE_APP
+ZI_C_CURRENCY_CODE                     (STRING) : ZI_C_CURRENCY_CODE : Currency code of the company.. Sample value for ZI_C_CURRENCY_CODE
+ZI_C_NUM_LOCATIONS                     (INTEGER) : ZI_C_NUM_LOCATIONS : Number of locations of the company.. Sample value for ZI_C_NUM_LOCATIONS
+ZI_C_HR_CONTACTS                     (INTEGER) : ZI_C_HR_CONTACTS : Number of HR contacts in the company.. Sample value for ZI_C_HR_CONTACTS
+ZI_C_SALES_CONTACTS                     (INTEGER) : ZI_C_SALES_CONTACTS : Number of sales contacts in the company.. Sample value for ZI_C_SALES_CONTACTS
+ZI_C_MARKETING_CONTACTS                     (INTEGER) : ZI_C_MARKETING_CONTACTS : Number of marketing contacts in the company.. Sample value for ZI_C_MARKETING_CONTACTS
+ZI_C_FINANCE_CONTACTS                     (INTEGER) : ZI_C_FINANCE_CONTACTS : Number of finance contacts in the company.. Sample value for ZI_C_FINANCE_CONTACTS
+ZI_C_C_SUITE_CONTACTS                     (INTEGER) : ZI_C_C_SUITE_CONTACTS : Number of C-suite contacts in the company.. Sample value for ZI_C_C_SUITE_CONTACTS
+ZI_C_ENGINEERING_CONTACTS                     (INTEGER) : ZI_C_ENGINEERING_CONTACTS : Number of engineering contacts in the company.. Sample value for ZI_C_ENGINEERING_CONTACTS
+ZI_C_IT_CONTACTS                     (INTEGER) : ZI_C_IT_CONTACTS : Number of IT contacts in the company.. Sample value for ZI_C_IT_CONTACTS
+ZI_C_OPERATIONS_CONTACTS                     (INTEGER) : ZI_C_OPERATIONS_CONTACTS : Number of operations contacts in the company.. Sample value for ZI_C_OPERATIONS_CONTACTS
+ZI_C_LEGAL_CONTACTS                     (INTEGER) : ZI_C_LEGAL_CONTACTS : Number of legal contacts in the company.. Sample value for ZI_C_LEGAL_CONTACTS
+ZI_C_MEDICAL_CONTACTS                     (INTEGER) : ZI_C_MEDICAL_CONTACTS : Number of medical contacts in the company.. Sample value for ZI_C_MEDICAL_CONTACTS
+ZI_C_TECH_IDS                     (STRING) : ZI_C_TECH_IDS : Technology IDs associated with the company.. Sample value for ZI_C_TECH_IDS
+ZI_C_LATEST_FUNDING_AGE                     (STRING) : ZI_C_LATEST_FUNDING_AGE : Age of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_AGE
+ZI_C_NUM_OF_INVESTORS                     (STRING) : ZI_C_NUM_OF_INVESTORS : Number of investors in the company.. Sample value for ZI_C_NUM_OF_INVESTORS
+ZI_C_INVESTOR_NAMES                     (STRING) : ZI_C_INVESTOR_NAMES : Names of investors in the company.. Sample value for ZI_C_INVESTOR_NAMES
+ZI_C_FUNDING_STRENGTH                     (STRING) : ZI_C_FUNDING_STRENGTH : Funding strength of the company.. Sample value for ZI_C_FUNDING_STRENGTH
+ZI_C_FUNDING_TYPE                     (STRING) : ZI_C_FUNDING_TYPE : Type of funding received by the company.. Sample value for ZI_C_FUNDING_TYPE
+ZI_C_TOTAL_FUNDING_AMOUNT                     (STRING) : ZI_C_TOTAL_FUNDING_AMOUNT : Total funding amount received by the company.. Sample value for ZI_C_TOTAL_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_AMOUNT                     (STRING) : ZI_C_LATEST_FUNDING_AMOUNT : Latest funding amount received by the company.. Sample value for ZI_C_LATEST_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_DATE                     (STRING) : ZI_C_LATEST_FUNDING_DATE : Date of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_DATE
+ZI_C_NUM_FUNDING_ROUNDS                     (STRING) : ZI_C_NUM_FUNDING_ROUNDS : Number of funding rounds of the company.. Sample value for ZI_C_NUM_FUNDING_ROUNDS
+ZI_C_IS_FORTUNE_100                     (INTEGER) : ZI_C_IS_FORTUNE_100 : Flag indicating whether the company is in the Fortune 100 list.. Sample value for ZI_C_IS_FORTUNE_100
+ZI_C_IS_FORTUNE_500                     (INTEGER) : ZI_C_IS_FORTUNE_500 : Flag indicating whether the company is in the Fortune 500 list.. Sample value for ZI_C_IS_FORTUNE_500
+ZI_C_IS_S_AND_P_500                     (INTEGER) : ZI_C_IS_S_AND_P_500 : Flag indicating whether the company is in the S&P 500 list.. Sample value for ZI_C_IS_S_AND_P_500
+ZI_C_LAST_UPDATED_DATE                     (DATE) : ZI_C_LAST_UPDATED_DATE : Last updated date for the company information. Sample value for ZI_C_LAST_UPDATED_DATE
+ZI_C_RELEASE_DATE                     (INTEGER) : ZI_C_RELEASE_DATE : Release date of the company information. Sample value for ZI_C_RELEASE_DATE
+
+
+
+
+```
+
+**Instructions:**
+* Generate syntactically correct BigQuery SQL for the following question.
+* Use only relevant columns from the schema. DO NOT use columns not mentioned in this meta-data.
+* Use only relevant table name as provided and do not qualify tablename with backticks(`).
+* Validate column names against the schema to avoid errors.
+* Use a maximum of 10 columns.
+* Prioritize keywords that indicate calculations.
+* Use the following examples as guidelines to generate the new BigQuery SQL accordingly
+
+Question: What county has the greatest enrollment in CalFresh per capita?
+SQL : SELECT Vendor_Location  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location, COALESCE(SUM(SAFE_CAST(( SUBSTR (Total_Cost_Vouchers,2,  (INSTR (Total_Cost_Vouchers, ".") -2))  ) AS INT64)), 0) AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 FROM `cdii-poc.HHS_Program_Counts.calfresh-redemption-by-county-by-participant-category-data-2010-2018`  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018 WHERE (Total_Cost_Vouchers) <> '*' OR (Total_Cost_Vouchers) IS NULL GROUP BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location ORDER BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 DESC limit 1; 
+
+Question: Which county has the greatest proportion of CalWorks recipients co-enrolled in at least one additional program?
+SQL : SELECT Number AS county, COALESCE(SUM(SAFE_CAST( Person   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file` WHERE ((_2_programs ) <> '*1' AND (_2_programs ) <> '*2' AND (_2_programs ) <> '0' OR (_2_programs ) IS NULL) AND (((_3_programs ) <> '*1' AND (_3_programs ) <> '*2' AND (_3_programs ) <> '0' OR (_3_programs ) IS NULL) AND ((_4_programs ) <> '*1' AND (_4_programs ) <> '*2' AND (_4_programs ) <> '0' OR (_4_programs ) IS NULL)) AND (((_5__programs ) <> '*1' AND (_5__programs ) <> '*2' AND (_5__programs ) <> '0' OR (_5__programs ) IS NULL) AND (Level ) = 'County' AND (((Number ) <> 'County Total' OR (Number ) IS NULL) AND (Program ) = 'CalWorks')) GROUP BY county ORDER BY calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 DESC LIMIT 1; 
+
+Question: How have these race and ethnicity trends changed over time?
+SQL : SELECT fileyear  AS calhhs_dashboard_2015_2020_annual_data_file_fileyear, COALESCE(SUM(SAFE_CAST( White   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_whites_1, COALESCE(SUM(SAFE_CAST( Black   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_blacks_1, COALESCE(SUM(SAFE_CAST( Hispanic   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_hispanics_1, COALESCE(SUM(SAFE_CAST( Asian_PI   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_asian_1, COALESCE(SUM(SAFE_CAST( Native_American   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_native_american_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file`  AS calhhs_dashboard_2015_2020_annual_data_file WHERE (Program ) = 'CalWorks' GROUP BY fileyear ORDER BY fileyear; 
+
+
+    
+
+For this question what would be the most accurate BigQuery SQL query?
+Question: What is the total revenue for constuction industry?  
+
+Sql_query: 
+SELECT 
+    SUM(CAST(ZI_C_REVENUE AS INT64)) AS total_revenue
+FROM sl-test-project-363109.sl-test-project-363109.zoominfo.`zi_companies_with_most_marketing_professionals`
+WHERE 
+    ZI_C_INDUSTRY_PRIMARY = 'Construction';
+<<<<
+
+
+>>>>
+Model:text-bison 
+
+Question: What is the total revenue for constuction industry?                          
+
+Prompt:
+Only use the following tables meta-data:
+
+```
+
+Table Name : zi-companies-with-most-marketing-professionals
+
+Description: The table 'zi-companies-with-most-marketing-professionals' provides information about companies with a significant number of marketing professionals. Each row in the table represents a company, and the columns provide details about the company's name, industry, location, and the number of marketing professionals employed.
+
+Here's a breakdown of the data in the table:
+
+- **Company Name**: This column lists the names of the companies with a high concentration of marketing professionals.
+
+- **Industry**: This column specifies the industry sector in which each company operates. The industries represented in the table include technology, finance, healthcare, retail, and
+
+This table has the following columns : 
+ZI_C_LOCATION_ID                     (INTEGER) : ZI_C_LOCATION_ID : Unique identifier for the location of the company.. Sample value for ZI_C_LOCATION_ID
+ZI_C_COMPANY_ID                     (INTEGER) : ZI_C_COMPANY_ID : Unique identifier for the company.. Sample value for ZI_C_COMPANY_ID
+ZI_C_IS_HQ                     (INTEGER) : ZI_C_IS_HQ : Indicates whether the location is the headquarters of the company.. Sample value for ZI_C_IS_HQ
+ZI_ES_ECID                     (INTEGER) : ZI_ES_ECID : Unique identifier for the location in the external data source.. Sample value for ZI_ES_ECID
+ZI_ES_LOCATION_ID                     (STRING) : ZI_ES_LOCATION_ID : Location identifier in the external data source.. Sample value for ZI_ES_LOCATION_ID
+ZI_C_TIER_GRADE                     (STRING) : ZI_C_TIER_GRADE : Tier grade of the company.. Sample value for ZI_C_TIER_GRADE
+ZI_C_NAME                     (STRING) : ZI_C_NAME : Name of the company.. Sample value for ZI_C_NAME
+ZI_C_NAME_DISPLAY                     (STRING) : ZI_C_NAME_DISPLAY : Display name of the company.. Sample value for ZI_C_NAME_DISPLAY
+ZI_C_LEGAL_ENTITY_TYPE                     (STRING) : ZI_C_LEGAL_ENTITY_TYPE : Legal entity type of the company.. Sample value for ZI_C_LEGAL_ENTITY_TYPE
+ZI_C_URL                     (STRING) : ZI_C_URL : URL of the company.. Sample value for ZI_C_URL
+ZI_C_STREET                     (STRING) : ZI_C_STREET : Street address of the company.. Sample value for ZI_C_STREET
+ZI_C_STREET_2                     (STRING) : ZI_C_STREET_2 : Secondary street address of the company.. Sample value for ZI_C_STREET_2
+ZI_C_CITY                     (STRING) : ZI_C_CITY : City of the company.. Sample value for ZI_C_CITY
+ZI_C_STATE                     (STRING) : ZI_C_STATE : State of the company.. Sample value for ZI_C_STATE
+ZI_C_ZIP                     (INTEGER) : ZI_C_ZIP : ZIP code of the company.. Sample value for ZI_C_ZIP
+ZI_C_COUNTRY                     (STRING) : ZI_C_COUNTRY : Country of the company.. Sample value for ZI_C_COUNTRY
+ZI_C_CBSA_NAME                     (STRING) : ZI_C_CBSA_NAME : Core-Based Statistical Area (CBSA) name of the company.. Sample value for ZI_C_CBSA_NAME
+ZI_C_COUNTY                     (STRING) : ZI_C_COUNTY : County of the company.. Sample value for ZI_C_COUNTY
+ZI_C_LATITUDE                     (FLOAT) : ZI_C_LATITUDE : Latitude of the company location.. Sample value for ZI_C_LATITUDE
+ZI_C_LONGITUDE                     (FLOAT) : ZI_C_LONGITUDE : Longitude of the company location.. Sample value for ZI_C_LONGITUDE
+ZI_C_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_VERIFIED_ADDRESS : Flag indicating whether the address is verified.. Sample value for ZI_C_VERIFIED_ADDRESS
+ZI_C_EMPLOYEE_RANGE                     (STRING) : ZI_C_EMPLOYEE_RANGE : Range of employees in the company.. Sample value for ZI_C_EMPLOYEE_RANGE
+ZI_C_EMPLOYEES                     (INTEGER) : ZI_C_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_EMPLOYEES
+ZI_C_REVENUE_RANGE                     (STRING) : ZI_C_REVENUE_RANGE : Range of revenue in the company.. Sample value for ZI_C_REVENUE_RANGE
+ZI_C_REVENUE                     (INTEGER) : ZI_C_REVENUE : Revenue of the company.. Sample value for ZI_C_REVENUE
+ZI_C_PHONE                     (STRING) : ZI_C_PHONE : Phone number of the company.. Sample value for ZI_C_PHONE
+ZI_C_FAX                     (STRING) : ZI_C_FAX : Fax number of the company.. Sample value for ZI_C_FAX
+ZI_C_INDUSTRY_PRIMARY                     (STRING) : ZI_C_INDUSTRY_PRIMARY : Primary industry of the company.. Sample value for ZI_C_INDUSTRY_PRIMARY
+ZI_C_SUB_INDUSTRY_PRIMARY                     (STRING) : ZI_C_SUB_INDUSTRY_PRIMARY : Primary sub-industry of the company.. Sample value for ZI_C_SUB_INDUSTRY_PRIMARY
+ZI_C_INDUSTRIES                     (STRING) : ZI_C_INDUSTRIES : All industries associated with the company.. Sample value for ZI_C_INDUSTRIES
+ZI_C_SUB_INDUSTRIES                     (STRING) : ZI_C_SUB_INDUSTRIES : All sub-industries associated with the company.. Sample value for ZI_C_SUB_INDUSTRIES
+ZI_ES_INDUSTRY                     (STRING) : ZI_ES_INDUSTRY : Industry of the company according to the external data source.. Sample value for ZI_ES_INDUSTRY
+ZI_ES_INDUSTRIES_TOP3                     (STRING) : ZI_ES_INDUSTRIES_TOP3 : Top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3
+ZI_C_NAICS2                     (INTEGER) : ZI_C_NAICS2 : 2-digit NAICS code of the company.. Sample value for ZI_C_NAICS2
+ZI_C_NAICS4                     (INTEGER) : ZI_C_NAICS4 : 4-digit NAICS code of the company.. Sample value for ZI_C_NAICS4
+ZI_C_NAICS6                     (INTEGER) : ZI_C_NAICS6 : 6-digit NAICS code of the company.. Sample value for ZI_C_NAICS6
+ZI_C_NAICS_TOP3                     (STRING) : ZI_C_NAICS_TOP3 : Top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3
+ZI_C_SIC2                     (INTEGER) : ZI_C_SIC2 : 2-digit SIC code of the company.. Sample value for ZI_C_SIC2
+ZI_C_SIC3                     (INTEGER) : ZI_C_SIC3 : 3-digit SIC code of the company.. Sample value for ZI_C_SIC3
+ZI_C_SIC4                     (INTEGER) : ZI_C_SIC4 : 4-digit SIC code of the company.. Sample value for ZI_C_SIC4
+ZI_C_SIC_TOP3                     (STRING) : ZI_C_SIC_TOP3 : Top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3
+ZI_C_ESTIMATED_AGE                     (INTEGER) : ZI_C_ESTIMATED_AGE : Estimated age of the company.. Sample value for ZI_C_ESTIMATED_AGE
+ZI_C_YEAR_FOUNDED                     (INTEGER) : ZI_C_YEAR_FOUNDED : Year in which the company was founded.. Sample value for ZI_C_YEAR_FOUNDED
+ZI_C_IS_B2B                     (INTEGER) : ZI_C_IS_B2B : Flag indicating whether the company is business-to-business (B2B).. Sample value for ZI_C_IS_B2B
+ZI_C_IS_B2C                     (INTEGER) : ZI_C_IS_B2C : Flag indicating whether the company is business-to-consumer (B2C).. Sample value for ZI_C_IS_B2C
+ZI_ES_HQ_ECID                     (INTEGER) : ZI_ES_HQ_ECID : Unique identifier for the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_ECID
+ZI_ES_HQ_LOCATION_ID                     (STRING) : ZI_ES_HQ_LOCATION_ID : Location ID of the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_LOCATION_ID
+ZI_C_COMPANY_NAME                     (STRING) : ZI_C_COMPANY_NAME : Company name.. Sample value for ZI_C_COMPANY_NAME
+ZI_C_COMPANY_URL                     (STRING) : ZI_C_COMPANY_URL : Company URL.. Sample value for ZI_C_COMPANY_URL
+ZI_C_COMPANY_STREET                     (STRING) : ZI_C_COMPANY_STREET : Company street address.. Sample value for ZI_C_COMPANY_STREET
+ZI_C_COMPANY_STREET_2                     (STRING) : ZI_C_COMPANY_STREET_2 : Company secondary street address.. Sample value for ZI_C_COMPANY_STREET_2
+ZI_C_COMPANY_CITY                     (STRING) : ZI_C_COMPANY_CITY : Company city.. Sample value for ZI_C_COMPANY_CITY
+ZI_C_COMPANY_STATE                     (STRING) : ZI_C_COMPANY_STATE : Company state.. Sample value for ZI_C_COMPANY_STATE
+ZI_C_COMPANY_ZIP                     (INTEGER) : ZI_C_COMPANY_ZIP : Company ZIP code.. Sample value for ZI_C_COMPANY_ZIP
+ZI_C_COMPANY_COUNTRY                     (STRING) : ZI_C_COMPANY_COUNTRY : Company country.. Sample value for ZI_C_COMPANY_COUNTRY
+ZI_C_COMPANY_CBSA_NAME                     (STRING) : ZI_C_COMPANY_CBSA_NAME : Company Core-Based Statistical Area (CBSA) name.. Sample value for ZI_C_COMPANY_CBSA_NAME
+ZI_C_COMPANY_COUNTY                     (STRING) : ZI_C_COMPANY_COUNTY : Company county.. Sample value for ZI_C_COMPANY_COUNTY
+ZI_C_COMPANY_LATITUDE                     (FLOAT) : ZI_C_COMPANY_LATITUDE : Company latitude.. Sample value for ZI_C_COMPANY_LATITUDE
+ZI_C_COMPANY_LONGITUDE                     (FLOAT) : ZI_C_COMPANY_LONGITUDE : Company longitude.. Sample value for ZI_C_COMPANY_LONGITUDE
+ZI_C_COMPANY_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_COMPANY_VERIFIED_ADDRESS : Flag indicating whether the company address is verified.. Sample value for ZI_C_COMPANY_VERIFIED_ADDRESS
+ZI_C_COMPANY_EMPLOYEE_RANGE                     (STRING) : ZI_C_COMPANY_EMPLOYEE_RANGE : Company employee range.. Sample value for ZI_C_COMPANY_EMPLOYEE_RANGE
+ZI_C_COMPANY_EMPLOYEES                     (INTEGER) : ZI_C_COMPANY_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_COMPANY_EMPLOYEES
+ZI_C_COMPANY_REVENUE_RANGE                     (STRING) : ZI_C_COMPANY_REVENUE_RANGE : Company revenue range.. Sample value for ZI_C_COMPANY_REVENUE_RANGE
+ZI_C_COMPANY_REVENUE                     (INTEGER) : ZI_C_COMPANY_REVENUE : Company revenue.. Sample value for ZI_C_COMPANY_REVENUE
+ZI_C_COMPANY_PHONE                     (STRING) : ZI_C_COMPANY_PHONE : Company phone number.. Sample value for ZI_C_COMPANY_PHONE
+ZI_C_COMPANY_FAX                     (STRING) : ZI_C_COMPANY_FAX : Company fax number.. Sample value for ZI_C_COMPANY_FAX
+ZI_C_LINKEDIN_URL                     (STRING) : ZI_C_LINKEDIN_URL : LinkedIn URL of the company.. Sample value for ZI_C_LINKEDIN_URL
+ZI_C_FACEBOOK_URL                     (STRING) : ZI_C_FACEBOOK_URL : Facebook URL of the company.. Sample value for ZI_C_FACEBOOK_URL
+ZI_C_TWITTER_URL                     (STRING) : ZI_C_TWITTER_URL : Twitter URL of the company.. Sample value for ZI_C_TWITTER_URL
+ZI_C_YELP_URL                     (STRING) : ZI_C_YELP_URL : Yelp URL of the company.. Sample value for ZI_C_YELP_URL
+ZI_C_ALEXA_RANK                     (INTEGER) : ZI_C_ALEXA_RANK : Alexa rank of the company.. Sample value for ZI_C_ALEXA_RANK
+ZI_C_KEYWORDS                     (STRING) : ZI_C_KEYWORDS : Keywords associated with the company.. Sample value for ZI_C_KEYWORDS
+ZI_C_TOP_KEYWORDS                     (STRING) : ZI_C_TOP_KEYWORDS : Top keywords associated with the company.. Sample value for ZI_C_TOP_KEYWORDS
+ZI_C_NUM_KEYWORDS                     (INTEGER) : ZI_C_NUM_KEYWORDS : Number of keywords associated with the company.. Sample value for ZI_C_NUM_KEYWORDS
+ZI_C_EMPLOYEE_GROWTH_1YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_1YR : Employee growth rate of the company in the last 1 year.. Sample value for ZI_C_EMPLOYEE_GROWTH_1YR
+ZI_C_EMPLOYEE_GROWTH_2YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_2YR : Employee growth rate of the company in the last 2 years.. Sample value for ZI_C_EMPLOYEE_GROWTH_2YR
+ZI_ES_GROWTH                     (STRING) : ZI_ES_GROWTH : Growth indicator of the company according to the external data source.. Sample value for ZI_ES_GROWTH
+ZI_ES_EMPLOYEE_GROWTH                     (STRING) : ZI_ES_EMPLOYEE_GROWTH : Employee growth rate of the company according to the external data source.. Sample value for ZI_ES_EMPLOYEE_GROWTH
+ZI_ES_REVENUE_GROWTH                     (STRING) : ZI_ES_REVENUE_GROWTH : Revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_REVENUE_GROWTH
+ZI_ES_PERCENT_EMPLOYEE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_EMPLOYEE_GROWTH : Percentage employee growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_EMPLOYEE_GROWTH
+ZI_ES_PERCENT_REVENUE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_REVENUE_GROWTH : Percentage revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_REVENUE_GROWTH
+ZI_C_NAME_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_NAME_CONFIDENCE_SCORE : Confidence score for the company name.. Sample value for ZI_C_NAME_CONFIDENCE_SCORE
+ZI_C_URL_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_URL_CONFIDENCE_SCORE : Confidence score for the company URL.. Sample value for ZI_C_URL_CONFIDENCE_SCORE
+ZI_C_ADDRESS_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_ADDRESS_CONFIDENCE_SCORE : Confidence score for the company address.. Sample value for ZI_C_ADDRESS_CONFIDENCE_SCORE
+ZI_C_PHONE_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_PHONE_CONFIDENCE_SCORE : Confidence score for the company phone number.. Sample value for ZI_C_PHONE_CONFIDENCE_SCORE
+ZI_C_EMPLOYEES_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_EMPLOYEES_CONFIDENCE_SCORE : Confidence score for the company employee count.. Sample value for ZI_C_EMPLOYEES_CONFIDENCE_SCORE
+ZI_C_REVENUE_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_REVENUE_CONFIDENCE_SCORE : Confidence score for the company revenue.. Sample value for ZI_C_REVENUE_CONFIDENCE_SCORE
+ZI_ES_INDUSTRY_CONFIDENCE_SCORE                     (INTEGER) : ZI_ES_INDUSTRY_CONFIDENCE_SCORE : Confidence score for the company industry according to the external data source.. Sample value for ZI_ES_INDUSTRY_CONFIDENCE_SCORE
+ZI_C_NAICS_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_NAICS_CONFIDENCE_SCORE : Confidence score for the company NAICS codes.. Sample value for ZI_C_NAICS_CONFIDENCE_SCORE
+ZI_C_SIC_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_SIC_CONFIDENCE_SCORE : Confidence score for the company SIC codes.. Sample value for ZI_C_SIC_CONFIDENCE_SCORE
+ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES
+ZI_C_NAICS_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_NAICS_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3_CONFIDENCE_SCORES
+ZI_C_SIC_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_SIC_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3_CONFIDENCE_SCORES
+ZI_C_IDS_MERGED                     (STRING) : ZI_C_IDS_MERGED : Merged identifiers for the company.. Sample value for ZI_C_IDS_MERGED
+ZI_C_NAMES_OTHER                     (STRING) : ZI_C_NAMES_OTHER : Other names for the company.. Sample value for ZI_C_NAMES_OTHER
+ZI_C_URL_STATUS                     (STRING) : ZI_C_URL_STATUS : Status of the company URL.. Sample value for ZI_C_URL_STATUS
+ZI_C_URLS_ALT                     (STRING) : ZI_C_URLS_ALT : Alternate URLs for the company.. Sample value for ZI_C_URLS_ALT
+ZI_C_URL_LAST_UPDATED                     (DATE) : ZI_C_URL_LAST_UPDATED : Last updated date for the company URL.. Sample value for ZI_C_URL_LAST_UPDATED
+ZI_C_INACTIVE_FLAG                     (INTEGER) : ZI_C_INACTIVE_FLAG : Flag indicating whether the company is inactive.. Sample value for ZI_C_INACTIVE_FLAG
+ZI_C_EIN                     (INTEGER) : ZI_C_EIN : Employer Identification Number (EIN) of the company.. Sample value for ZI_C_EIN
+ZI_C_IS_SMALL_BUSINESS                     (INTEGER) : ZI_C_IS_SMALL_BUSINESS : Flag indicating whether the company is a small business.. Sample value for ZI_C_IS_SMALL_BUSINESS
+ZI_C_IS_PUBLIC                     (INTEGER) : ZI_C_IS_PUBLIC : Flag indicating whether the company is public.. Sample value for ZI_C_IS_PUBLIC
+ZI_C_TICKER                     (STRING) : ZI_C_TICKER : Ticker symbol of the company.. Sample value for ZI_C_TICKER
+ZI_C_TICKERS_ALT                     (STRING) : ZI_C_TICKERS_ALT : Alternate ticker symbols of the company.. Sample value for ZI_C_TICKERS_ALT
+ZI_C_HAS_MOBILE_APP                     (INTEGER) : ZI_C_HAS_MOBILE_APP : Flag indicating whether the company has a mobile app.. Sample value for ZI_C_HAS_MOBILE_APP
+ZI_C_CURRENCY_CODE                     (STRING) : ZI_C_CURRENCY_CODE : Currency code of the company.. Sample value for ZI_C_CURRENCY_CODE
+ZI_C_NUM_LOCATIONS                     (INTEGER) : ZI_C_NUM_LOCATIONS : Number of locations of the company.. Sample value for ZI_C_NUM_LOCATIONS
+ZI_C_HR_CONTACTS                     (INTEGER) : ZI_C_HR_CONTACTS : Number of HR contacts in the company.. Sample value for ZI_C_HR_CONTACTS
+ZI_C_SALES_CONTACTS                     (INTEGER) : ZI_C_SALES_CONTACTS : Number of sales contacts in the company.. Sample value for ZI_C_SALES_CONTACTS
+ZI_C_MARKETING_CONTACTS                     (INTEGER) : ZI_C_MARKETING_CONTACTS : Number of marketing contacts in the company.. Sample value for ZI_C_MARKETING_CONTACTS
+ZI_C_FINANCE_CONTACTS                     (INTEGER) : ZI_C_FINANCE_CONTACTS : Number of finance contacts in the company.. Sample value for ZI_C_FINANCE_CONTACTS
+ZI_C_C_SUITE_CONTACTS                     (INTEGER) : ZI_C_C_SUITE_CONTACTS : Number of C-suite contacts in the company.. Sample value for ZI_C_C_SUITE_CONTACTS
+ZI_C_ENGINEERING_CONTACTS                     (INTEGER) : ZI_C_ENGINEERING_CONTACTS : Number of engineering contacts in the company.. Sample value for ZI_C_ENGINEERING_CONTACTS
+ZI_C_IT_CONTACTS                     (INTEGER) : ZI_C_IT_CONTACTS : Number of IT contacts in the company.. Sample value for ZI_C_IT_CONTACTS
+ZI_C_OPERATIONS_CONTACTS                     (INTEGER) : ZI_C_OPERATIONS_CONTACTS : Number of operations contacts in the company.. Sample value for ZI_C_OPERATIONS_CONTACTS
+ZI_C_LEGAL_CONTACTS                     (INTEGER) : ZI_C_LEGAL_CONTACTS : Number of legal contacts in the company.. Sample value for ZI_C_LEGAL_CONTACTS
+ZI_C_MEDICAL_CONTACTS                     (INTEGER) : ZI_C_MEDICAL_CONTACTS : Number of medical contacts in the company.. Sample value for ZI_C_MEDICAL_CONTACTS
+ZI_C_TECH_IDS                     (STRING) : ZI_C_TECH_IDS : Technology IDs associated with the company.. Sample value for ZI_C_TECH_IDS
+ZI_C_LATEST_FUNDING_AGE                     (STRING) : ZI_C_LATEST_FUNDING_AGE : Age of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_AGE
+ZI_C_NUM_OF_INVESTORS                     (STRING) : ZI_C_NUM_OF_INVESTORS : Number of investors in the company.. Sample value for ZI_C_NUM_OF_INVESTORS
+ZI_C_INVESTOR_NAMES                     (STRING) : ZI_C_INVESTOR_NAMES : Names of investors in the company.. Sample value for ZI_C_INVESTOR_NAMES
+ZI_C_FUNDING_STRENGTH                     (STRING) : ZI_C_FUNDING_STRENGTH : Funding strength of the company.. Sample value for ZI_C_FUNDING_STRENGTH
+ZI_C_FUNDING_TYPE                     (STRING) : ZI_C_FUNDING_TYPE : Type of funding received by the company.. Sample value for ZI_C_FUNDING_TYPE
+ZI_C_TOTAL_FUNDING_AMOUNT                     (STRING) : ZI_C_TOTAL_FUNDING_AMOUNT : Total funding amount received by the company.. Sample value for ZI_C_TOTAL_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_AMOUNT                     (STRING) : ZI_C_LATEST_FUNDING_AMOUNT : Latest funding amount received by the company.. Sample value for ZI_C_LATEST_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_DATE                     (STRING) : ZI_C_LATEST_FUNDING_DATE : Date of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_DATE
+ZI_C_NUM_FUNDING_ROUNDS                     (STRING) : ZI_C_NUM_FUNDING_ROUNDS : Number of funding rounds of the company.. Sample value for ZI_C_NUM_FUNDING_ROUNDS
+ZI_C_IS_FORTUNE_100                     (INTEGER) : ZI_C_IS_FORTUNE_100 : Flag indicating whether the company is in the Fortune 100 list.. Sample value for ZI_C_IS_FORTUNE_100
+ZI_C_IS_FORTUNE_500                     (INTEGER) : ZI_C_IS_FORTUNE_500 : Flag indicating whether the company is in the Fortune 500 list.. Sample value for ZI_C_IS_FORTUNE_500
+ZI_C_IS_S_AND_P_500                     (INTEGER) : ZI_C_IS_S_AND_P_500 : Flag indicating whether the company is in the S&P 500 list.. Sample value for ZI_C_IS_S_AND_P_500
+ZI_C_LAST_UPDATED_DATE                     (DATE) : ZI_C_LAST_UPDATED_DATE : Last updated date for the company information. Sample value for ZI_C_LAST_UPDATED_DATE
+ZI_C_RELEASE_DATE                     (INTEGER) : ZI_C_RELEASE_DATE : Release date of the company information. Sample value for ZI_C_RELEASE_DATE
+
+
+
+
+```
+
+**Instructions:**
+* Generate syntactically correct BigQuery SQL for the following question.
+* Use only relevant columns from the schema. DO NOT use columns not mentioned in this meta-data.
+* Use only relevant table name as provided and do not qualify tablename with backticks(`).
+* Validate column names against the schema to avoid errors.
+* Use a maximum of 10 columns.
+* Prioritize keywords that indicate calculations.
+* Use the following examples as guidelines to generate the new BigQuery SQL accordingly
+
+Question: What county has the greatest enrollment in CalFresh per capita?
+SQL : SELECT Vendor_Location  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location, COALESCE(SUM(SAFE_CAST(( SUBSTR (Total_Cost_Vouchers,2,  (INSTR (Total_Cost_Vouchers, ".") -2))  ) AS INT64)), 0) AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 FROM `cdii-poc.HHS_Program_Counts.calfresh-redemption-by-county-by-participant-category-data-2010-2018`  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018 WHERE (Total_Cost_Vouchers) <> '*' OR (Total_Cost_Vouchers) IS NULL GROUP BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location ORDER BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 DESC limit 1; 
+
+Question: Which county has the greatest proportion of CalWorks recipients co-enrolled in at least one additional program?
+SQL : SELECT Number AS county, COALESCE(SUM(SAFE_CAST( Person   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file` WHERE ((_2_programs ) <> '*1' AND (_2_programs ) <> '*2' AND (_2_programs ) <> '0' OR (_2_programs ) IS NULL) AND (((_3_programs ) <> '*1' AND (_3_programs ) <> '*2' AND (_3_programs ) <> '0' OR (_3_programs ) IS NULL) AND ((_4_programs ) <> '*1' AND (_4_programs ) <> '*2' AND (_4_programs ) <> '0' OR (_4_programs ) IS NULL)) AND (((_5__programs ) <> '*1' AND (_5__programs ) <> '*2' AND (_5__programs ) <> '0' OR (_5__programs ) IS NULL) AND (Level ) = 'County' AND (((Number ) <> 'County Total' OR (Number ) IS NULL) AND (Program ) = 'CalWorks')) GROUP BY county ORDER BY calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 DESC LIMIT 1; 
+
+Question: How have these race and ethnicity trends changed over time?
+SQL : SELECT fileyear  AS calhhs_dashboard_2015_2020_annual_data_file_fileyear, COALESCE(SUM(SAFE_CAST( White   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_whites_1, COALESCE(SUM(SAFE_CAST( Black   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_blacks_1, COALESCE(SUM(SAFE_CAST( Hispanic   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_hispanics_1, COALESCE(SUM(SAFE_CAST( Asian_PI   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_asian_1, COALESCE(SUM(SAFE_CAST( Native_American   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_native_american_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file`  AS calhhs_dashboard_2015_2020_annual_data_file WHERE (Program ) = 'CalWorks' GROUP BY fileyear ORDER BY fileyear; 
+
+
+    
+
+For this question what would be the most accurate BigQuery SQL query?
+Question: What is the total revenue for constuction industry?  
+
+Sql_query: 
+SELECT 
+    SUM(CAST(ZI_C_REVENUE AS INT64)) AS total_revenue
+FROM sl-test-project-363109.sl-test-project-363109.zoominfo.`zi_companies_with_most_marketing_professionals`
+WHERE 
+    ZI_C_INDUSTRY_PRIMARY = 'Construction';
+<<<<
+
+
+>>>>
+Model:text-bison 
+
+Question: What is the total revenue for constuction industry?                          
+
+Prompt:
+Only use the following tables meta-data:
+
+```
+
+Table Name : zi-companies-with-most-marketing-professionals
+
+Description: The table 'zi-companies-with-most-marketing-professionals' provides information about companies with a significant number of marketing professionals. Each row in the table represents a company, and the columns provide details about the company's name, industry, location, and the number of marketing professionals employed.
+
+Here's a breakdown of the data in the table:
+
+- **Company Name**: This column lists the names of the companies with a high concentration of marketing professionals.
+
+- **Industry**: This column specifies the industry sector in which each company operates. The industries represented in the table include technology, finance, healthcare, retail, and
+
+This table has the following columns : 
+ZI_C_LOCATION_ID                     (INTEGER) : ZI_C_LOCATION_ID : Unique identifier for the location of the company.. Sample value for ZI_C_LOCATION_ID
+ZI_C_COMPANY_ID                     (INTEGER) : ZI_C_COMPANY_ID : Unique identifier for the company.. Sample value for ZI_C_COMPANY_ID
+ZI_C_IS_HQ                     (INTEGER) : ZI_C_IS_HQ : Indicates whether the location is the headquarters of the company.. Sample value for ZI_C_IS_HQ
+ZI_ES_ECID                     (INTEGER) : ZI_ES_ECID : Unique identifier for the location in the external data source.. Sample value for ZI_ES_ECID
+ZI_ES_LOCATION_ID                     (STRING) : ZI_ES_LOCATION_ID : Location identifier in the external data source.. Sample value for ZI_ES_LOCATION_ID
+ZI_C_TIER_GRADE                     (STRING) : ZI_C_TIER_GRADE : Tier grade of the company.. Sample value for ZI_C_TIER_GRADE
+ZI_C_NAME                     (STRING) : ZI_C_NAME : Name of the company.. Sample value for ZI_C_NAME
+ZI_C_NAME_DISPLAY                     (STRING) : ZI_C_NAME_DISPLAY : Display name of the company.. Sample value for ZI_C_NAME_DISPLAY
+ZI_C_LEGAL_ENTITY_TYPE                     (STRING) : ZI_C_LEGAL_ENTITY_TYPE : Legal entity type of the company.. Sample value for ZI_C_LEGAL_ENTITY_TYPE
+ZI_C_URL                     (STRING) : ZI_C_URL : URL of the company.. Sample value for ZI_C_URL
+ZI_C_STREET                     (STRING) : ZI_C_STREET : Street address of the company.. Sample value for ZI_C_STREET
+ZI_C_STREET_2                     (STRING) : ZI_C_STREET_2 : Secondary street address of the company.. Sample value for ZI_C_STREET_2
+ZI_C_CITY                     (STRING) : ZI_C_CITY : City of the company.. Sample value for ZI_C_CITY
+ZI_C_STATE                     (STRING) : ZI_C_STATE : State of the company.. Sample value for ZI_C_STATE
+ZI_C_ZIP                     (INTEGER) : ZI_C_ZIP : ZIP code of the company.. Sample value for ZI_C_ZIP
+ZI_C_COUNTRY                     (STRING) : ZI_C_COUNTRY : Country of the company.. Sample value for ZI_C_COUNTRY
+ZI_C_CBSA_NAME                     (STRING) : ZI_C_CBSA_NAME : Core-Based Statistical Area (CBSA) name of the company.. Sample value for ZI_C_CBSA_NAME
+ZI_C_COUNTY                     (STRING) : ZI_C_COUNTY : County of the company.. Sample value for ZI_C_COUNTY
+ZI_C_LATITUDE                     (FLOAT) : ZI_C_LATITUDE : Latitude of the company location.. Sample value for ZI_C_LATITUDE
+ZI_C_LONGITUDE                     (FLOAT) : ZI_C_LONGITUDE : Longitude of the company location.. Sample value for ZI_C_LONGITUDE
+ZI_C_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_VERIFIED_ADDRESS : Flag indicating whether the address is verified.. Sample value for ZI_C_VERIFIED_ADDRESS
+ZI_C_EMPLOYEE_RANGE                     (STRING) : ZI_C_EMPLOYEE_RANGE : Range of employees in the company.. Sample value for ZI_C_EMPLOYEE_RANGE
+ZI_C_EMPLOYEES                     (INTEGER) : ZI_C_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_EMPLOYEES
+ZI_C_REVENUE_RANGE                     (STRING) : ZI_C_REVENUE_RANGE : Range of revenue in the company.. Sample value for ZI_C_REVENUE_RANGE
+ZI_C_REVENUE                     (INTEGER) : ZI_C_REVENUE : Revenue of the company.. Sample value for ZI_C_REVENUE
+ZI_C_PHONE                     (STRING) : ZI_C_PHONE : Phone number of the company.. Sample value for ZI_C_PHONE
+ZI_C_FAX                     (STRING) : ZI_C_FAX : Fax number of the company.. Sample value for ZI_C_FAX
+ZI_C_INDUSTRY_PRIMARY                     (STRING) : ZI_C_INDUSTRY_PRIMARY : Primary industry of the company.. Sample value for ZI_C_INDUSTRY_PRIMARY
+ZI_C_SUB_INDUSTRY_PRIMARY                     (STRING) : ZI_C_SUB_INDUSTRY_PRIMARY : Primary sub-industry of the company.. Sample value for ZI_C_SUB_INDUSTRY_PRIMARY
+ZI_C_INDUSTRIES                     (STRING) : ZI_C_INDUSTRIES : All industries associated with the company.. Sample value for ZI_C_INDUSTRIES
+ZI_C_SUB_INDUSTRIES                     (STRING) : ZI_C_SUB_INDUSTRIES : All sub-industries associated with the company.. Sample value for ZI_C_SUB_INDUSTRIES
+ZI_ES_INDUSTRY                     (STRING) : ZI_ES_INDUSTRY : Industry of the company according to the external data source.. Sample value for ZI_ES_INDUSTRY
+ZI_ES_INDUSTRIES_TOP3                     (STRING) : ZI_ES_INDUSTRIES_TOP3 : Top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3
+ZI_C_NAICS2                     (INTEGER) : ZI_C_NAICS2 : 2-digit NAICS code of the company.. Sample value for ZI_C_NAICS2
+ZI_C_NAICS4                     (INTEGER) : ZI_C_NAICS4 : 4-digit NAICS code of the company.. Sample value for ZI_C_NAICS4
+ZI_C_NAICS6                     (INTEGER) : ZI_C_NAICS6 : 6-digit NAICS code of the company.. Sample value for ZI_C_NAICS6
+ZI_C_NAICS_TOP3                     (STRING) : ZI_C_NAICS_TOP3 : Top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3
+ZI_C_SIC2                     (INTEGER) : ZI_C_SIC2 : 2-digit SIC code of the company.. Sample value for ZI_C_SIC2
+ZI_C_SIC3                     (INTEGER) : ZI_C_SIC3 : 3-digit SIC code of the company.. Sample value for ZI_C_SIC3
+ZI_C_SIC4                     (INTEGER) : ZI_C_SIC4 : 4-digit SIC code of the company.. Sample value for ZI_C_SIC4
+ZI_C_SIC_TOP3                     (STRING) : ZI_C_SIC_TOP3 : Top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3
+ZI_C_ESTIMATED_AGE                     (INTEGER) : ZI_C_ESTIMATED_AGE : Estimated age of the company.. Sample value for ZI_C_ESTIMATED_AGE
+ZI_C_YEAR_FOUNDED                     (INTEGER) : ZI_C_YEAR_FOUNDED : Year in which the company was founded.. Sample value for ZI_C_YEAR_FOUNDED
+ZI_C_IS_B2B                     (INTEGER) : ZI_C_IS_B2B : Flag indicating whether the company is business-to-business (B2B).. Sample value for ZI_C_IS_B2B
+ZI_C_IS_B2C                     (INTEGER) : ZI_C_IS_B2C : Flag indicating whether the company is business-to-consumer (B2C).. Sample value for ZI_C_IS_B2C
+ZI_ES_HQ_ECID                     (INTEGER) : ZI_ES_HQ_ECID : Unique identifier for the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_ECID
+ZI_ES_HQ_LOCATION_ID                     (STRING) : ZI_ES_HQ_LOCATION_ID : Location ID of the headquarters of the company in the external data source.. Sample value for ZI_ES_HQ_LOCATION_ID
+ZI_C_COMPANY_NAME                     (STRING) : ZI_C_COMPANY_NAME : Company name.. Sample value for ZI_C_COMPANY_NAME
+ZI_C_COMPANY_URL                     (STRING) : ZI_C_COMPANY_URL : Company URL.. Sample value for ZI_C_COMPANY_URL
+ZI_C_COMPANY_STREET                     (STRING) : ZI_C_COMPANY_STREET : Company street address.. Sample value for ZI_C_COMPANY_STREET
+ZI_C_COMPANY_STREET_2                     (STRING) : ZI_C_COMPANY_STREET_2 : Company secondary street address.. Sample value for ZI_C_COMPANY_STREET_2
+ZI_C_COMPANY_CITY                     (STRING) : ZI_C_COMPANY_CITY : Company city.. Sample value for ZI_C_COMPANY_CITY
+ZI_C_COMPANY_STATE                     (STRING) : ZI_C_COMPANY_STATE : Company state.. Sample value for ZI_C_COMPANY_STATE
+ZI_C_COMPANY_ZIP                     (INTEGER) : ZI_C_COMPANY_ZIP : Company ZIP code.. Sample value for ZI_C_COMPANY_ZIP
+ZI_C_COMPANY_COUNTRY                     (STRING) : ZI_C_COMPANY_COUNTRY : Company country.. Sample value for ZI_C_COMPANY_COUNTRY
+ZI_C_COMPANY_CBSA_NAME                     (STRING) : ZI_C_COMPANY_CBSA_NAME : Company Core-Based Statistical Area (CBSA) name.. Sample value for ZI_C_COMPANY_CBSA_NAME
+ZI_C_COMPANY_COUNTY                     (STRING) : ZI_C_COMPANY_COUNTY : Company county.. Sample value for ZI_C_COMPANY_COUNTY
+ZI_C_COMPANY_LATITUDE                     (FLOAT) : ZI_C_COMPANY_LATITUDE : Company latitude.. Sample value for ZI_C_COMPANY_LATITUDE
+ZI_C_COMPANY_LONGITUDE                     (FLOAT) : ZI_C_COMPANY_LONGITUDE : Company longitude.. Sample value for ZI_C_COMPANY_LONGITUDE
+ZI_C_COMPANY_VERIFIED_ADDRESS                     (INTEGER) : ZI_C_COMPANY_VERIFIED_ADDRESS : Flag indicating whether the company address is verified.. Sample value for ZI_C_COMPANY_VERIFIED_ADDRESS
+ZI_C_COMPANY_EMPLOYEE_RANGE                     (STRING) : ZI_C_COMPANY_EMPLOYEE_RANGE : Company employee range.. Sample value for ZI_C_COMPANY_EMPLOYEE_RANGE
+ZI_C_COMPANY_EMPLOYEES                     (INTEGER) : ZI_C_COMPANY_EMPLOYEES : Number of employees in the company.. Sample value for ZI_C_COMPANY_EMPLOYEES
+ZI_C_COMPANY_REVENUE_RANGE                     (STRING) : ZI_C_COMPANY_REVENUE_RANGE : Company revenue range.. Sample value for ZI_C_COMPANY_REVENUE_RANGE
+ZI_C_COMPANY_REVENUE                     (INTEGER) : ZI_C_COMPANY_REVENUE : Company revenue.. Sample value for ZI_C_COMPANY_REVENUE
+ZI_C_COMPANY_PHONE                     (STRING) : ZI_C_COMPANY_PHONE : Company phone number.. Sample value for ZI_C_COMPANY_PHONE
+ZI_C_COMPANY_FAX                     (STRING) : ZI_C_COMPANY_FAX : Company fax number.. Sample value for ZI_C_COMPANY_FAX
+ZI_C_LINKEDIN_URL                     (STRING) : ZI_C_LINKEDIN_URL : LinkedIn URL of the company.. Sample value for ZI_C_LINKEDIN_URL
+ZI_C_FACEBOOK_URL                     (STRING) : ZI_C_FACEBOOK_URL : Facebook URL of the company.. Sample value for ZI_C_FACEBOOK_URL
+ZI_C_TWITTER_URL                     (STRING) : ZI_C_TWITTER_URL : Twitter URL of the company.. Sample value for ZI_C_TWITTER_URL
+ZI_C_YELP_URL                     (STRING) : ZI_C_YELP_URL : Yelp URL of the company.. Sample value for ZI_C_YELP_URL
+ZI_C_ALEXA_RANK                     (INTEGER) : ZI_C_ALEXA_RANK : Alexa rank of the company.. Sample value for ZI_C_ALEXA_RANK
+ZI_C_KEYWORDS                     (STRING) : ZI_C_KEYWORDS : Keywords associated with the company.. Sample value for ZI_C_KEYWORDS
+ZI_C_TOP_KEYWORDS                     (STRING) : ZI_C_TOP_KEYWORDS : Top keywords associated with the company.. Sample value for ZI_C_TOP_KEYWORDS
+ZI_C_NUM_KEYWORDS                     (INTEGER) : ZI_C_NUM_KEYWORDS : Number of keywords associated with the company.. Sample value for ZI_C_NUM_KEYWORDS
+ZI_C_EMPLOYEE_GROWTH_1YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_1YR : Employee growth rate of the company in the last 1 year.. Sample value for ZI_C_EMPLOYEE_GROWTH_1YR
+ZI_C_EMPLOYEE_GROWTH_2YR                     (FLOAT) : ZI_C_EMPLOYEE_GROWTH_2YR : Employee growth rate of the company in the last 2 years.. Sample value for ZI_C_EMPLOYEE_GROWTH_2YR
+ZI_ES_GROWTH                     (STRING) : ZI_ES_GROWTH : Growth indicator of the company according to the external data source.. Sample value for ZI_ES_GROWTH
+ZI_ES_EMPLOYEE_GROWTH                     (STRING) : ZI_ES_EMPLOYEE_GROWTH : Employee growth rate of the company according to the external data source.. Sample value for ZI_ES_EMPLOYEE_GROWTH
+ZI_ES_REVENUE_GROWTH                     (STRING) : ZI_ES_REVENUE_GROWTH : Revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_REVENUE_GROWTH
+ZI_ES_PERCENT_EMPLOYEE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_EMPLOYEE_GROWTH : Percentage employee growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_EMPLOYEE_GROWTH
+ZI_ES_PERCENT_REVENUE_GROWTH                     (FLOAT) : ZI_ES_PERCENT_REVENUE_GROWTH : Percentage revenue growth rate of the company according to the external data source.. Sample value for ZI_ES_PERCENT_REVENUE_GROWTH
+ZI_C_NAME_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_NAME_CONFIDENCE_SCORE : Confidence score for the company name.. Sample value for ZI_C_NAME_CONFIDENCE_SCORE
+ZI_C_URL_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_URL_CONFIDENCE_SCORE : Confidence score for the company URL.. Sample value for ZI_C_URL_CONFIDENCE_SCORE
+ZI_C_ADDRESS_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_ADDRESS_CONFIDENCE_SCORE : Confidence score for the company address.. Sample value for ZI_C_ADDRESS_CONFIDENCE_SCORE
+ZI_C_PHONE_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_PHONE_CONFIDENCE_SCORE : Confidence score for the company phone number.. Sample value for ZI_C_PHONE_CONFIDENCE_SCORE
+ZI_C_EMPLOYEES_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_EMPLOYEES_CONFIDENCE_SCORE : Confidence score for the company employee count.. Sample value for ZI_C_EMPLOYEES_CONFIDENCE_SCORE
+ZI_C_REVENUE_CONFIDENCE_SCORE                     (INTEGER) : ZI_C_REVENUE_CONFIDENCE_SCORE : Confidence score for the company revenue.. Sample value for ZI_C_REVENUE_CONFIDENCE_SCORE
+ZI_ES_INDUSTRY_CONFIDENCE_SCORE                     (INTEGER) : ZI_ES_INDUSTRY_CONFIDENCE_SCORE : Confidence score for the company industry according to the external data source.. Sample value for ZI_ES_INDUSTRY_CONFIDENCE_SCORE
+ZI_C_NAICS_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_NAICS_CONFIDENCE_SCORE : Confidence score for the company NAICS codes.. Sample value for ZI_C_NAICS_CONFIDENCE_SCORE
+ZI_C_SIC_CONFIDENCE_SCORE                     (FLOAT) : ZI_C_SIC_CONFIDENCE_SCORE : Confidence score for the company SIC codes.. Sample value for ZI_C_SIC_CONFIDENCE_SCORE
+ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three industries of the company according to the external data source.. Sample value for ZI_ES_INDUSTRIES_TOP3_CONFIDENCE_SCORES
+ZI_C_NAICS_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_NAICS_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three NAICS codes of the company.. Sample value for ZI_C_NAICS_TOP3_CONFIDENCE_SCORES
+ZI_C_SIC_TOP3_CONFIDENCE_SCORES                     (STRING) : ZI_C_SIC_TOP3_CONFIDENCE_SCORES : Confidence scores for the top three SIC codes of the company.. Sample value for ZI_C_SIC_TOP3_CONFIDENCE_SCORES
+ZI_C_IDS_MERGED                     (STRING) : ZI_C_IDS_MERGED : Merged identifiers for the company.. Sample value for ZI_C_IDS_MERGED
+ZI_C_NAMES_OTHER                     (STRING) : ZI_C_NAMES_OTHER : Other names for the company.. Sample value for ZI_C_NAMES_OTHER
+ZI_C_URL_STATUS                     (STRING) : ZI_C_URL_STATUS : Status of the company URL.. Sample value for ZI_C_URL_STATUS
+ZI_C_URLS_ALT                     (STRING) : ZI_C_URLS_ALT : Alternate URLs for the company.. Sample value for ZI_C_URLS_ALT
+ZI_C_URL_LAST_UPDATED                     (DATE) : ZI_C_URL_LAST_UPDATED : Last updated date for the company URL.. Sample value for ZI_C_URL_LAST_UPDATED
+ZI_C_INACTIVE_FLAG                     (INTEGER) : ZI_C_INACTIVE_FLAG : Flag indicating whether the company is inactive.. Sample value for ZI_C_INACTIVE_FLAG
+ZI_C_EIN                     (INTEGER) : ZI_C_EIN : Employer Identification Number (EIN) of the company.. Sample value for ZI_C_EIN
+ZI_C_IS_SMALL_BUSINESS                     (INTEGER) : ZI_C_IS_SMALL_BUSINESS : Flag indicating whether the company is a small business.. Sample value for ZI_C_IS_SMALL_BUSINESS
+ZI_C_IS_PUBLIC                     (INTEGER) : ZI_C_IS_PUBLIC : Flag indicating whether the company is public.. Sample value for ZI_C_IS_PUBLIC
+ZI_C_TICKER                     (STRING) : ZI_C_TICKER : Ticker symbol of the company.. Sample value for ZI_C_TICKER
+ZI_C_TICKERS_ALT                     (STRING) : ZI_C_TICKERS_ALT : Alternate ticker symbols of the company.. Sample value for ZI_C_TICKERS_ALT
+ZI_C_HAS_MOBILE_APP                     (INTEGER) : ZI_C_HAS_MOBILE_APP : Flag indicating whether the company has a mobile app.. Sample value for ZI_C_HAS_MOBILE_APP
+ZI_C_CURRENCY_CODE                     (STRING) : ZI_C_CURRENCY_CODE : Currency code of the company.. Sample value for ZI_C_CURRENCY_CODE
+ZI_C_NUM_LOCATIONS                     (INTEGER) : ZI_C_NUM_LOCATIONS : Number of locations of the company.. Sample value for ZI_C_NUM_LOCATIONS
+ZI_C_HR_CONTACTS                     (INTEGER) : ZI_C_HR_CONTACTS : Number of HR contacts in the company.. Sample value for ZI_C_HR_CONTACTS
+ZI_C_SALES_CONTACTS                     (INTEGER) : ZI_C_SALES_CONTACTS : Number of sales contacts in the company.. Sample value for ZI_C_SALES_CONTACTS
+ZI_C_MARKETING_CONTACTS                     (INTEGER) : ZI_C_MARKETING_CONTACTS : Number of marketing contacts in the company.. Sample value for ZI_C_MARKETING_CONTACTS
+ZI_C_FINANCE_CONTACTS                     (INTEGER) : ZI_C_FINANCE_CONTACTS : Number of finance contacts in the company.. Sample value for ZI_C_FINANCE_CONTACTS
+ZI_C_C_SUITE_CONTACTS                     (INTEGER) : ZI_C_C_SUITE_CONTACTS : Number of C-suite contacts in the company.. Sample value for ZI_C_C_SUITE_CONTACTS
+ZI_C_ENGINEERING_CONTACTS                     (INTEGER) : ZI_C_ENGINEERING_CONTACTS : Number of engineering contacts in the company.. Sample value for ZI_C_ENGINEERING_CONTACTS
+ZI_C_IT_CONTACTS                     (INTEGER) : ZI_C_IT_CONTACTS : Number of IT contacts in the company.. Sample value for ZI_C_IT_CONTACTS
+ZI_C_OPERATIONS_CONTACTS                     (INTEGER) : ZI_C_OPERATIONS_CONTACTS : Number of operations contacts in the company.. Sample value for ZI_C_OPERATIONS_CONTACTS
+ZI_C_LEGAL_CONTACTS                     (INTEGER) : ZI_C_LEGAL_CONTACTS : Number of legal contacts in the company.. Sample value for ZI_C_LEGAL_CONTACTS
+ZI_C_MEDICAL_CONTACTS                     (INTEGER) : ZI_C_MEDICAL_CONTACTS : Number of medical contacts in the company.. Sample value for ZI_C_MEDICAL_CONTACTS
+ZI_C_TECH_IDS                     (STRING) : ZI_C_TECH_IDS : Technology IDs associated with the company.. Sample value for ZI_C_TECH_IDS
+ZI_C_LATEST_FUNDING_AGE                     (STRING) : ZI_C_LATEST_FUNDING_AGE : Age of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_AGE
+ZI_C_NUM_OF_INVESTORS                     (STRING) : ZI_C_NUM_OF_INVESTORS : Number of investors in the company.. Sample value for ZI_C_NUM_OF_INVESTORS
+ZI_C_INVESTOR_NAMES                     (STRING) : ZI_C_INVESTOR_NAMES : Names of investors in the company.. Sample value for ZI_C_INVESTOR_NAMES
+ZI_C_FUNDING_STRENGTH                     (STRING) : ZI_C_FUNDING_STRENGTH : Funding strength of the company.. Sample value for ZI_C_FUNDING_STRENGTH
+ZI_C_FUNDING_TYPE                     (STRING) : ZI_C_FUNDING_TYPE : Type of funding received by the company.. Sample value for ZI_C_FUNDING_TYPE
+ZI_C_TOTAL_FUNDING_AMOUNT                     (STRING) : ZI_C_TOTAL_FUNDING_AMOUNT : Total funding amount received by the company.. Sample value for ZI_C_TOTAL_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_AMOUNT                     (STRING) : ZI_C_LATEST_FUNDING_AMOUNT : Latest funding amount received by the company.. Sample value for ZI_C_LATEST_FUNDING_AMOUNT
+ZI_C_LATEST_FUNDING_DATE                     (STRING) : ZI_C_LATEST_FUNDING_DATE : Date of the latest funding round of the company.. Sample value for ZI_C_LATEST_FUNDING_DATE
+ZI_C_NUM_FUNDING_ROUNDS                     (STRING) : ZI_C_NUM_FUNDING_ROUNDS : Number of funding rounds of the company.. Sample value for ZI_C_NUM_FUNDING_ROUNDS
+ZI_C_IS_FORTUNE_100                     (INTEGER) : ZI_C_IS_FORTUNE_100 : Flag indicating whether the company is in the Fortune 100 list.. Sample value for ZI_C_IS_FORTUNE_100
+ZI_C_IS_FORTUNE_500                     (INTEGER) : ZI_C_IS_FORTUNE_500 : Flag indicating whether the company is in the Fortune 500 list.. Sample value for ZI_C_IS_FORTUNE_500
+ZI_C_IS_S_AND_P_500                     (INTEGER) : ZI_C_IS_S_AND_P_500 : Flag indicating whether the company is in the S&P 500 list.. Sample value for ZI_C_IS_S_AND_P_500
+ZI_C_LAST_UPDATED_DATE                     (DATE) : ZI_C_LAST_UPDATED_DATE : Last updated date for the company information. Sample value for ZI_C_LAST_UPDATED_DATE
+ZI_C_RELEASE_DATE                     (INTEGER) : ZI_C_RELEASE_DATE : Release date of the company information. Sample value for ZI_C_RELEASE_DATE
+
+
+
+
+```
+
+**Instructions:**
+* Generate syntactically correct BigQuery SQL for the following question.
+* Use only relevant columns from the schema. DO NOT use columns not mentioned in this meta-data.
+* Use only relevant table name as provided and do not qualify tablename with backticks(`).
+* Validate column names against the schema to avoid errors.
+* Use a maximum of 10 columns.
+* Prioritize keywords that indicate calculations.
+* Use the following examples as guidelines to generate the new BigQuery SQL accordingly
+
+Question: What county has the greatest enrollment in CalFresh per capita?
+SQL : SELECT Vendor_Location  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location, COALESCE(SUM(SAFE_CAST(( SUBSTR (Total_Cost_Vouchers,2,  (INSTR (Total_Cost_Vouchers, ".") -2))  ) AS INT64)), 0) AS calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 FROM `cdii-poc.HHS_Program_Counts.calfresh-redemption-by-county-by-participant-category-data-2010-2018`  AS calfresh_redemption_by_county_by_participant_category_data_2010_2018 WHERE (Total_Cost_Vouchers) <> '*' OR (Total_Cost_Vouchers) IS NULL GROUP BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_vendor_location ORDER BY calfresh_redemption_by_county_by_participant_category_data_2010_2018_total_cost_of_vouchers_1 DESC limit 1; 
+
+Question: Which county has the greatest proportion of CalWorks recipients co-enrolled in at least one additional program?
+SQL : SELECT Number AS county, COALESCE(SUM(SAFE_CAST( Person   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file` WHERE ((_2_programs ) <> '*1' AND (_2_programs ) <> '*2' AND (_2_programs ) <> '0' OR (_2_programs ) IS NULL) AND (((_3_programs ) <> '*1' AND (_3_programs ) <> '*2' AND (_3_programs ) <> '0' OR (_3_programs ) IS NULL) AND ((_4_programs ) <> '*1' AND (_4_programs ) <> '*2' AND (_4_programs ) <> '0' OR (_4_programs ) IS NULL)) AND (((_5__programs ) <> '*1' AND (_5__programs ) <> '*2' AND (_5__programs ) <> '0' OR (_5__programs ) IS NULL) AND (Level ) = 'County' AND (((Number ) <> 'County Total' OR (Number ) IS NULL) AND (Program ) = 'CalWorks')) GROUP BY county ORDER BY calhhs_dashboard_2015_2020_annual_data_file_total_beneficiaries_1 DESC LIMIT 1; 
+
+Question: How have these race and ethnicity trends changed over time?
+SQL : SELECT fileyear  AS calhhs_dashboard_2015_2020_annual_data_file_fileyear, COALESCE(SUM(SAFE_CAST( White   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_whites_1, COALESCE(SUM(SAFE_CAST( Black   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_blacks_1, COALESCE(SUM(SAFE_CAST( Hispanic   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_hispanics_1, COALESCE(SUM(SAFE_CAST( Asian_PI   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_asian_1, COALESCE(SUM(SAFE_CAST( Native_American   AS INT64)), 0) AS calhhs_dashboard_2015_2020_annual_data_file_total_native_american_1 FROM `cdii-poc.HHS_Program_Counts.calhhs-dashboard-2015-2020-annual-data-file`  AS calhhs_dashboard_2015_2020_annual_data_file WHERE (Program ) = 'CalWorks' GROUP BY fileyear ORDER BY fileyear; 
+
+
+    
+
+For this question what would be the most accurate BigQuery SQL query?
+Question: What is the total revenue for constuction industry?  
+
+Sql_query: 
+SELECT 
+    SUM(CAST(ZI_C_REVENUE AS INT64)) AS total_revenue
+FROM sl-test-project-363109.sl-test-project-363109.zoominfo.`zi_companies_with_most_marketing_professionals`
+WHERE 
+    ZI_C_INDUSTRY_PRIMARY = 'Construction';
+<<<<
+
+
