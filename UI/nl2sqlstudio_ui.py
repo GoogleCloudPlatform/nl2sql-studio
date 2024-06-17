@@ -42,7 +42,7 @@ st.set_page_config(page_title='NL2SQL Studio',
                    layout='wide')
 
 
-def define_session_variables():
+def define_session_variables() -> None:
     """
         Define the session variables once at the start of the app
     """
@@ -66,7 +66,7 @@ def define_session_variables():
     # st.session_state.login_status = False
 
 
-def define_modals():
+def define_modals() -> None:
     """
         Define the Modal dialogs for Help Info display, Sample Queries
         and Project Configuration
@@ -97,11 +97,11 @@ def define_modals():
     st.session_state.q_s_modal = q_s_modal
 
 
-def define_pre_auth_layout():
+def define_pre_auth_layout() -> None:
     """
         Define the Login page prior to Login
     """
-    def logo_image():
+    def logo_image() -> None:
         """
             Display the Logo image and the Login button
         """
@@ -115,7 +115,7 @@ def define_pre_auth_layout():
 
         # st.image('solid_g-logo-2.png')
 
-    def login_link():
+    def login_link() -> None:
         """
             Design and Link for the Login button
             called in logo_image function
@@ -133,25 +133,27 @@ def define_pre_auth_layout():
             </style>
             """, unsafe_allow_html=True)
         auth_url = view_login_google()
-        hyperlink_string = '<div class="big-font"> <a href="' + auth_url + '" style="color:white" target="_self">Login</a> </div>'
+        hyperlink_string = '<div class="big-font"> <a href="' +\
+            auth_url +\
+            '" style="color:white" target="_self">Login</a> </div>'
         logger.info(f"Auth url = {auth_url}")
         st.markdown(hyperlink_string, unsafe_allow_html=True)
 
     logo_image()
 
 
-def define_post_auth_layout():
+def define_post_auth_layout() -> None:
     """
         Streamlit UI layout with page configuration, styles,
         widgets, main screen and sidebar, etc
     """
-    def page_config():
-        st.set_page_config(page_title='NL2SQL Studio',
-                           page_icon="📊",
-                           initial_sidebar_state="expanded",
-                           layout='wide')
+    # def page_config():
+    #     st.set_page_config(page_title='NL2SQL Studio',
+    #                        page_icon="📊",
+    #                        initial_sidebar_state="expanded",
+    #                        layout='wide')
 
-    def markdown_styles():
+    def markdown_styles() -> None:
         st.markdown("""
             <style>
                 .block-container {
@@ -210,7 +212,7 @@ def define_post_auth_layout():
 
     # Side Bar definintion
 
-    def sidebar_components():
+    def sidebar_components() -> None:
         """
             UI Controls in the Sidebar panel
         """
@@ -252,14 +254,14 @@ def define_post_auth_layout():
             back_to_login_page()
             st.query_params.clear()
 
-    def main_page():
+    def main_page() -> None:
         """
             UI Controls and interaction on the Main panel
         """
-        def logo_image():
+        def logo_image() -> None:
             st.image('solid_g-logo-2.png')
 
-        def help_info():
+        def help_info() -> None:
             with st.container():
                 column_1, column_2, column_3 = st.columns([0.25, 0.85, 0.1])
                 with column_1:
@@ -282,7 +284,7 @@ def define_post_auth_layout():
                                 Metadata of tables in the Configuration
                                 settings in the Sidebar panel""")
 
-        def input_container():
+        def input_container() -> None:
             """
                 Define the Question input entry and Sample queries button
             """
@@ -302,7 +304,7 @@ def define_post_auth_layout():
                 q_s_modal = st.session_state.q_s_modal
                 q_s_modal.open()
 
-        def qa_msgs_container():
+        def qa_msgs_container() -> None:
             """
                 Main chat session window of the screen
             """
@@ -318,7 +320,7 @@ def define_post_auth_layout():
             st.session_state.mc = msg_container
             get_feedback()
 
-        def disclaimer():
+        def disclaimer() -> None:
             """
                 Disclaimer message at the bottom of the screen
             """
@@ -329,7 +331,7 @@ def define_post_auth_layout():
                         executing it against your database.</p>",
                         unsafe_allow_html=True)
 
-        def sample_queries_modal_active():
+        def sample_queries_modal_active() -> None:
             """
                 Modal output when the Sample queries button is pressed
             """
@@ -348,7 +350,7 @@ def define_post_auth_layout():
                     if st.button("Close"):
                         q_s_modal.close()
 
-        def qa_modal_active():
+        def qa_modal_active() -> None:
             """
                 Modal output when the Questions and Queries button
                 on the Side bar panel is pressed
@@ -366,7 +368,7 @@ def define_post_auth_layout():
                         info_modal.open()
                         qa_modal.close(True)
 
-        def pc_modal_active():
+        def pc_modal_active() -> None:
             """
                 Modal output when the Project Configuration button on the
                 Side bar is pressed
@@ -441,7 +443,7 @@ def define_post_auth_layout():
         layout_function()
 
 
-def pre_initialize():
+def pre_initialize() -> None:
     """
         Initialise the Application context
     """
@@ -453,7 +455,7 @@ def pre_initialize():
     logger.info(f"Login status = {st.session_state.login_status}")
 
 
-def initialize():
+def initialize() -> None:
     """
         Initialise the Application context
     """
@@ -468,7 +470,7 @@ def initialize():
         st.session_state.messages = []
 
 
-def redraw():
+def redraw() -> None:
     """
         Trigger the re-rendering of the UI
     """
@@ -480,7 +482,7 @@ def redraw():
                 st.markdown(message["content"])
 
 
-def add_new_question():
+def add_new_question() -> None:
     """
         Function that is called when a new question is added to the
         messae queue.  This will trigger the API calls to invoke the
@@ -500,7 +502,7 @@ def add_new_question():
                 rag_gen_sql(st.session_state.question)
 
 
-def when_user_responded():
+def when_user_responded() -> None:
     """
         Function to capture the user feedback from the
         Thumbs up/down widget
@@ -533,7 +535,7 @@ def when_user_responded():
         get_feedback()
 
 
-def refresh():
+def refresh() -> None:
     """
         Refresh the display
     """
@@ -545,7 +547,7 @@ def refresh():
         # st.rerun()
 
 
-def app_load():
+def app_load() -> None:
     """
         On Application load
     """
@@ -574,7 +576,10 @@ def app_load():
     logger.info(f"Login status = {st.session_state.login_status}")
 
 
-def render_view():
+def render_view() -> None:
+    """
+        Entry point Function called by Streamlit while rendering the UI
+    """
     pre_auth_post_logout = {
         "pre-init": pre_initialize,
         # "app_load": app_load,

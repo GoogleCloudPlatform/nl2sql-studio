@@ -47,7 +47,7 @@ load_dotenv()
 # API Calls
 
 
-def default_func(prompt):
+def default_func(prompt) -> str:
     """
         Test function that returns a reversed question output
         instead of executor
@@ -61,7 +61,7 @@ def default_func(prompt):
     return sql
 
 
-def call_generate_sql_api(question, endpoint):
+def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
     """
         Common SQL generation function
     """
@@ -90,7 +90,7 @@ def call_generate_sql_api(question, endpoint):
     return sql, exec_result
 
 
-def rag_gen_sql(question):
+def rag_gen_sql(question) -> str:
     """
         SQL Generation using the RAG Executor
     """
@@ -103,7 +103,7 @@ def rag_gen_sql(question):
     return sql
 
 
-def cot_gen_sql(question):
+def cot_gen_sql(question) -> str:
     """
         SQL Generation using the Chain of Thought executor
     """
@@ -117,7 +117,7 @@ def cot_gen_sql(question):
     return sql
 
 
-def linear_gen_sql(question):
+def linear_gen_sql(question) -> str:
     """
         SQL Generation using the Linear executor
     """
@@ -133,7 +133,7 @@ def linear_gen_sql(question):
 
 # Utility functions
 
-def submit_feedback(user_response):
+def submit_feedback(user_response) -> bool:
     """
         Function to capture the score of Feedback widget click
     """
@@ -151,7 +151,7 @@ def submit_feedback(user_response):
     return user_response
 
 
-def message_queue(question):
+def message_queue(question) -> None:
     """
         Append user queries and system responses to the message queue
     """
@@ -161,7 +161,7 @@ def message_queue(question):
                                       [![Loading](https://cdn3.emoji.gg/emojis/7048-loading.gif)](https://emoji.gg/emoji/7048-loading)"""})
 
 
-def get_feedback():
+def get_feedback() -> None:
     """
         Position the Thumbs Up/Down User feedback widget
     """
@@ -191,7 +191,7 @@ def get_feedback():
             st.session_state.refresh = True
 
 
-def add_question_to_db(sample_question, sample_sql):
+def add_question_to_db(sample_question, sample_sql) -> None:
     """
         Add Sample questions and corresponding SQLs to the
         PostgreSQL DB
@@ -209,7 +209,7 @@ def add_question_to_db(sample_question, sample_sql):
     st.session_state.add_question_status = True
 
 
-def back_to_login_page():
+def back_to_login_page() -> None:
     """
         Open the given URL
     """
@@ -231,7 +231,7 @@ def back_to_login_page():
     # AUTH_REQUESTS.Request().get(url)
 
 
-def init_auth():
+def init_auth() -> None:
     """
         Authentication Initialisation function
     """
@@ -246,7 +246,7 @@ def init_auth():
     logger.info(f"Redirect URI = {google_redirect_uri} ")
 
 
-def login_user():
+def login_user() -> None:
     """
         Trigger Logging in
     """
@@ -255,7 +255,7 @@ def login_user():
     view_login_google()
 
 
-def view_login_google():
+def view_login_google() -> str:
     """
         Navigating to Authentication URL
     """
@@ -273,7 +273,7 @@ code&client_id={google_client_id}&redirect_uri={google_redirect_uri}\
     return auth_url
 
 
-def view_auth_google(code):
+def view_auth_google(code) -> tuple[str, str]:
     """
         Retrieve the Code and Tokens
     """
@@ -309,16 +309,17 @@ def view_auth_google(code):
     except Exception:
         logger.error("Authentication via Requests library  failed")
 
-    user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo",
-                             headers={"Authorization": f"Bearer {access_token}"},
-                             timeout=None)
+    user_info = requests\
+        .get("https://www.googleapis.com/oauth2/v1/userinfo",
+             headers={"Authorization": f"Bearer {access_token}"},
+             timeout=None)
     logger.info(f"Decoded User info : {user_info.json()}")
     response_data = {"token": id_token, "access_token": access_token}
     logger.info(f"Response data = {response_data}")
     return id_token, access_token
 
 
-def view_get_token(token):
+def view_get_token(token) -> None:
     """
         Retrieve the token
     """
