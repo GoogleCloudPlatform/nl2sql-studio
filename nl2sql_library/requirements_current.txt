@@ -211,7 +211,7 @@ requests-oauthlib==2.0.0
 rich==13.7.1
 rsa==4.9
 safetensors==0.4.3
-scikit-learn==1.4.2
+scikit-learn==1.5.0
 scipy==1.13.0
 scramp==1.4.5
 sentence-transformers==2.7.0
