@@ -20,26 +20,15 @@
 
 import os
 import time
-# from io import StringIO
 import json
-# from typing import Annotated
 import configparser
-
 import streamlit as st
 from streamlit_feedback import streamlit_feedback
 from streamlit.components.v1 import html
-# from streamlit_modal import Modal
-
 from dotenv import load_dotenv
 from loguru import logger
-
-from google.auth.transport import requests
-# import google.auth.transport.requests as AUTH_REQUESTS
+# from google.auth.transport import requests
 import requests
-
-# from starlette.middleware.sessions import SessionMiddleware
-# from fastapi.security import OAuth2PasswordBearer
-
 from jose import jwt
 
 load_dotenv()
@@ -155,10 +144,12 @@ def message_queue(question) -> None:
     """
         Append user queries and system responses to the message queue
     """
+    base_url = "https://cdn3.emoji.gg/emojis/7048-loading.gif"
+    emoj_url = "https://emoji.gg/emoji/7048-loading"
     st.session_state.messages.append({"role": "user", "content": question})
     st.session_state.messages.append({"role": "assistant",
-                                      "content": """Fetching results...
-                                      [![Loading](https://cdn3.emoji.gg/emojis/7048-loading.gif)](https://emoji.gg/emoji/7048-loading)"""})
+                                      "content": f"""Fetching results...
+                                      [![Loading]({base_url})]({emoj_url})"""})
 
 
 def get_feedback() -> None:
@@ -186,6 +177,7 @@ def get_feedback() -> None:
                                           on_submit=submit_feedback,
                                           key='fbkey' +
                                           str(st.session_state.fb_count)):
+            print(feedback)
             del st.session_state['fbkey'+str(st.session_state.fb_count)]
             st.session_state.fb_count += 1
             st.session_state.refresh = True

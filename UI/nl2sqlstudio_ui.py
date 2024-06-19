@@ -395,20 +395,21 @@ def define_post_auth_layout() -> None:
                             # To read file as string:
                             string_data = stringio.read()
                             files = {'file': (uploaded_file.name, string_data)}
+                            token = f"Bearer {st.session_state.access_token}"
                             body = {"proj_name": project,
                                     "dataset": dataset,
                                     "metadata_file": uploaded_file.name}
                             headers = {"Content-type": "application/json",
-                                       "Authorization":
-                                       f"Bearer {st.session_state.access_token}"}
+                                       "Authorization": token}
                             # url = "http://localhost:5000"
+
                             _ = requests.post(url=url+"/projconfig",
                                               data=json.dumps(body),
                                               headers=headers,
                                               timeout=None)
+
                             _ = requests.post(url=url+"/uploadfile",
-                                              headers={"Authorization":
-                                                       f"Bearer {st.session_state.access_token}"},
+                                              headers={"Authorization": token},
                                               files=files,
                                               timeout=None)
 
@@ -553,13 +554,9 @@ def app_load() -> None:
     """
     logger.info("App loaders")
     found_query_params = False
-    try:
-        logger.info(f"Query Parameters - {st.query_params}")
-        code = st.query_params['code']
+    logger.info(f"Query Parameters - {st.query_params}")
+    if st.query_params['code']:
         found_query_params = True
-    except Exception:
-        logger.info("Login required")
-        found_query_params = False
 
     if found_query_params:
         id_token, access_token = view_auth_google(st.query_params['code'])
@@ -603,5 +600,6 @@ def render_view() -> None:
 
     for _, function in funcs_to_exec.items():
         function()
+
 
 render_view()
