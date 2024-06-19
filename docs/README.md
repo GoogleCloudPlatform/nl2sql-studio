@@ -1,4 +1,4 @@
-![Nl2SqlLibrary Archiecture](solid_g-logo-2.png)
+![Nl2SqlLibrary Archiecture](assets/solid_g-logo-2.png)
 
 # Your One-Stop Workshop for Natural Language to SQL Experimentation
 
@@ -77,6 +77,8 @@ poetry run python cot_executor.py
 
 poetry run python rag_executor.py
 ```
+![output](assets/lib_execution_1.png)
+
 **Alternatively, you can run the wrapper class in the main folder like so**
 
 ```
@@ -102,7 +104,7 @@ poetry run python nl2sql_lib_executors.py rag
 
     This will start the local service and starts listening to API requests in the http url given as output. Sample output below
 
-    < image to be updated here>
+    ![local service](assets/lib_service_local.png)
 
     Note the URL mentioned in the Listening at line - underlined URL.  This will be the URL and port number where the service will be listening for local API requests
 
@@ -119,9 +121,15 @@ poetry run python nl2sql_lib_executors.py rag
 
     This will call the APIs for generating the SQL using Linear, Chain-of-Thought, RAG executors.  In one pass, it generates only the SQLs and in second pass it generates and executes the SQL as well.  Output will be as shown below
 
-    < image to be updated here>
+    ![exec](assets/lib_test_file_exection.png)
 
 3. You can also test the service from the python interpreter as well
+
+    On terminate, type python to open the interpreter
+
+    Import libraries and call APIs.  Sample output of 2 APIs (1 GET and 1 POST) calls made along with the output is shown below
+
+    ![interpreter](assets/lib_python_interpreter_exec.png)
 
 
 ### Deploying the NL2SQL Library Service on App Engine
@@ -179,12 +187,16 @@ poetry run python nl2sql_lib_executors.py rag
         gcloud config set app/cloud_build_timeout 2000
         ```
 
+        ![timeout](assets/lib_app_timeout_info.png)
+        
         2000 indicates the number of seconds allowed for deployment.  This can be increased to ensure library installation completes during App engine deployment.
 
     5. If you have the python library packages installed in the same folder (services root folder - for ex: nl2sql_library)
 
-        * Create a new file named **.gitignore**
+        * Create a new file named **.gcloudignore**
         * mention the folder name in that file
+
+            ![gcloudignore](assets/sample_gcloudignore.png)
 
         This is similar to .gitignore and does not upload the python library packages to App Engine.  Required libraries are installed during deployment based on the requirements.txt file. Else the deployment time might be too high and timeout.
 
@@ -198,7 +210,7 @@ poetry run python nl2sql_lib_executors.py rag
 
         Output of the command will be as shown
 
-        < image to be incuded here>
+        ![app engine deploy](assets/lib_appeng_deploy.png)
 
         **Note**- if you see Uploading files are 1000+ there is probably something wrong with your .gitignore file. Please stop deployment and review above step 5
 
@@ -208,10 +220,7 @@ Once deployed, the service will be available on App Engine Services list as show
 
 After deployment, on App Engine Services screen, click on the Service.  This will open a new browser tab and perform a GET operation on the default route. If you see a response on browser window as shown below, the deployment is successful
 
-    < image to be included here >
-
-
-## Setting up NL2SQL UI
+![Nl2SqlLibrary Archiecture](assets/
 
 Prerequisite files:
 * app.yaml
@@ -238,7 +247,7 @@ Prerequisite files:
 
     Streamlit output will be as shown below
 
-    < image to be included here >
+    ![ui local](assets/ui_local_launch.png)
 
 4. Streamlit will initialize and start the server on **http://127.0.0.1:8501"
 
@@ -294,4 +303,20 @@ This will be the URL for the default service.  If you have deployed with a diffe
 
 **nl2sqlstudio-ui-dot-sl-test-project-363109.uc.r.appspot.com**
 
-< images to be included here>
+![Ui](assets/ui_login_page.png)
+
+![alt text](assets/ui_main_page.png)
+
+![alt text](assets/ui_query_selector.png)
+
+![alt text](assets/ui_proj_config.png)
+
+![alt text](assets/ui_sample_queries.png)
+
+![alt text](assets/ui_sql_gen_inprogress.png)
+
+![alt text](assets/ui_sql_gen.png)
+
+![alt text](assets/ui_gensql_user_feedback.png)
+
+
