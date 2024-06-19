@@ -148,7 +148,7 @@ def message_queue(question) -> None:
     emoj_url = "https://emoji.gg/emoji/7048-loading"
     st.session_state.messages.append({"role": "user", "content": question})
     st.session_state.messages.append({"role": "assistant",
-                                      "content": f"""Fetching results...
+                                      "content": f"""Fetching results..
                                       [![Loading]({base_url})]({emoj_url})"""})
 
 

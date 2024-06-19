@@ -25,6 +25,42 @@ This project follows
 
 ## Contribution process
 
+To get started contributing:
+
+1. Sign a Contributor License Agreement (see details above).
+2. Fork the repo, develop and test your code changes.
+3. Run the linter locally. To run linter you need to 
+   install flake8 and black,
+
+   Use below commands to install the libraries
+   ```
+   pip install flask8
+   ```
+
+   ```
+   pip install black
+   ```
+
+   The below command shows you the files that need 
+   to be formatted
+
+   ```
+   black --check ./<your folder or file path>
+   ```
+
+   If above command shows any file that need to be formatted. Run below command to see more details on what lines in the file need to be fomratted
+
+   ```
+   flake8 ./<your folder or file path>
+   ```
+
+4. Develop using the following guidelines to help expedite your review:
+    a. Ensure that your code adheres to the existing [style](https://google.github.io/styleguide).
+    b. Ensure that your code has an appropriate set of unit tests which all pass.
+
+5. Submit a pull request.
+
+
 ### Code reviews
 
 All submissions, including submissions by project members, require review. We
