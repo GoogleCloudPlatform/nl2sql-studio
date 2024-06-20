@@ -212,15 +212,24 @@ poetry run python nl2sql_lib_executors.py rag
 
         ![app engine deploy](assets/lib_appeng_deploy.png)
 
-        **Note**- if you see Uploading files are 1000+ there is probably something wrong with your .gitignore file. Please stop deployment and review above step 5
+        **Note**- if you see Uploading files are 1000+ there is probably something wrong with your .gcloudignore file. Please stop deployment and review above step 5
 
 Once deployed, the service will be available on App Engine Services list as shown below
 
-    < image to be included here >
+![app engine deploy](assets/appeng_services.png)
 
 After deployment, on App Engine Services screen, click on the Service.  This will open a new browser tab and perform a GET operation on the default route. If you see a response on browser window as shown below, the deployment is successful
 
-![Nl2SqlLibrary Archiecture](assets/
+![Nl2SqlLibrary Archiecture](assets/lib_service_exec.png)
+
+Modify the test.py file and update the URL to the App Engine deployed service endpoint.  For ex.
+
+https://nl2sql-lib-executors-p2r-dot-sl-test-project-363109.uc.r.appspot.com
+
+Execute the file to validate the deployment of the library on backend.
+
+
+## NL2SQL Studio UI
 
 Prerequisite files:
 * app.yaml
@@ -281,7 +290,7 @@ Optional steps (Steps 1,2 & 3 below are optional if you have already performed t
         ADD_QUESTION - PG service URL
         EXECUTORS - NL2SQL Library service URL
 
-5. Update **config.ini** (you will need to update this if you are enabling SSO authentication)
+5. Update **config.ini** (you will need to update this wto specify the Client ID and Client secret as SSO authentication is implemented)
 
 6. Update sample_questions.txt (sample questions related to your dataset)
 
@@ -294,7 +303,7 @@ Optional steps (Steps 1,2 & 3 below are optional if you have already performed t
 10. Execute the following code
 
     ```
-    gcloud app dwploy
+    gcloud app deploy
     ```
 
 If the deployment is successful, App Engine endpoint will be provided in the output.
@@ -302,6 +311,8 @@ If the deployment is successful, App Engine endpoint will be provided in the out
 This will be the URL for the default service.  If you have deployed with a different service name, the URL will be prefixed with the service name.  For example:
 
 **nl2sqlstudio-ui-dot-sl-test-project-363109.uc.r.appspot.com**
+
+Below are some of the screenshots of NL2SQL Studi UI
 
 ![Ui](assets/ui_login_page.png)
 
