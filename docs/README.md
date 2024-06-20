@@ -11,7 +11,7 @@ NL2SQL Studio is a comprehensive, open-source toolkit designed to empower develo
 1. **Cloning the repository**
 
 ``` 
-git clone https://github.com/slatawa/nl2sql.git
+git clone https://github.com/GoogleCloudPlatform/nl2sql-studio.git
 ```
 
 2. **NL2SQL Modules**
@@ -20,14 +20,13 @@ git clone https://github.com/slatawa/nl2sql.git
 |---|---|---|
 | 1 | NL2SQL Library | Library code for generating SQL using Vertex AI |
 | 2 | User Interface | User interface developed using Streamlit |
-| 3 | RAG/PostgreSQL Interface | Interface to add sample questions and generate vector embeddings - required in case you want RAG feature. |
+
 
 3. **Deployment Order**
 
 | Sl. No | Module | Why |
 |---|---|---|
 | 1 | NL2SQL Library | URL of the APIs exposed by this module/service is required to be mentioned in the .env file while deploying the UI |
-| 1 | RAG/PostgreSQL Interface | URL of the APIs exposed by this module/service is required to be mentioned in the .env file while deploying the UI |
 | 2 | User Interface | Config.ini and .env files need to be updated with the API endpoints and Google Client IDs & secrets |
 
 
