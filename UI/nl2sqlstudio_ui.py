@@ -221,7 +221,7 @@ def define_post_auth_layout() -> None:
             with column_1:
                 st.image('google.png')
             with column_2:
-                st.write('v0.4')
+                st.write('v1.0')
                 logout_state = st.button("Logout")
 
         with st.sidebar.container(height=140):
@@ -554,9 +554,14 @@ def app_load() -> None:
     """
     logger.info("App loaders")
     found_query_params = False
-    logger.info(f"Query Parameters - {st.query_params}")
-    if st.query_params['code']:
+    try:
+        logger.info(f"Query Parameters - {st.query_params}")
+        code = st.query_params['code']
         found_query_params = True
+        logger.info(f"Authorisation code : {code}")
+    except Exception:
+        logger.info("Login required")
+        found_query_params = False
 
     if found_query_params:
         id_token, access_token = view_auth_google(st.query_params['code'])
