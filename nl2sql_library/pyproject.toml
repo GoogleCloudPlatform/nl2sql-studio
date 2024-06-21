@@ -63,6 +63,7 @@ flask = "^3.0.3"
 flask-cors = "^4.0.1"
 poetry-plugin-export = "^1.8.0"
 psutil = "^5.9.8"
+db-dtypes = "^1.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
