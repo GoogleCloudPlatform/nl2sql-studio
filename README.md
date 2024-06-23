@@ -33,10 +33,6 @@ We welcome contributions! Please see our `CONTRIBUTING.md` file for guidelines.
 
 This project is licensed under the Apache License 2.0.
 
-## Acknowledgments
-
-(List any libraries or resources that your project utilizes)
-
 Let us know if you have any questions or feedback!
 
 
