@@ -257,10 +257,30 @@ Prerequisite files:
 
     ![ui local](assets/ui_local_launch.png)
 
-4. Streamlit will initialize and start the server on **http://127.0.0.1:8501"
+4. Streamlit will initialize and start the server on **http://localhost:8501**
 
 5. Open the above URL on a browser for UI
 
+
+
+    <span style="background-color:yellow;color:black">**- NOTE -**</span>
+
+    While launching the UI locally, ensure the following
+
+    1. config.ini is updated with the Client ID and Client Secret (without this the Google OAuth authentication fails)
+    2. GOOGLE_REDIRECT_URI is updated to redirect to local host address mentioned above (else upon Google Authentication, the browser redirects to the URL mentioned in the config.ini )
+    3. Update Credetials Page (if not already done)
+        
+        1. Goto Credentials Page
+
+        1. Edit the OAuth 2.0 Client ID generated for the project
+        
+        1. Ensure local host address long with port number is updated in both the below sections (else, local origins requests will be blocked by Google OAuth and redirection will happen to a diffferent URL or errors out as Invalid)
+
+            1. AUTHORIZED JAVASCRIPT ORIGINS
+            1. AUTHORISED REDIRECT URIs 
+
+            ![ui local](assets/creds_origin_redirect.png)
 
 ### Deploying the UI on App Engine
 
