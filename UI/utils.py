@@ -34,6 +34,8 @@ from jose import jwt
 load_dotenv()
 
 # API Calls
+LITE_API_PART = 'lite'
+FEW_SHOT_GENERATION = "Few Shot"
 
 
 def default_func(prompt) -> str:
@@ -54,12 +56,26 @@ def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
     """
         Common SQL generation function
     """
-    api_url = os.getenv('EXECUTORS')
-    api_endpoint = f"{api_url}/{endpoint}"
-    logger.info(f"Invoking API : {api_endpoint}")
-    data = {"question": question, "execute_sql": st.session_state.execution}
+    # api_url = os.getenv('CORE_EXECUTORS')
+
+    if LITE_API_PART in endpoint:
+        api_url = os.getenv('LITE_EXECUTORS')
+        few_shot_gen = False
+        if st.session_state.lite_model == FEW_SHOT_GENERATION:
+            few_shot_gen = True
+        data = {"question": question,
+                "execute_sql": st.session_state.execution,
+                "few_shot": few_shot_gen}
+    else:
+        api_url = os.getenv('CORE_EXECUTORS')
+        data = {"question": question,
+                "execute_sql": st.session_state.execution}
+
     headers = {"Content-type": "application/json",
                "Authorization": f"Bearer {st.session_state.access_token}"}
+    api_endpoint = f"{api_url}/{endpoint}"
+
+    logger.info(f"Invoking API : {api_endpoint}")
     logger.info(f"Provided parameters are : Data = {data}")
     api_response = requests.post(api_endpoint,
                                  data=json.dumps(data),
@@ -68,6 +84,7 @@ def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
     exec_result = ""
     try:
         resp = api_response.json()
+        logger.info(f"API resonse : {resp}")
         sql = resp['generated_query']
         st.session_state.result_id = resp['result_id']
         exec_result = resp['sql_result']
@@ -85,8 +102,9 @@ def rag_gen_sql(question) -> str:
     """
     logger.info("Invoking the RAG Executor")
     sql, exec_result = call_generate_sql_api(question, 'api/executor/rag')
-    st.session_state.messages[-1]['content'] = sql + \
-        exec_result if st.session_state.execution else sql
+    st.session_state.messages[-1]['content'] = format_response(sql,
+                                                               exec_result)
+
     st.session_state.new_question = False
     st.rerun()
     return sql
@@ -99,8 +117,9 @@ def cot_gen_sql(question) -> str:
     logger.info("Invoking the Chain of Thought Executor")
     sql, exec_result = call_generate_sql_api(question, 'api/executor/cot')
 
-    st.session_state.messages[-1]['content'] = sql + \
-        exec_result if st.session_state.execution else sql
+    st.session_state.messages[-1]['content'] = format_response(sql,
+                                                               exec_result)
+
     st.session_state.new_question = False
     st.rerun()
     return sql
@@ -113,12 +132,42 @@ def linear_gen_sql(question) -> str:
     logger.info("Invoking the Linear Executor")
     sql, exec_result = call_generate_sql_api(question, 'api/executor/linear')
 
-    st.session_state.messages[-1]['content'] = sql + \
-        exec_result if st.session_state.execution else sql
+    st.session_state.messages[-1]['content'] = format_response(sql,
+                                                               exec_result)
+
     st.session_state.new_question = False
     st.rerun()
     return sql
 
+
+def lite_gen_sql(question) -> str:
+    """
+        SQL Generation using the NL2SQLStudio Lite
+    """
+    logger.info("Invoking the NL2SQLStudio Lite Generator")
+    sql, exec_result = call_generate_sql_api(question, '/api/lite/generate')
+
+    st.session_state.messages[-1]['content'] = format_response(sql,
+                                                               exec_result)
+
+    st.session_state.new_question = False
+    st.rerun()
+    return sql
+
+
+def format_response(sql, exec_result):
+    """
+    Formats the response string to append the message queue
+    """
+    md_style_start1 = '<span style="font-size: 1rem;">'
+    md_style_start2 = '<span style="font-size: 1.1rem;color:blueviolet;">'
+    md_style_end = '</span>'
+    exec_result = exec_result.replace('\n', " ")
+    response_string = md_style_start1 + \
+        sql + md_style_end + "<br>" + md_style_start2 + \
+        exec_result + md_style_end if st.session_state.execution else \
+        sql + md_style_end
+    return response_string
 
 # Utility functions
 

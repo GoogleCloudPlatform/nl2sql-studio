@@ -28,7 +28,7 @@ import streamlit as st
 from streamlit_modal import Modal
 
 # import the executors
-from utils import default_func, linear_gen_sql, cot_gen_sql, rag_gen_sql
+from utils import linear_gen_sql, cot_gen_sql, rag_gen_sql, lite_gen_sql
 # import support functions
 from utils import get_feedback, message_queue, add_question_to_db
 # import auth functions
@@ -40,6 +40,14 @@ st.set_page_config(page_title='NL2SQL Studio',
                    page_icon="📊",
                    initial_sidebar_state="expanded",
                    layout='wide')
+
+CORE = "NL2SQL Studio Core"
+LITE = "NL2SQL Studio Lite"
+LINEAR = "Linear Executor"
+RAG = "Rag Executor"
+COT = "Chain of Thought"
+ZERO_SHOT = "Zero Shot"
+FEW_SHOT = "Few Shot"
 
 
 def define_session_variables() -> None:
@@ -60,6 +68,7 @@ def define_session_variables() -> None:
     st.session_state.sample_sql = ''
     st.session_state.add_question_status = False
     st.session_state.result_id = ''
+    st.session_state.generation_engine = None
 
     # st.session_state.access_token = None
     # st.session_state.token = None
@@ -224,11 +233,25 @@ def define_post_auth_layout() -> None:
                 st.write('v1.0')
                 logout_state = st.button("Logout")
 
-        with st.sidebar.container(height=140):
-            st.session_state.model = st.radio('Pick your Model',
-                                              ['Linear Executor',
-                                               'Rag Executor',
-                                               'Chain of Thought'])
+        gen_engine = st.sidebar.selectbox(
+            "Choose NL2SQL framework",
+            (LITE, CORE)
+            )
+        logger.info(f"Generation using : {gen_engine}")
+        if gen_engine == CORE:
+            st.session_state.generation_engine = CORE
+            with st.sidebar.container(height=140):
+                st.session_state.model = st.radio('Select Prompting Technique',
+                                                  [LINEAR, RAG, COT])
+        elif gen_engine == LITE:
+            st.session_state.generation_engine = LITE
+            with st.sidebar.container(height=115):
+                st.session_state.lite_model = st.radio(
+                    'Select Prompting Technique',
+                    [ZERO_SHOT, FEW_SHOT])
+        else:
+            st.session_state.generation_engine = None
+
         with st.sidebar.expander("Configuration Settings"):
             proj_conf = st.button("Project Configuration")
             rag_input = st.button("Questions  &  Queries", disabled=False)
@@ -480,7 +503,7 @@ def redraw() -> None:
     with msg_container:
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+                st.markdown(message["content"], unsafe_allow_html=True)
 
 
 def add_new_question() -> None:
@@ -493,14 +516,23 @@ def add_new_question() -> None:
         redraw()
         st.session_state.refresh = False
         if st.session_state.new_question:
-            if st.session_state.model == 'None':
-                default_func(st.session_state.question)
-            elif st.session_state.model == 'Linear Executor':
-                linear_gen_sql(st.session_state.question)
-            elif st.session_state.model == 'Chain of Thought':
-                cot_gen_sql(st.session_state.question)
-            else:
-                rag_gen_sql(st.session_state.question)
+            if st.session_state.generation_engine == CORE:
+                # if st.session_state.model == 'None':
+                #     default_func(st.session_state.question)
+                # elif st.session_state.model == 'Linear Executor':
+                if st.session_state.model == LINEAR:
+                    linear_gen_sql(st.session_state.question)
+                # elif st.session_state.model == 'Chain of Thought':
+                elif st.session_state.model == COT:
+                    cot_gen_sql(st.session_state.question)
+                else:
+                    rag_gen_sql(st.session_state.question)
+            elif st.session_state.generation_engine == LITE:
+                lite_gen_sql(st.session_state.question)
+                # if st.session_state.lite_model == ZERO_SHOT:
+                #     pass
+                # elif st.session_state.lite_model == FEW_SHOT:
+                #     pass
 
 
 def when_user_responded() -> None:
@@ -554,6 +586,7 @@ def app_load() -> None:
     """
     logger.info("App loaders")
     found_query_params = False
+    # st.session_state.login_status = True
     try:
         logger.info(f"Query Parameters - {st.query_params}")
         code = st.query_params['code']
