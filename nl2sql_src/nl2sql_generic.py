@@ -1061,12 +1061,12 @@ if __name__ == '__main__':
     project_id = os.environ['PROJECT_ID']
     dataset_id = os.environ['DATASET_ID']
     print("Info =", project_id, dataset_id)
-    meta_data_json_path = "cache_metadata/metadata_cache.json"
+    meta_data_json_path = "utils/metadata_cache.json"
     nl2sqlbq_client = Nl2sqlBq(
         project_id=project_id,
         dataset_id=dataset_id,
         metadata_json_path=meta_data_json_path,
-        # "../cache_metadata/metadata_cache.json",
+        # "../utils/metadata_cache.json",
         model_name="text-bison"
         # model_name="code-bison"
         )

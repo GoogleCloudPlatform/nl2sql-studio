@@ -164,7 +164,7 @@ def format_response(sql, exec_result):
     md_style_end = '</span>'
     exec_result = exec_result.replace('\n', " ")
     response_string = md_style_start1 + \
-        sql + md_style_end + "<br>" + md_style_start2 + \
+        sql + md_style_end + "<br><br>" + md_style_start2 + \
         exec_result + md_style_end if st.session_state.execution else \
         sql + md_style_end
     return response_string

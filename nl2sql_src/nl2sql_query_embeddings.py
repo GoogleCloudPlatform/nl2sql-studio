@@ -98,6 +98,8 @@ class Nl2Sql_embed():
 
         with open(self.EMBEDDING_FILE, "w") as f:
             json.dump(data, f)
+            
+        self.update_vectordb_index(query=question)
 
     def load_embeddings(self):
         """
@@ -150,6 +152,25 @@ class Nl2Sql_embed():
         # return index, query_array_updated
         return
 
+    def update_vectordb_index(self, query):
+        """
+            Update the Vector DB index file
+        """
+        emb = self.embedding_model.get_embeddings([query])[0].values
+        new_array = [emb]
+
+        embeddings_data_array = np.asarray(new_array, dtype=np.float32)
+
+        # Read the index from stored index file
+        try:
+            index = read_index(self.INDEX_FILE)
+        except Exception:
+            index = faiss.IndexFlatIP(len(new_array[0]))
+
+        index.add(embeddings_data_array)
+        write_index(index, self.INDEX_FILE)
+    
+    
     def search_matching_queries(self, new_query):
         """
             Return 3 most similar queeries and SQLs
