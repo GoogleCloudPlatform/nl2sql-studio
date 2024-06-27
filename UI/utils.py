@@ -171,6 +171,7 @@ def format_response(sql, exec_result):
 
 # Utility functions
 
+
 def submit_feedback(user_response) -> bool:
     """
         Function to capture the score of Feedback widget click
@@ -232,13 +233,17 @@ def get_feedback() -> None:
             st.session_state.refresh = True
 
 
-def add_question_to_db(sample_question, sample_sql) -> None:
+def add_question_to_db(sample_question,
+                       sample_sql,
+                       framework='CORE_EXECUTORS') -> None:
     """
         Add Sample questions and corresponding SQLs to the
         PostgreSQL DB
     """
-    url = os.getenv('ADD_QUESTION')
+    url = os.getenv(framework)
+    url = f"{url}/api/record/create"
     logger.info(f"Adding {sample_question} and {sample_sql} to DB")
+    logger.info(f"Adding Sample question and SQL to {framework} via {url}")
 
     data = {"question": sample_question, "sql": sample_sql}
     headers = {'Content-type': 'application/json',

@@ -51,8 +51,8 @@ class Nl2Sql_embed():
     """
     def __init__(self):
         # Init function
-        self.EMBEDDING_FILE = "dataset/embeddings.json"
-        self.INDEX_FILE = 'dataset/saved_index_localdata'
+        self.EMBEDDING_FILE = "utils/embeddings.json"
+        self.INDEX_FILE = 'utils/saved_index_localdata'
         self.embedding_model =\
             TextEmbeddingModel.from_pretrained("textembedding-gecko@003")
 

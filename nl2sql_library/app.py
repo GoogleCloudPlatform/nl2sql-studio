@@ -13,14 +13,16 @@ from flask import Flask, request
 from dotenv import load_dotenv
 from loguru import logger
 
-from utils.utility_functions import initialize_db, config_project, get_project_config
-from utils.utility_functions import execute_bq_query, log_sql, log_update_feedback
-from utils.utility_functions import result2nl
-
+from utils.utility_functions import initialize_db, config_project
+from utils.utility_functions import execute_bq_query, log_update_feedback
+from utils.utility_functions import result2nl, get_project_config, log_sql
+from nl2sql_query_embeddings import Nl2Sql_embed
 
 load_dotenv()
 
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+currentdir = os.path.dirname(
+    os.path.abspath(inspect.getfile(inspect.currentframe()))
+    )
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
@@ -142,7 +144,7 @@ def cot_executor():
             "error_msg": "",
         }
         sql2 = "\t".join([line.strip() for line in sql])
-        log_sql(res_id, question, str(sql2), "Chain of Thought Executor", execute_sql)
+        log_sql(res_id, question, str(sql2), "CoT Executor", execute_sql)
         if execute_sql:
             try:
                 result = execute_bq_query(sql)
@@ -188,7 +190,6 @@ def rag_executor():
         nle = NL2SQL_Executors()
         res_id, sql = nle.rag_executor(question=question)
         # res_id, sql = nle.generate_query(question)
-        print("res_id = ", res_id, "\ngen sql = ", sql, "\nExecute SQL = ", execute_sql)
         sql_result = ""
         response_string = {
             "result_id": res_id,
@@ -295,6 +296,24 @@ def execute_sql_query():
         "error_msg": "",
     }
     return json.dumps(response_string)
+
+
+@app.route('/api/record/create', methods=['POST'])
+def create_record():
+    """
+        Insert record with Question and MappedSQL in the Table or Local file
+    """
+    question = request.json['question']
+    mappedsql = request.json['sql']
+    logger.info(f"Inserting data. Input : {question} and {mappedsql}")
+    try:
+        # pge = PgSqlEmb(PGPROJ, PGLOCATION, PGINSTANCE, PGDB, PGUSER, PGPWD)
+        # pge.insert_row(question, mappedsql)
+        embed = Nl2Sql_embed()
+        embed.insert_data(question=question, sql=mappedsql)
+        return json.dumps({"response": "Successfully inserted record"})
+    except RuntimeError:
+        return json.dumps({"response": "Unable to insert record"})
 
 
 if __name__ == "__main__":

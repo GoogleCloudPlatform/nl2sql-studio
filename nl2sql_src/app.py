@@ -71,7 +71,7 @@ def nl2sql_lite_generate():
         curdir = os.getcwd()
         data_file_name = get_project_config()["config"]["metadata_file"]
         logger.info(f"Using the metadata file : {data_file_name}")
-        
+
         metadata_json_path = f"{curdir}/utils/{data_file_name}"
         logger.info(f"path  {metadata_json_path}")
 
@@ -115,7 +115,7 @@ def nl2sql_lite_generate():
                     "result_id": res_id,
                     "generated_query": sql,
                     "sql_result": sql_result,
-                    "error_msg": "Error in NL2SQL Studio Lite Query generation",
+                    "error_msg": "Error - NL2SQL Studio Lite Query Generation",
                 }
     except Exception:
         logger.error(f"NL2SQL Lite SQL Generation uncussessful: [{question}]")
@@ -159,7 +159,7 @@ def upload_file():
         target_file = get_project_config()["config"]["metadata_file"]
         with open(f"utils/{target_file}", "w", encoding="utf-8") as outfile:
             outfile.write(data_to_save)
-            
+
         return json.dumps({"status": "Successfully uploaded file"})
     except RuntimeError:
         return json.dumps({"status": "Failed to upload file"})
@@ -193,9 +193,9 @@ def create_record():
         # pge.insert_row(question, mappedsql)
         embed = Nl2Sql_embed()
         embed.insert_data(question=question, sql=mappedsql)
-        return json.dumps({"response":"Successfully inserted record"})
+        return json.dumps({"response": "Successfully inserted record"})
     except RuntimeError:
-        return json.dumps({"response":"Unable to insert record"})
+        return json.dumps({"response": "Unable to insert record"})
 
 
 if __name__ == "__main__":

@@ -740,7 +740,7 @@ class Nl2Sql_embed:
         # Init function
         # self.EMBEDDING_FILE = "../dataset/embeddings.json"
         # app_dir = os.path.abspath(os.path.join("./", os.pardir))
-        self.INDEX_FILE = "saved_index_pgdata"
+        self.INDEX_FILE = "saved_index_localdata"
         self.embedding_model = TextEmbeddingModel.from_pretrained(
             "textembedding-gecko@003"
         )
@@ -870,9 +870,11 @@ class PgSqlEmb:
         app_dir = os.path.abspath(os.path.join("./", os.curdir))
         if "sample_executors" in app_dir:
             app_dir = os.path.abspath(os.path.join("./", os.pardir))
-            self.INDEX_FILE = app_dir + "/utils/saved_index_pgdata"
+            # self.INDEX_FILE = app_dir + "/utils/saved_index_pgdata"
+            self.INDEX_FILE = app_dir + "/utils/saved_index_localdata"
         else:
-            self.INDEX_FILE = app_dir + "/utils/saved_index_pgdata"
+            # self.INDEX_FILE = app_dir + "/utils/saved_index_pgdata"
+            self.INDEX_FILE = app_dir + "/utils/saved_index_localdata"
         print("Index file = ", self.INDEX_FILE)
 
         self.embedding_model = TextEmbeddingModel.from_pretrained(

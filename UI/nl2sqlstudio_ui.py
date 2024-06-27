@@ -386,7 +386,10 @@ def define_post_auth_layout() -> None:
                     if st.session_state.add_question_status:
                         st.success("Success ! Question added to DB ")
                     if st.button('Add question'):
-                        add_question_to_db(samp_question, samp_sql)
+                        add_question_to_db(samp_question, samp_sql,
+                                           'CORE_EXECUTORS')
+                        add_question_to_db(samp_question, samp_sql,
+                                           'LITE_EXECUTORS')
                         info_modal = st.session_state.info_modal
                         info_modal.open()
                         qa_modal.close(True)
@@ -425,16 +428,26 @@ def define_post_auth_layout() -> None:
                             headers = {"Content-type": "application/json",
                                        "Authorization": token}
                             # url = "http://localhost:5000"
+                            executors_list = ['CORE_EXECUTORS',
+                                              'LITE_EXECUTORS']
+                            for executor in executors_list:
+                                url = os.getenv(executor)
+                                logger.info(
+                                    f"(Project config for : {executor}"
+                                    )
+                                _ = requests.post(
+                                    url=url+"/projconfig",
+                                    data=json.dumps(body),
+                                    headers=headers,
+                                    timeout=None
+                                    )
 
-                            _ = requests.post(url=url+"/projconfig",
-                                              data=json.dumps(body),
-                                              headers=headers,
-                                              timeout=None)
-
-                            _ = requests.post(url=url+"/uploadfile",
-                                              headers={"Authorization": token},
-                                              files=files,
-                                              timeout=None)
+                                _ = requests.post(
+                                    url=url+"/uploadfile",
+                                    headers={"Authorization": token},
+                                    files=files,
+                                    timeout=None
+                                    )
 
                         pc_modal.close()
 
