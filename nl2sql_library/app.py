@@ -237,6 +237,8 @@ def project_config():
     project = request.json["proj_name"]
     dataset = request.json["bq_dataset"]
     metadata_file = request.json["metadata_file"]
+    logger.info(f"Received info - {project}, {dataset}, {metadata_file}")
+
     config_project(project, dataset, metadata_file)
 
     return json.dumps({"status": "success"})
@@ -256,8 +258,13 @@ def upload_file():
         data2 = json.loads(my_json)
         data_to_save = json.dumps(data2, indent=4)
         target_file = get_project_config()["config"]["metadata_file"]
+        logger.info(f"Saving file as : {target_file}")
+
         with open(f"utils/{target_file}", "w", encoding="utf-8") as outfile:
             outfile.write(data_to_save)
+
+        logger.info(f"List of files - {os.listdir('utils')}")
+
         return json.dumps({"status": "Successfully uploaded file"})
     except RuntimeError:
         return json.dumps({"status": "Failed to upload file"})

@@ -418,12 +418,15 @@ def define_post_auth_layout() -> None:
                                 uploaded_file.getvalue().decode("utf-8")
                                 )
 
+                            logger.info(
+                                f"Uploading file : {uploaded_file.name}"
+                                )
                             # To read file as string:
                             string_data = stringio.read()
                             files = {'file': (uploaded_file.name, string_data)}
                             token = f"Bearer {st.session_state.access_token}"
                             body = {"proj_name": project,
-                                    "dataset": dataset,
+                                    "bq_dataset": dataset,
                                     "metadata_file": uploaded_file.name}
                             headers = {"Content-type": "application/json",
                                        "Authorization": token}

@@ -54,10 +54,12 @@ def config_project(
             proj_config = json.load(infile)
     # except:
     except FileNotFoundError:
-
         logger.error("File not found, using default configuration")
         proj_config = proj_config_dict
 
+    logger.info(
+        f"Saving following data : {proj_name}, {dataset}, {metadata_file}"
+        )
     proj_config["config"]["proj_name"] = proj_name
     proj_config["config"]["dataset"] = dataset
     proj_config["config"]["metadata_file"] = metadata_file
@@ -65,7 +67,11 @@ def config_project(
     with open(PROJ_CONFIG_FILE, "w", encoding="utf-8") as outfile:
         outfile.write(json_obj)
         # json.dump(proj_config, outfile)
-
+    with open(PROJ_CONFIG_FILE, "r", encoding="utf-8") as infile:
+        proj_config = json.load(infile)
+        logger.info(
+            f"New file name : {proj_config['config']['metadata_file']}"
+            )
     initialize_db(proj=proj_name, dataset=dataset)
 
 
@@ -97,7 +103,8 @@ def execute_bq_query(sql_query=""):
     project = get_project_config()["config"]["proj_name"]
     client = bigquery.Client(project=project)
     logger.info(f"Execute bq query : {sql_query}")
-    # query_job = client.query("select * from `q_and_a_db.questions_and_gensqls` \
+    # query_job = client.query(
+    # "select * from `q_and_a_db.questions_and_gensqls` \
     #                          where created_by = 'CoT executor' " )
     try:
         query_job = client.query(sql_query)
@@ -129,9 +136,12 @@ def execute_bq_query(sql_query=""):
 #     query_job.result()
 
 
-def log_sql(
-    result_id="dummy", question="dummy", sql="dummy", executor="dummy", feedback="False"
-):
+def log_sql(result_id="dummy",
+            question="dummy",
+            sql="dummy",
+            executor="dummy",
+            feedback="False"
+            ):
     """
     Saves the generated SQL in a log file locally
     """
@@ -190,14 +200,15 @@ def result2nl(question, result):
     Converts the BQ query result to Natural language response
     """
     vertexai.init(project="sl-test-project-363109", location="us-central1")
-    # question="What are the top 5 industries in terms of revenue for companies\
+    # question="What are the top 5industries in terms of revenue for companies\
     #       having headquarters in California ?"
 
     model = TextGenerationModel.from_pretrained("text-bison@001")
     Result2nl_prompt = """
 You are an expert Data Analyst. Given a report of SQL query and the question in
-natural language, provide a very crisp, short, intuitive and easy-to-understand summary of the result.
-If the result does not have any data, then just mention that briefly in the summary.
+natural language, provide a very crisp, short, intuitive and easy-to-understand
+summary of the result. If the result does not have any data, then just mention
+that briefly in the summary.
 question: {question}
 result: {result}
 """
