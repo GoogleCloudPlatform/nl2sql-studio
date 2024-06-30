@@ -27,7 +27,7 @@ from streamlit_feedback import streamlit_feedback
 from streamlit.components.v1 import html
 from dotenv import load_dotenv
 from loguru import logger
-from google.auth.transport import requests
+# from google.auth.transport import requests
 import requests
 from jose import jwt
 

@@ -18,7 +18,8 @@ git clone https://github.com/GoogleCloudPlatform/nl2sql-studio.git
 
 | Sl. No | Module | Description |
 |---|---|---|
-| 1 | NL2SQL Library | Library code for generating SQL using Vertex AI |
+| 1 | NL2SQL Studio Core | Library code for generating SQL using Vertex AI |
+| 1 | NL2SQL Studio Lite | Library code for generating SQL using Vertex AI |
 | 2 | User Interface | User interface developed using Streamlit |
 
 
@@ -26,12 +27,13 @@ git clone https://github.com/GoogleCloudPlatform/nl2sql-studio.git
 
 | Sl. No | Module | Why |
 |---|---|---|
-| 1 | NL2SQL Library | URL of the APIs exposed by this module/service is required to be mentioned in the .env file while deploying the UI |
+| 1 | NL2SQL Studio Core | URL of the APIs exposed by this module/service is required to be mentioned in the .env file while deploying the UI |
+| 1 | NL2SQL Studio Lite | URL of the APIs exposed by this module/service is required to be mentioned in the .env file while deploying the UI |
 | 2 | User Interface | Config.ini and .env files need to be updated with the API endpoints and Google Client IDs & secrets |
 
 
 
-## Executing the NL2SQL Library - Backend
+## Executing the NL2SQL Studio Core - Backend
 
 
 **Prerequisite files**
@@ -90,7 +92,7 @@ poetry run python nl2sql_lib_executors.py rag
 
 ‘**linear**’, ‘**cot**’, ‘**rag**’ are the type of executors for Linear, Chain of Thought and RAG executors respectively.  Default executor type is ‘linear’ if no executor type is specified as arguments
 
-### Launching the NL2SQL Library service locally
+### Launching the NL2SQL Studio Core service locally
 
 1. Starting the backend as a local service
 
@@ -131,7 +133,7 @@ poetry run python nl2sql_lib_executors.py rag
     ![interpreter](assets/lib_python_interpreter_exec.png)
 
 
-### Deploying the NL2SQL Library Service on App Engine
+### Deploying the NL2SQL Studio Core Service on App Engine
 
 1. Creating requirements.txt from Poetry installation
 
@@ -228,6 +230,149 @@ https://nl2sql-lib-executors-p2r-dot-sl-test-project-363109.uc.r.appspot.com
 Execute the file to validate the deployment of the library on backend.
 
 
+## Executing the NL2SQL Studio Lite - Backend
+
+
+**Prerequisite files**
+
+* app.yaml
+* app.py (this will contain the APIs exposed by the backend)
+* Wrapper files
+
+Open a new terminal
+
+Navigate to **nl2sql_src** folder
+
+To validate and ensure library dependencies are resolved, create a new Python env, activate the virtual env.  Before running the below steps navigate to nl2sql_library folder in your local
+
+```
+python3 -m venv myenv
+
+source ./myenv/bin/activate
+```
+
+**Let’s install the dependencies**
+
+```
+pip install -m requirments.txt
+```
+
+
+### Launching the NL2SQL Studio Lite service locally
+
+1. Starting the backend as a local service
+
+    * On the terminal window, navigate to **nl2sql_src** folder
+    * Type the below command
+
+    ```
+    gunicorn --workers 1 --threads 8 --timeout 0 app:app
+    ``` 
+
+    This will start the local service and starts listening to API requests in the http url given as output. Sample output below
+
+    ![local service](assets/lib_service_local.png)
+
+    Note the URL mentioned in the Listening at line - underlined URL.  This will be the URL and port number where the service will be listening for local API requests
+
+2. Testing the local service
+
+    * Open a new terminal window
+    * Navigate to **nl2sql_src** folder
+    * Open **test_lite.py** and change the URL variable to local host address noted above.  It will be like **http://127.0.0.1:8000".  Sometimes the port number may be different which will be shown as output of above command
+    * Run the test.py file
+
+    ```
+    python test_lite.py
+    ```
+
+    This will call the APIs for generating the SQL using Zero-shot and Few-Shot prompting techniques.  Output will be as shown below
+
+    ![exec](assets/lib_test_file_exection.png)
+
+3. You can also test the service from the python interpreter as well
+
+    On terminate, type python to open the interpreter
+
+    Import libraries and call APIs.  Sample output of 2 APIs (1 GET and 1 POST) calls made along with the output is shown below
+
+    ![interpreter](assets/lib_python_interpreter_exec.png)
+
+
+### Deploying the NL2SQL Studio Lite Service on App Engine
+
+
+
+1. Deploy on App Engine
+
+    To deploy on App Engine, ensure you have app.yaml in the root folder of the service which you want to deploy.  Modify the service name in app.yaml in case required.  Other parameters in the file need not be changed
+
+    Optional steps (Steps 1,2 & 3 below are optional if you have already performed this)
+
+    1. Install **gcloud** on your system from  https://cloud.google.com/sdk/docs/install
+    
+    2. Authenticate using gcloud using
+
+        ```
+        gcloud auth login
+        ```
+    
+        and follow the prompts to authenticate
+
+    3. Set the project
+
+        ```
+        gcloud config set project <your project id>
+        ```
+
+    4. Use below command to increase timeout on app engine (optional, but run this command if the deployment timeout for default setting) 
+
+        ```
+        gcloud config set app/cloud_build_timeout 2000
+        ```
+
+        ![timeout](assets/lib_app_timeout_info.png)
+        
+        2000 indicates the number of seconds allowed for deployment.  This can be increased to ensure library installation completes during App engine deployment.
+
+    5. If you have the python library packages installed in the same folder (services root folder - for ex: nl2sql_library)
+
+        * Create a new file named **.gcloudignore**
+        * mention the folder name in that file
+
+            ![gcloudignore](assets/sample_gcloudignore.png)
+
+        This is similar to .gitignore and does not upload the python library packages to App Engine.  Required libraries are installed during deployment based on the requirements.txt file. Else the deployment time might be too high and timeout.
+
+    6. From the services folder which is being deployed here in this case it will be the **nl2sql_library** folder in your local , deploy the service using below command 
+
+        ```
+        gcloud app deploy
+        ```
+
+        **Note** : If this is the first service on App Engine, the service should be named ‘default’ in app.yaml file. You can only use a custom name if you have a default service deployed.
+
+        Output of the command will be as shown
+
+        ![app engine deploy](assets/lib_appeng_deploy.png)
+
+        **Note**- if you see Uploading files are 1000+ there is probably something wrong with your .gcloudignore file. Please stop deployment and review above step 5
+
+Once deployed, the service will be available on App Engine Services list as shown below
+
+![app engine deploy](assets/appeng_services.png)
+
+After deployment, on App Engine Services screen, click on the Service.  This will open a new browser tab and perform a GET operation on the default route. If you see a response on browser window as shown below, the deployment is successful
+
+![Nl2SqlLibrary Archiecture](assets/lite_service_exec.png)
+
+Modify the test.py file and update the URL to the App Engine deployed service endpoint.  For ex.
+
+https://nl2sqlsqlstudio-lite-p2r-dot-sl-test-project-363109.uc.r.appspot.com
+
+Execute the file to validate the deployment of the library on backend.
+
+***************
 ## NL2SQL Studio UI
 
 Prerequisite files:
@@ -281,6 +426,10 @@ Prerequisite files:
             1. AUTHORISED REDIRECT URIs 
 
             ![ui local](assets/creds_origin_redirect.png)
+
+    <span style="background-color:red;color:black">**- Disabling Google Authentication -**</span>
+
+    In case you want to execute the UI without enabling Google Authentication, pls make the following changes to 
 
 ### Deploying the UI on App Engine
 

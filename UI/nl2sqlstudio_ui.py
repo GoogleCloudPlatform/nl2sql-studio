@@ -601,8 +601,10 @@ def app_load() -> None:
         On Application load
     """
     logger.info("App loaders")
+    # Code Block for 'With Google Authentication'
+    # UnComment the following lines to enable Google Autentiction
+
     found_query_params = False
-    # st.session_state.login_status = True
     try:
         logger.info(f"Query Parameters - {st.query_params}")
         code = st.query_params['code']
@@ -623,6 +625,15 @@ def app_load() -> None:
         st.session_state.token = None
         st.session_state.access_token = None
         st.session_state.login_status = False
+    # Comment for 'With Google Authentication' ends
+
+    # Code block for 'Without Google Authentication'
+    # Uncomment the below lines to continue without Google Auth
+
+    # st.session_state.login_status = True
+    # st.session_state.token = "dummy token"
+    # st.session_state.access_token = "dummy token"
+    # Code block for without Google Auth ends
 
     logger.info(f"Login status = {st.session_state.login_status}")
 
