@@ -48,6 +48,8 @@ RAG = "Rag Executor"
 COT = "Chain of Thought"
 ZERO_SHOT = "Zero Shot"
 FEW_SHOT = "Few Shot"
+GEN_BY_CORE = "CORE_EXECUTORS"
+GEN_BY_LITE = "LITE_EXECUTORS"
 
 
 def define_session_variables() -> None:
@@ -69,6 +71,8 @@ def define_session_variables() -> None:
     st.session_state.add_question_status = False
     st.session_state.result_id = ''
     st.session_state.generation_engine = None
+
+    st.session_state.sql_generated_by = None
 
     # st.session_state.access_token = None
     # st.session_state.token = None
@@ -567,7 +571,10 @@ def when_user_responded() -> None:
             info_text = ':red[👎 User feedback captured ]'
 
         st.session_state.messages[-1]['content'] = resp + " \n\n" + info_text
-        url = os.getenv('EXECUTORS') + '/userfb'
+        genertor_endpoint = GEN_BY_CORE \
+            if st.session_state.sql_generated_by == GEN_BY_CORE\
+            else GEN_BY_LITE
+        url = os.getenv(genertor_endpoint) + '/userfb'
         data = {"result_id": st.session_state.result_id,
                 "user_feedback": user_feedback}
 

@@ -36,6 +36,8 @@ load_dotenv()
 # API Calls
 LITE_API_PART = 'lite'
 FEW_SHOT_GENERATION = "Few Shot"
+GEN_BY_CORE = "CORE_EXECUTORS"
+GEN_BY_LITE = "LITE_EXECUTORS"
 
 
 def default_func(prompt) -> str:
@@ -66,10 +68,12 @@ def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
         data = {"question": question,
                 "execute_sql": st.session_state.execution,
                 "few_shot": few_shot_gen}
+        st.session_state.sql_generated_by = GEN_BY_LITE
     else:
         api_url = os.getenv('CORE_EXECUTORS')
         data = {"question": question,
                 "execute_sql": st.session_state.execution}
+        st.session_state.sql_generated_by = GEN_BY_CORE
 
     headers = {"Content-type": "application/json",
                "Authorization": f"Bearer {st.session_state.access_token}"}

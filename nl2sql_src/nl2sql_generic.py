@@ -97,7 +97,7 @@ class Nl2sqlBq:
         #                     max_output_tokens=1024)
 
         self.engine = sqlalchemy.engine.create_engine(
-            f"bigquery://{self.dataset_id.replace('.','/')}")
+            f"bigquery://{self.dataset_id.replace('.', '/')}")
         if metadata_json_path:
             f = open(metadata_json_path, encoding="utf-8")
             self.metadata_json = json.loads(f.read())
