@@ -1,0 +1,12 @@
+{
+    "default": {
+        "proj_name": "sl-test-project-363109",
+        "dataset": "zoominfo",
+        "metadata_file": "zoominfo_tables.json"
+    },
+    "config": {
+        "proj_name": "sl-test-project-363109",
+        "dataset": "zoominfo",
+        "metadata_file": "zoominfo_tables.json"
+    }
+}
