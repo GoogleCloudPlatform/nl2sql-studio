@@ -24,7 +24,7 @@ proj_config_dict = {
     "default": {
         "proj_name": "sl-test-project-363109",
         "dataset": "zoominfo",
-        "metadata_file": "zoominfo_tables.json",
+        "metadata_file": "metadata_cache.json",
     },
     "config": {"proj_name": "", "dataset": "", "metadata_file": ""},
 }
@@ -54,6 +54,7 @@ def config_project(
             proj_config = json.load(infile)
     # except:
     except FileNotFoundError:
+
         logger.error("File not found, using default configuration")
         proj_config = proj_config_dict
 
@@ -72,6 +73,7 @@ def config_project(
         logger.info(
             f"New file name : {proj_config['config']['metadata_file']}"
             )
+
     initialize_db(proj=proj_name, dataset=dataset)
 
 
@@ -145,12 +147,13 @@ def log_sql(result_id="dummy",
     """
     Saves the generated SQL in a log file locally
     """
+    print("Logging the data")
     # project = get_project_config()['config']['proj_name']
     try:
         with open(SQL_LOG_FILE, "r", encoding="utf-8") as inpfile:
             logdata = json.load(inpfile)
     # except:
-    except RuntimeError:
+    except FileNotFoundError:
         logdata = {}
 
     logdata[result_id] = {}
@@ -205,10 +208,11 @@ def result2nl(question, result):
 
     model = TextGenerationModel.from_pretrained("text-bison@001")
     Result2nl_prompt = """
-You are an expert Data Analyst. Given a report of SQL query and the question in
-natural language, provide a very crisp, short, intuitive and easy-to-understand
-summary of the result. If the result does not have any data, then just mention
-that briefly in the summary.
+You are an expert Data Analyst. Given a report of SQL query and the question
+in natural language, provide a very crisp, short, intuitive and
+easy-to-understand summary of the result. If the result does not have any
+data, then just mention that briefly in the summary.
+
 question: {question}
 result: {result}
 """

@@ -10,12 +10,14 @@ from nl2sql.executors.linear_executor.core import CoreLinearExecutor
 from utils.utility_functions import get_project_config, initialize_db
 
 from nl2sql.llms.vertexai import text_bison_32k
-from nl2sql.tasks.table_selection.core import CoreTableSelector, prompts as cts_prompts
+from nl2sql.tasks.table_selection.core import CoreTableSelector
+from nl2sql.tasks.table_selection.core import prompts as cts_prompts
 from nl2sql.tasks.column_selection.core import (
     CoreColumnSelector,
     prompts as ccs_prompts,
 )
-from nl2sql.tasks.sql_generation.core import CoreSqlGenerator, prompts as csg_prompts
+from nl2sql.tasks.sql_generation.core import CoreSqlGenerator
+from nl2sql.tasks.sql_generation.core import prompts as csg_prompts
 from sample_executors.rag_executor import RAG_Executor
 
 vertexai.init(
@@ -28,7 +30,9 @@ bigquery_connection_string = initialize_db(
     get_project_config()["config"]["dataset"],
 )
 data_file_name = get_project_config()["config"]["metadata_file"]
-logger.info(f"Data = {bigquery_connection_string}, {dataset_name}, {data_file_name}")
+logger.info(
+    f"Data = {bigquery_connection_string}, {dataset_name}, {data_file_name}"
+    )
 
 question_to_gen = "What is the revenue for construction industry?"
 
@@ -138,7 +142,9 @@ if __name__ == "__main__":
 
     nle = NL2SQL_Executors()
     if executor == "linear":
-        result_id, gen_sql = nle.linear_executor(data_dict=data_dictionary_read)
+        result_id, gen_sql = nle.linear_executor(
+            data_dict=data_dictionary_read
+            )
         print("linear")
     elif executor == "cot":
         result_id, gen_sql = nle.cot_executor(data_dict=data_dictionary_read)
