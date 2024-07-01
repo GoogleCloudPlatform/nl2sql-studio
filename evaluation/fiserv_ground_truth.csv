@@ -1,0 +1,111 @@
+table,question,ground_truth_sql
+Authorization_search.xlsx,What were my sales for yesterday?,"SELECT
+  SUM(a_amount) AS total_amount,
+  COUNT(a_authCode) AS auth_code_count
+FROM
+  poc-project-guleria.final_genai_poc.authorizations_search
+WHERE
+  DATE(a_transactionDateTime) = CURRENT_DATE() - INTERVAL 1 DAY;"
+Authorization_search.xlsx,What is the approval rate for last 2 weeks?,"SELECT
+  COUNTIF(a_approvalCode = 'Approved') / NULLIF(COUNT(a_authCode),0) as total_txn
+FROM
+  poc-project-guleria.final_genai_poc.authorizations_search
+WHERE
+  a_transactionDateTime BETWEEN TIMESTAMP_SUB(CURRENT_DATE(), INTERVAL 14 DAY) AND CURRENT_DATE(); "
+Authorization_search.xlsx,How many transactions went to Visa and Mastercard for the last month?,"SELECT
+  COUNT(a_authCode) as approved_txn 
+FROM 
+  poc-project-guleria.final_genai_poc.authorizations_search
+WHERE 
+  a_transactionDateTime BETWEEN TIMESTAMP_SUB(CURRENT_DATE(), INTERVAL 30 DAY) AND CURRENT_DATE()
+AND a_network IN ('Visa', 'Mastercard');"
+Authorization_search.xlsx,List all online declined discover transactions for today.,"SELECT 
+  COUNT(a_authCode) as approved_txn
+FROM 
+  poc-project-guleria.final_genai_poc.authorizations_search
+WHERE 
+  a_transactionDateTime = CURRENT_DATE()  AND a_network = 'Discover' and a_approvalCode = 'Declined' and a_paymentMethod = 'Mobile & Ecommerce';"
+Settlement_search.xlsx,What settled past week?,"SELECT
+  COUNT(1) AS total_count,
+  SUM(st_processedTransactionAmount) AS total_amount
+FROM
+  poc-project-guleria.final_genai_poc.settlement_search
+WHERE
+  DATE(st_batchDate) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+  AND DATE(st_batchDate) < CURRENT_DATE();
+"
+Settlement_search.xlsx,"What was the total sale amount for transactions settled via debit networks?
+","SELECT
+  COUNT(1) AS total_count,
+  SUM(st_processedTransactionAmount) AS total_amount
+FROM
+  poc-project-guleria.final_genai_poc.settlement_search
+WHERE
+  DATE(st_batchDate) = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+  AND st_productCode = 'Debit Card';"
+Settlement_search.xlsx,Show me settlement summary by plan code for last week for swiped transactions?,"SELECT
+  st_planCode,
+  COUNT(1) AS total_count,
+  SUM(st_processedTransactionAmount) AS total_amount
+FROM
+  poc-project-guleria.final_genai_poc.settlement_search
+WHERE
+  DATE(st_batchDate) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+  AND DATE(st_batchDate) < CURRENT_DATE()
+GROUP BY
+  st_planCode;"
+Funding_search.xlxs,What are my total deposits broken down by deposit type last week?,"SELECT
+  fd_depositTypeCd,
+  SUM(fd_netSalesAmt) AS TotalProcessedNetSales
+FROM
+  poc-project-guleria.final_genai_poc.funding_search
+WHERE
+  DATE(fd_fundedDate) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+  AND fd_majorCategory = 'Deposit'
+GROUP BY
+  fd_depositTypeCd;"
+Funding_search.xlxs,Which day within the last month was my highest funding?,"SELECT
+  fd_fundedDate
+FROM
+  poc-project-guleria.final_genai_poc.funding_search
+WHERE
+  EXTRACT(MONTH FROM fd_fundedDate) = EXTRACT(MONTH FROM DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH))
+GROUP BY
+  fd_fundedDate
+ORDER BY
+  SUM(fd_netSalesAmt) DESC
+LIMIT 1;"
+Funding_search.xlxs,What is the Fees to Deposit ratio for yesterdays bank deposit?,"SELECT
+  (SUM(CASE WHEN fd_majorCategory = 'Deposit' THEN fd_netSalesAmt ELSE 0 END) / SUM(fd_netSalesAmt)) * 100 AS Deposit_Percentage,
+  (SUM(CASE WHEN fd_majorCategory = 'Fee' THEN fd_netSalesAmt ELSE 0 END) / SUM(fd_netSalesAmt)) * 100 AS Fee_Percentage
+FROM
+  poc-project-guleria.final_genai_poc.funding_search
+WHERE
+  DATE(fd_fundedDate) = DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)
+  AND fd_majorCategory IN ('Deposit', 'Fee');"
+Chargeback_search.xlsx,What is the Win to Loss ratio on disputes last month?,"SELECT
+  (SUM(CASE WHEN `Major Category` = 'Deposit' THEN `Processed Net Sales` ELSE 0 END) / SUM(`Processed Net Sales`)) * 100 AS `Deposit Percentage`,
+  (SUM(CASE WHEN `Major Category` = 'Fee' THEN `Processed Net Sales` ELSE 0 END) / SUM(`Processed Net Sales`)) * 100 AS `Fee Percentage`
+FROM
+  chargebacks_search
+WHERE
+  `funded_date` = CURRENT_DATE - INTERVAL 1 DAY
+  AND `Major Category` IN ('Deposit', 'Fee');"
+Chargeback_search.xlsx,How many disputes over $100 do I have?,"SELECT COUNT(1) AS count_of_records
+FROM poc-project-guleria.final_genai_poc.chargebacks_search
+WHERE EXTRACT(MONTH FROM cb_statusDate) = EXTRACT(MONTH FROM CURRENT_DATE()) - 1
+  AND EXTRACT(YEAR FROM cb_statusDate) = EXTRACT(YEAR FROM CURRENT_DATE())
+  AND cb_chargebackAmount > 100;"
+Chargeback_search.xlsx,What are my top 5 stores from where I am getting the most disputes?,"SELECT
+  cb_siteID,
+  COUNT(1) AS count_of_records
+FROM
+  poc-project-guleria.final_genai_poc.chargebacks_search
+WHERE
+  EXTRACT(MONTH FROM cb_statusDate) = EXTRACT(MONTH FROM CURRENT_DATE()) - 1
+  AND EXTRACT(YEAR FROM cb_statusDate) = EXTRACT(YEAR FROM CURRENT_DATE())
+GROUP BY
+  cb_siteID
+ORDER BY
+  count_of_records DESC
+LIMIT 5;"
