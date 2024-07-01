@@ -532,7 +532,7 @@ def when_user_responded() -> None:
                              headers=headers,
                              timeout=None)
 
-        st.session_state.refresh = True
+        st.session_state0.refresh = True
         get_feedback()
 
 
