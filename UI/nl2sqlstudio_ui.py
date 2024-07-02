@@ -611,35 +611,35 @@ def app_load() -> None:
     # Code Block for 'With Google Authentication'
     # UnComment the following lines to enable Google Autentiction
 
-    found_query_params = False
-    try:
-        logger.info(f"Query Parameters - {st.query_params}")
-        code = st.query_params['code']
-        found_query_params = True
-        logger.info(f"Authorisation code : {code}")
-    except Exception:
-        logger.info("Login required")
-        found_query_params = False
+    # found_query_params = False
+    # try:
+    #     logger.info(f"Query Parameters - {st.query_params}")
+    #     code = st.query_params['code']
+    #     found_query_params = True
+    #     logger.info(f"Authorisation code : {code}")
+    # except Exception:
+    #     logger.info("Login required")
+    #     found_query_params = False
 
-    if found_query_params:
-        id_token, access_token = view_auth_google(st.query_params['code'])
-        logger.info(f"ID Token = {id_token}")
-        logger.info(f"Access Token = {access_token}")
-        st.session_state.token = id_token
-        st.session_state.access_token = access_token
-        st.session_state.login_status = True
-    else:
-        st.session_state.token = None
-        st.session_state.access_token = None
-        st.session_state.login_status = False
+    # if found_query_params:
+    #     id_token, access_token = view_auth_google(st.query_params['code'])
+    #     logger.info(f"ID Token = {id_token}")
+    #     logger.info(f"Access Token = {access_token}")
+    #     st.session_state.token = id_token
+    #     st.session_state.access_token = access_token
+    #     st.session_state.login_status = True
+    # else:
+    #     st.session_state.token = None
+    #     st.session_state.access_token = None
+    #     st.session_state.login_status = False
     # Comment for 'With Google Authentication' ends
 
     # Code block for 'Without Google Authentication'
     # Uncomment the below lines to continue without Google Auth
 
-    # st.session_state.login_status = True
-    # st.session_state.token = "dummy token"
-    # st.session_state.access_token = "dummy token"
+    st.session_state.login_status = True
+    st.session_state.token = "dummy token"
+    st.session_state.access_token = "dummy token"
     # Code block for without Google Auth ends
 
     logger.info(f"Login status = {st.session_state.login_status}")

@@ -430,6 +430,8 @@ Prerequisite files:
     <span style="background-color:red;color:black">**- Disabling Google Authentication -**</span>
 
     In case you want to execute the UI without enabling Google Authentication, pls make the following changes to 
+    
+    <TBD - Add config settings>
 
 ### Deploying the UI on App Engine
 
