@@ -28,7 +28,7 @@ import streamlit as st
 from streamlit_modal import Modal
 
 # import the executors
-from utils import default_func, linear_gen_sql, cot_gen_sql, rag_gen_sql
+from utils import linear_gen_sql, cot_gen_sql, rag_gen_sql, lite_gen_sql
 # import support functions
 from utils import get_feedback, message_queue, add_question_to_db
 # import auth functions
@@ -40,6 +40,16 @@ st.set_page_config(page_title='NL2SQL Studio',
                    page_icon="📊",
                    initial_sidebar_state="expanded",
                    layout='wide')
+
+CORE = "NL2SQL Studio Core"
+LITE = "NL2SQL Studio Lite"
+LINEAR = "Linear Executor"
+RAG = "Rag Executor"
+COT = "Chain of Thought"
+ZERO_SHOT = "Zero Shot"
+FEW_SHOT = "Few Shot"
+GEN_BY_CORE = "CORE_EXECUTORS"
+GEN_BY_LITE = "LITE_EXECUTORS"
 
 
 def define_session_variables() -> None:
@@ -60,6 +70,9 @@ def define_session_variables() -> None:
     st.session_state.sample_sql = ''
     st.session_state.add_question_status = False
     st.session_state.result_id = ''
+    st.session_state.generation_engine = None
+
+    st.session_state.sql_generated_by = None
 
     # st.session_state.access_token = None
     # st.session_state.token = None
@@ -224,11 +237,25 @@ def define_post_auth_layout() -> None:
                 st.write('v1.0')
                 logout_state = st.button("Logout")
 
-        with st.sidebar.container(height=140):
-            st.session_state.model = st.radio('Pick your Model',
-                                              ['Linear Executor',
-                                               'Rag Executor',
-                                               'Chain of Thought'])
+        gen_engine = st.sidebar.selectbox(
+            "Choose NL2SQL framework",
+            (LITE, CORE)
+            )
+        logger.info(f"Generation using : {gen_engine}")
+        if gen_engine == CORE:
+            st.session_state.generation_engine = CORE
+            with st.sidebar.container(height=140):
+                st.session_state.model = st.radio('Select Prompting Technique',
+                                                  [LINEAR, RAG, COT])
+        elif gen_engine == LITE:
+            st.session_state.generation_engine = LITE
+            with st.sidebar.container(height=115):
+                st.session_state.lite_model = st.radio(
+                    'Select Prompting Technique',
+                    [ZERO_SHOT, FEW_SHOT])
+        else:
+            st.session_state.generation_engine = None
+
         with st.sidebar.expander("Configuration Settings"):
             proj_conf = st.button("Project Configuration")
             rag_input = st.button("Questions  &  Queries", disabled=False)
@@ -363,7 +390,10 @@ def define_post_auth_layout() -> None:
                     if st.session_state.add_question_status:
                         st.success("Success ! Question added to DB ")
                     if st.button('Add question'):
-                        add_question_to_db(samp_question, samp_sql)
+                        add_question_to_db(samp_question, samp_sql,
+                                           'CORE_EXECUTORS')
+                        add_question_to_db(samp_question, samp_sql,
+                                           'LITE_EXECUTORS')
                         info_modal = st.session_state.info_modal
                         info_modal.open()
                         qa_modal.close(True)
@@ -392,26 +422,39 @@ def define_post_auth_layout() -> None:
                                 uploaded_file.getvalue().decode("utf-8")
                                 )
 
+                            logger.info(
+                                f"Uploading file : {uploaded_file.name}"
+                                )
                             # To read file as string:
                             string_data = stringio.read()
                             files = {'file': (uploaded_file.name, string_data)}
                             token = f"Bearer {st.session_state.access_token}"
                             body = {"proj_name": project,
-                                    "dataset": dataset,
+                                    "bq_dataset": dataset,
                                     "metadata_file": uploaded_file.name}
                             headers = {"Content-type": "application/json",
                                        "Authorization": token}
                             # url = "http://localhost:5000"
+                            executors_list = ['CORE_EXECUTORS',
+                                              'LITE_EXECUTORS']
+                            for executor in executors_list:
+                                url = os.getenv(executor)
+                                logger.info(
+                                    f"(Project config for : {executor}"
+                                    )
+                                _ = requests.post(
+                                    url=url+"/projconfig",
+                                    data=json.dumps(body),
+                                    headers=headers,
+                                    timeout=None
+                                    )
 
-                            _ = requests.post(url=url+"/projconfig",
-                                              data=json.dumps(body),
-                                              headers=headers,
-                                              timeout=None)
-
-                            _ = requests.post(url=url+"/uploadfile",
-                                              headers={"Authorization": token},
-                                              files=files,
-                                              timeout=None)
+                                _ = requests.post(
+                                    url=url+"/uploadfile",
+                                    headers={"Authorization": token},
+                                    files=files,
+                                    timeout=None
+                                    )
 
                         pc_modal.close()
 
@@ -480,7 +523,7 @@ def redraw() -> None:
     with msg_container:
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+                st.markdown(message["content"], unsafe_allow_html=True)
 
 
 def add_new_question() -> None:
@@ -493,14 +536,23 @@ def add_new_question() -> None:
         redraw()
         st.session_state.refresh = False
         if st.session_state.new_question:
-            if st.session_state.model == 'None':
-                default_func(st.session_state.question)
-            elif st.session_state.model == 'Linear Executor':
-                linear_gen_sql(st.session_state.question)
-            elif st.session_state.model == 'Chain of Thought':
-                cot_gen_sql(st.session_state.question)
-            else:
-                rag_gen_sql(st.session_state.question)
+            if st.session_state.generation_engine == CORE:
+                # if st.session_state.model == 'None':
+                #     default_func(st.session_state.question)
+                # elif st.session_state.model == 'Linear Executor':
+                if st.session_state.model == LINEAR:
+                    linear_gen_sql(st.session_state.question)
+                # elif st.session_state.model == 'Chain of Thought':
+                elif st.session_state.model == COT:
+                    cot_gen_sql(st.session_state.question)
+                else:
+                    rag_gen_sql(st.session_state.question)
+            elif st.session_state.generation_engine == LITE:
+                lite_gen_sql(st.session_state.question)
+                # if st.session_state.lite_model == ZERO_SHOT:
+                #     pass
+                # elif st.session_state.lite_model == FEW_SHOT:
+                #     pass
 
 
 def when_user_responded() -> None:
@@ -519,7 +571,10 @@ def when_user_responded() -> None:
             info_text = ':red[👎 User feedback captured ]'
 
         st.session_state.messages[-1]['content'] = resp + " \n\n" + info_text
-        url = os.getenv('EXECUTORS') + '/userfb'
+        genertor_endpoint = GEN_BY_CORE \
+            if st.session_state.sql_generated_by == GEN_BY_CORE\
+            else GEN_BY_LITE
+        url = os.getenv(genertor_endpoint) + '/userfb'
         data = {"result_id": st.session_state.result_id,
                 "user_feedback": user_feedback}
 
@@ -553,6 +608,9 @@ def app_load() -> None:
         On Application load
     """
     logger.info("App loaders")
+    # Code Block for 'With Google Authentication'
+    # UnComment the following lines to enable Google Autentiction
+
     found_query_params = False
     try:
         logger.info(f"Query Parameters - {st.query_params}")
@@ -574,6 +632,15 @@ def app_load() -> None:
         st.session_state.token = None
         st.session_state.access_token = None
         st.session_state.login_status = False
+    # Comment for 'With Google Authentication' ends
+
+    # Code block for 'Without Google Authentication'
+    # Uncomment the below lines to continue without Google Auth
+
+    # st.session_state.login_status = True
+    # st.session_state.token = "dummy token"
+    # st.session_state.access_token = "dummy token"
+    # Code block for without Google Auth ends
 
     logger.info(f"Login status = {st.session_state.login_status}")
 
