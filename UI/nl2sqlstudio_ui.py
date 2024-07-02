@@ -709,7 +709,6 @@ def render_view() -> None:
     }
 
     app_load()
-    st.session_state.login_status = True
     funcs_to_exec = post_auth if st.session_state.login_status \
         else pre_auth_post_logout
 
