@@ -1,6 +1,9 @@
+"""The main module for the NL2SQL Autobot."""
+
 import time
 from google.cloud import bigquery
-import os, json
+import os
+import json
 import vertexai
 import pandas as pd
 import plotly.express as px
@@ -94,7 +97,7 @@ def create_metadata_cache(dataset_id, tables_list):
 
 if not os.path.exists(METDATA_CACHE_PATH):
     metadata = create_metadata_cache(DATASET_ID, TABLES_LIST)
-    with open(METDATA_CACHE_PATH, 'w') as f:
+    with open(METDATA_CACHE_PATH, 'w') as f:  # pylint-ignore: unspecified-encoding
         f.write(json.dumps(metadata))
 else:
     with open(METDATA_CACHE_PATH, 'r') as f:

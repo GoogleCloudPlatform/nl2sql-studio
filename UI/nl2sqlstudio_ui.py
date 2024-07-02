@@ -26,6 +26,7 @@ from loguru import logger
 
 import streamlit as st
 from streamlit_modal import Modal
+from st_pages import Page, show_pages
 
 # import the executors
 from utils import linear_gen_sql, cot_gen_sql, rag_gen_sql, lite_gen_sql
@@ -35,14 +36,25 @@ from utils import get_feedback, message_queue, add_question_to_db
 from utils import view_auth_google, view_login_google, back_to_login_page
 
 load_dotenv()
+
 SHOW_SUCCESS = False
 st.set_page_config(page_title='NL2SQL Studio',
                    page_icon="📊",
                    initial_sidebar_state="expanded",
                    layout='wide')
 
+show_pages(
+    [
+        Page("nl2sqlstudio_ui.py", "NL2SQL Home", "🏠"),
+        Page("pages/chat_agent_app.py", "Database AI", ":robot_face:"),
+        Page("pages/Evaluation.py", "Evaluation", ":books:"),
+    ]
+)
+
+
 CORE = "NL2SQL Studio Core"
 LITE = "NL2SQL Studio Lite"
+
 LINEAR = "Linear Executor"
 RAG = "Rag Executor"
 COT = "Chain of Thought"
@@ -235,7 +247,7 @@ def define_post_auth_layout() -> None:
 
         gen_engine = st.sidebar.selectbox(
             "Choose NL2SQL framework",
-            (LITE, CORE)
+            (LITE, CORE,)
             )
         logger.info(f"Generation using : {gen_engine}")
         if gen_engine == CORE:
@@ -659,9 +671,10 @@ def render_view() -> None:
         "refresh": refresh
     }
 
-    app_load()
-    funcs_to_exec = post_auth if st.session_state.login_status \
-        else pre_auth_post_logout
+    # app_load()
+    # funcs_to_exec = post_auth if st.session_state.login_status \
+    #     else pre_auth_post_logout
+    funcs_to_exec = post_auth
 
     for _, function in funcs_to_exec.items():
         function()

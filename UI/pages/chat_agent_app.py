@@ -9,6 +9,14 @@ def set_page_layout():
         layout="wide",
     )
 
+def draw_sidebar():
+    markdown = """This is an Autonomous Assistant which understands all your questions and can intelligently find anything on your DB.
+    """
+
+    st.sidebar.title("About")
+    st.sidebar.info(markdown)
+    # st.sidebar.image( "https://i.imgur.com/UbOXYAU.png")
+
 def show_past_chat():
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
@@ -23,6 +31,8 @@ def show_past_chat():
 
 if __name__ == '__main__':
     set_page_layout()
+    draw_sidebar()
+
     if "chat" not in st.session_state:
         st.session_state.chat = model.start_chat()
     if "messages" not in st.session_state:
@@ -30,7 +40,7 @@ if __name__ == '__main__':
 
     col1, col2 = st.columns([7,1])
     with col1:
-        st.title("Autonomus NL2SQL Bot for your Database")
+        st.title("Autonomus NL2SQL Bot for your Database 💬")
     with col2:
         clear_button = st.button("New Chat", help="Deletes the conversation history, which makes your new chat faster", type="primary", use_container_width=True)
 
@@ -46,7 +56,7 @@ if __name__ == '__main__':
                 - what time period of data exists in the agreement table
                 - Show me a chart of most common months of effective_end_date
                 - Show me a chart of the years and how many contracts expire that year
-                - give me interesting ideas of plots whih can be drawn on this database
+                - give me interesting ideas of plots which can be drawn on this database
             """,)
     with col2:
         with st.expander("Click to Configure your DB searches"):
