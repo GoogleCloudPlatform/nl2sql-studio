@@ -427,11 +427,21 @@ Prerequisite files:
 
             ![ui local](assets/creds_origin_redirect.png)
 
-    <span style="background-color:red;color:black">**- Disabling Google Authentication -**</span>
+    <span style="background-color:red;color:black">**- Enabling / Disabling Google Authentication -**</span>
 
-    In case you want to execute the UI without enabling Google Authentication, pls make the following changes to 
+    To execute the UI authenticating users via Google OAuth, edit **config.ini** file and set
+
+    ```
+    GOOGLE_OAUTH = ENABLE
+    ```
+    If **GOOGLE_AUTH = ENABLE** in **config.ini** ensure you proided details for GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET, else the authentication will fail
+
+    In case you want to execute the UI without enabling Google Authentication, edit **config.ini** file and set
     
-    <TBD - Add config settings>
+    ```
+    GOOGLE_AUTH = DISABLE
+    ```
+
 
 ### Deploying the UI on App Engine
 
