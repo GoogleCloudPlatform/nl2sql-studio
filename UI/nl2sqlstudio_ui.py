@@ -559,10 +559,15 @@ def redraw() -> None:
                     if visualise_modal.is_open():
                         with visualise_modal.container():
                             if st.session_state.get(f'visualize_clicked_{key_counter}') == 'normal':
-                                run_visualization(message["dataframe"], True, key_counter)
+                                try:
+                                    run_visualization(message["dataframe"], True, key_counter)
+                                except Exception as e:
+                                    st.write(f"Error Loading Plot due to error: {str(e)}")
                             elif st.session_state.get(f'visualize_clicked_{key_counter}') == 'custom_plot':
-                                run_visualization(message["dataframe"], False, key_counter)
-
+                                try:
+                                    run_visualization(message["dataframe"], False, key_counter)
+                                except Exception as e:
+                                    st.write(f"Error Loading Plot due to error: {str(e)}")
                             if st.button("Close Modal", key=f"close_vm_key_{key_counter}"):
                                 st.session_state[f'visualize_clicked_{key_counter}'] = None
                                 visualise_modal.close()
