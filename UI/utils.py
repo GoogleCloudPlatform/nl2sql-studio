@@ -87,13 +87,11 @@ def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
                "Authorization": f"Bearer {st.session_state.access_token}"}
     api_endpoint = f"{api_url}/{endpoint}"
 
-    # logger.info(f"Invoking API : {api_endpoint}")
     logger.info(f"Provided parameters are : Data = {data}")
     api_response = requests.post(api_endpoint,
                                  data=json.dumps(data),
                                  headers=headers,
                                  timeout=None)
-    logger.info(f"api response = {api_response.text}")
     exec_result = ""
     try:
         resp = api_response.json()
