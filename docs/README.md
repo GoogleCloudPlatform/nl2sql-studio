@@ -16,22 +16,19 @@ NL2SQL Studio is a comprehensive, open-source toolkit designed to empower develo
 
 2. **NL2SQL Modules**
 
-    | Sl. No | Module | Description |
-    |---|---|---|
-    | 1 | NL2SQL Studio Core | Library code for generating SQL using Vertex AI |
-    | 1 | NL2SQL Studio Lite | Library code for generating SQL using Vertex AI |
-    | 2 | User Interface | User interface developed using Streamlit |
+| Sl. No | Module | Description |
+|---|---|---|
+| 1 | NL2SQL Studio Core | Library code for generating SQL using Vertex AI |
+| 2 | NL2SQL Studio Lite | Library code for generating SQL using Vertex AI |
+| 3 | User Interface | User interface developed using Streamlit |
 
 
 3. **Deployment Order**
-
-    | Sl. No | Module | Why |
-    |---|---|---|
-    | 1 | NL2SQL Studio Core | URL of the APIs exposed by this module/service is required to be mentioned in the .env file while deploying the UI |
-    | 1 | NL2SQL Studio Lite | URL of the APIs exposed by this module/service is required to be mentioned in the .env file while deploying the UI |
-    | 2 | User Interface | Config.ini and .env files need to be updated with the API endpoints and Google Client IDs & secrets |
-
-
+| Sl. No | Module | Why |
+|---|---|---|
+| 1 | NL2SQL Studio Core | URL of the APIs exposed by this module/service is required to be mentioned in the .env file while deploying the UI |
+| 2 | NL2SQL Studio Lite | URL of the APIs exposed by this module/service is required to be mentioned in the .env file while deploying the UI |
+| 3 | User Interface | Config.ini and .env files need to be updated with the API endpoints and Google Client IDs & secrets |
 
 ## Executing the NL2SQL Studio Core - Backend
 
@@ -438,7 +435,7 @@ Prerequisite files:
     <span style="background-color:red;color:black">**- Enabling / Disabling Google Authentication -**</span>
 
     To execute the UI authenticating users via Google OAuth, edit **config.ini** file and set
-
+    
     ```
     GOOGLE_OAUTH = ENABLE
     ```
