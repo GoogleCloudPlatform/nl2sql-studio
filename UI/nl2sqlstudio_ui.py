@@ -564,13 +564,14 @@ def redraw() -> None:
                         )
                         visualise_modal.open()
 
-                    if visualise_modal.is_open():
+                    sql_exec_flag = st.session_state.execution
+                    if visualise_modal.is_open() and sql_exec_flag:
                         with visualise_modal.container():
                             if st.session_state.get(f'v_c_{cntr}') == 'n':
                                 try:
                                     run_visualization(
                                         message["dataframe"],
-                                        True, cntr)
+                                        False, cntr)
                                 except Exception as e:
                                     st.write(
                                         f"Error Loading Plot \
@@ -578,7 +579,7 @@ def redraw() -> None:
                             elif st.session_state.get(f'v_c_{cntr}') == 'cp':
                                 try:
                                     run_visualization(message["dataframe"],
-                                                      False, cntr)
+                                                      True, cntr)
                                 except Exception as e:
                                     st.write(
                                         f"Error Loading Plot\

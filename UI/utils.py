@@ -98,14 +98,21 @@ def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
         logger.info(f"API resonse : {resp}")
         sql = resp['generated_query']
         st.session_state.result_id = resp['result_id']
-        exec_result = resp['sql_result']
-        try:
-            exec_result_df = run_query(sql)
-        except Exception as e:
-            logger.info(f"SQL query execution failed due to {str(e)}")
+
+        if data["execute_sql"]:
+            exec_result = resp['sql_result']
+            try:
+                exec_result_df = run_query(sql)
+            except Exception as e:
+                logger.info(f"SQL query execution failed due to {str(e)}")
+                exec_result_df = None
+        else:
             exec_result_df = None
+            exec_result = None
+
     except RuntimeError:
         sql = "Execution Failed ! Error encountered in RAG Executor"
+        st.session_state.result_id = None
 
     logger.info(f"Generated SQL = {sql}")
     logger.info(f"Generation ID = {st.session_state.result_id}")
@@ -119,20 +126,13 @@ def rag_gen_sql(question) -> str:
     logger.info("Invoking the RAG Executor")
     sql, exec_result, exec_result_df = \
         call_generate_sql_api(question, 'api/executor/rag')
-    if exec_result_df is not None and st.session_state.execution:
-        st.session_state.messages[-1]['content'] = \
-            format_response(sql, exec_result)
-        st.session_state.messages[-1]['dataframe'] = exec_result_df
-        st.session_state.new_question = False
-        st.rerun()
-        return sql
-    else:
-        st.session_state.messages[-1]['content'] = \
-            format_response(sql, exec_result)
-        st.session_state.messages[-1]['dataframe'] = exec_result_df
-        st.session_state.new_question = False
-        st.rerun()
-        return sql
+
+    st.session_state.messages[-1]['content'] = \
+        format_response(sql, exec_result)
+    st.session_state.messages[-1]['dataframe'] = exec_result_df
+    st.session_state.new_question = False
+    st.rerun()
+    return sql
 
 
 def cot_gen_sql(question) -> str:
@@ -143,20 +143,12 @@ def cot_gen_sql(question) -> str:
     sql, exec_result, exec_result_df = \
         call_generate_sql_api(question, 'api/executor/cot')
 
-    if exec_result_df is not None and st.session_state.execution:
-        st.session_state.messages[-1]['content'] = \
-            format_response(sql, exec_result)
-        st.session_state.messages[-1]['dataframe'] = exec_result_df
-        st.session_state.new_question = False
-        st.rerun()
-        return sql
-    else:
-        st.session_state.messages[-1]['content'] = \
-            format_response(sql, exec_result)
-        st.session_state.messages[-1]['dataframe'] = exec_result_df
-        st.session_state.new_question = False
-        st.rerun()
-        return sql
+    st.session_state.messages[-1]['content'] = \
+        format_response(sql, exec_result)
+    st.session_state.messages[-1]['dataframe'] = exec_result_df
+    st.session_state.new_question = False
+    st.rerun()
+    return sql
 
 
 def linear_gen_sql(question) -> str:
@@ -167,20 +159,12 @@ def linear_gen_sql(question) -> str:
     sql, exec_result, exec_result_df = \
         call_generate_sql_api(question, 'api/executor/linear')
 
-    if exec_result_df is not None and st.session_state.execution:
-        st.session_state.messages[-1]['content'] = \
-            format_response(sql, exec_result)
-        st.session_state.messages[-1]['dataframe'] = exec_result_df
-        st.session_state.new_question = False
-        st.rerun()
-        return sql
-    else:
-        st.session_state.messages[-1]['content'] = \
-            format_response(sql, exec_result)
-        st.session_state.messages[-1]['dataframe'] = exec_result_df
-        st.session_state.new_question = False
-        st.rerun()
-        return sql
+    st.session_state.messages[-1]['content'] = \
+        format_response(sql, exec_result)
+    st.session_state.messages[-1]['dataframe'] = exec_result_df
+    st.session_state.new_question = False
+    st.rerun()
+    return sql
 
 
 def lite_gen_sql(question) -> str:
@@ -191,20 +175,12 @@ def lite_gen_sql(question) -> str:
     sql, exec_result, exec_result_df = \
         call_generate_sql_api(question, '/api/lite/generate')
 
-    if exec_result_df is not None and st.session_state.execution:
-        st.session_state.messages[-1]['content'] = \
-            format_response(sql, exec_result)
-        st.session_state.messages[-1]['dataframe'] = exec_result_df
-        st.session_state.new_question = False
-        st.rerun()
-        return sql
-    else:
-        st.session_state.messages[-1]['content'] = \
-            format_response(sql, exec_result)
-        st.session_state.messages[-1]['dataframe'] = exec_result_df
-        st.session_state.new_question = False
-        st.rerun()
-        return sql
+    st.session_state.messages[-1]['content'] = \
+        format_response(sql, exec_result)
+    st.session_state.messages[-1]['dataframe'] = exec_result_df
+    st.session_state.new_question = False
+    st.rerun()
+    return sql
 
 
 def format_response(sql, exec_result):
@@ -214,12 +190,17 @@ def format_response(sql, exec_result):
     md_style_start1 = '<span style="font-size: 1rem;">'
     md_style_start2 = '<span style="font-size: 1.1rem;color:blueviolet;">'
     md_style_end = '</span>'
-    exec_result = exec_result.replace('\n', " ")
-    response_string = md_style_start1 + \
-        sql + md_style_end + "<br><br>" + md_style_start2 + \
-        exec_result + md_style_end if st.session_state.execution else \
-        sql + md_style_end
-    return response_string
+
+    if exec_result is not None:
+        exec_result = exec_result.replace('\n', " ")
+        response_string = md_style_start1 + \
+            sql + md_style_end + "<br><br>" + md_style_start2 + \
+            exec_result + md_style_end
+        return response_string
+    else:
+        response_string = md_style_start1 + \
+            sql + md_style_end
+        return response_string
 
 # Utility functions
 
@@ -519,10 +500,11 @@ def plot_bar_chart(df, x_cols, y_cols):
                                title=f'Bar Chart of {y_col} vs {x_cols[0]}'))
 
 
-def plot_histogram(df, x_cols):
+def plot_histogram(df, x_cols, y_cols=None):
     for x_col in x_cols:
-        st.plotly_chart(px.histogram(df, x=x_col,
-                                     title=f'Histogram of {x_col}'))
+        st.plotly_chart(px.histogram(df, x=x_col, y=y_cols[0],
+                                     title=f'Histogram of {x_col},\
+                                     {y_cols[0]}'))
 
 
 def plot_scatter_plot(df, x_cols, y_cols):
@@ -531,9 +513,14 @@ def plot_scatter_plot(df, x_cols, y_cols):
                                    vs {x_cols[0]}'))
 
 
-def plot_pie_chart(df, x_cols):
-    st.plotly_chart(px.pie(df, names=x_cols[0],
-                           title=f'Pie Chart of {x_cols[0]}'))
+def plot_pie_chart(df, x_cols, y_cols=None):
+    if y_cols is not None:
+        st.plotly_chart(px.pie(df, names=x_cols[0], values=y_cols[0],
+                               title=f'Pie Chart of {x_cols[0]} \
+                                   with values  {y_cols[0]}'))
+    else:
+        st.plotly_chart(px.pie(df, names=x_cols[0],
+                               title=f'Pie Chart of {x_cols[0]}'))
 
 
 def plot_area_chart(df, x_cols, y_cols):
@@ -549,43 +536,65 @@ def plot_box_plot(df, x_cols, y_cols):
                                title=f'Box Plot of {y_col} vs {x_cols[0]}'))
 
 
-def plot_heatmap(df, x_cols):
-    st.plotly_chart(px.imshow(df[x_cols].corr(), title='Heatmap'))
+def plot_heatmap(df, x_cols, y_cols=None, z_cols=None):
+    """Plot a heatmap of the correlation
+    matrix of specified columns."""
+
+    y_cols = y_cols or []
+    z_cols = z_cols or []
+    columns = x_cols + y_cols + z_cols
+
+    if len(columns) < 2:
+        st.write("Please select at least two columns.")
+        return
+
+    # Compute the correlation matrix
+    correlation_matrix = df[columns].corr()
+
+    # Plot the heatmap
+    fig = px.imshow(correlation_matrix, text_auto=True, title="Heatmap")
+    st.plotly_chart(fig)
 
 
-def plot_bubble_chart(df, x_cols, y_cols):
-    st.plotly_chart(px.scatter(df, x=x_cols[0], y=y_cols[0],
-                               size=y_cols[0],
-                               title=f'Bubble Chart of {y_cols[0]} \
-                                   vs {x_cols[0]}'))
+def plot_bubble_chart(df, x_cols, y_cols, z_cols):
+    """Plot a bubble chart with specified x, y, and bubble size columns."""
+    # Ensure z_cols is not empty
+    if not z_cols:
+        st.write('Please provide a z_column for bubble size.')
+        return
+
+    # Plot the bubble chart
+    st.plotly_chart(
+        px.scatter(
+            df, x=x_cols[0], y=y_cols[0], size=z_cols[0],
+            title=f'Bubble Chart of {y_cols[0]} vs {x_cols[0]}\
+                with bubble size {z_cols[0]}'
+        )
+    )
 
 
-def plot_map(df, lat_col='lat', lon_col='lon'):
-    st.map(df)
-
-
-def plot_data(df, plot_type, x_column_list, y_column_list):
+def plot_data(df, plot_type, x_column_list,
+              y_column_list=None, z_column_list=None):
     # Plot based on plot_type
     if plot_type == 'Line Chart' and x_column_list and y_column_list:
         plot_line_chart(df, x_column_list, y_column_list)
     elif plot_type == 'Bar Chart' and x_column_list and y_column_list:
         plot_bar_chart(df, x_column_list, y_column_list)
     elif plot_type == 'Histogram' and x_column_list:
-        plot_histogram(df, x_column_list)
+        plot_histogram(df, x_column_list, y_column_list)
     elif plot_type == 'Scatter Plot' and x_column_list and y_column_list:
         plot_scatter_plot(df, x_column_list, y_column_list)
     elif plot_type == 'Pie Chart' and x_column_list:
-        plot_pie_chart(df, x_column_list)
+        plot_pie_chart(df, x_column_list, y_column_list)
     elif plot_type == 'Area Chart' and x_column_list and y_column_list:
         plot_area_chart(df, x_column_list, y_column_list)
     elif plot_type == 'Box Plot' and x_column_list and y_column_list:
         plot_box_plot(df, x_column_list, y_column_list)
     elif plot_type == 'Heatmap' and x_column_list:
-        plot_heatmap(df, x_column_list)
-    elif plot_type == 'Bubble Chart' and x_column_list and y_column_list:
-        plot_bubble_chart(df, x_column_list, y_column_list)
-    elif plot_type == 'Map':
-        plot_map(df)
+        plot_heatmap(df, x_column_list, y_column_list, z_column_list)
+    elif (plot_type == 'Bubble Chart' and x_column_list and
+          y_column_list and z_column_list):
+        plot_bubble_chart(df, x_column_list, y_column_list, z_column_list)
     else:
         st.write('Please select appropriate columns for the chosen plot type.')
 
@@ -597,7 +606,7 @@ def run_visualization(df, custom_flag, key_counter):
     plot_chart_list = ['Line Chart', 'Bar Chart',
                        'Histogram', 'Scatter Plot',
                        'Pie Chart', 'Area Chart',
-                       'Box Plot', 'Heatmap', 'Bubble Chart', 'Map']
+                       'Box Plot', 'Heatmap', 'Bubble Chart']
 
     # 3. "plot_chooser" Prompt Template
     plot_chooser_template = f"""
@@ -606,17 +615,25 @@ def run_visualization(df, custom_flag, key_counter):
 
     dataframe columns: {columns}
     Data Types: {metadata}
+    number of columns: {len(columns)}
 
     You are tasked to suggest:
     1. The best plot type out of {plot_chart_list}
     2. The dataframe columns to use for plotting.
     Consider the data types and potential relationships between columns.
 
+    Remember to suggest below plots according to number of dataframe coumns
+    ** 1 Column: Histogram, Pie Chart
+    ** 2 Columns: Histogram, Pie Chart, Line Chart, Bar Chart,\
+        Scatter Plot, Area Chart, Box Plot
+    ** More Than 2 Columns: Heatmap, Bubble Chart
+
     Output should be strictly in json format as described below:
     ```{{
     "plot_type": "...",
     "x_column": "[...]",
-    "y_column": "[...]" // Optional, depending on plot type
+    "y_column": "[...]", // Optional, depending on plot type
+    "z_column": "[...]"  // Optional, depending on plot type
     }}
     ```
     """
@@ -624,16 +641,21 @@ def run_visualization(df, custom_flag, key_counter):
     result_json_string = generate_result(plot_chooser_template)
     result_json = json.loads(extract_substring(result_json_string))
 
-    if custom_flag:
+    if not custom_flag:
         plot_type = result_json.get("plot_type", "line")
         x_column_list = result_json.get("x_column", columns[0])
         logger.info(f"Plot type is : {plot_type}")
 
-        if len(columns) > 1:
+        if len(columns) > 2:
+            y_column_list = result_json.get("y_column", columns[1])
+            z_column_list = result_json.get("y_column", columns[2])
+            plot_data(df, plot_type, x_column_list,
+                      y_column_list, z_column_list)
+        elif len(columns) == 2:
             y_column_list = result_json.get("y_column", columns[1])
             plot_data(df, plot_type, x_column_list, y_column_list)
         else:
-            plot_data(df, plot_type, x_column_list, x_column_list)
+            plot_data(df, plot_type, x_column_list)
     else:
         with st.container():
             plot_type = st.selectbox('Select Plot Type',
@@ -641,23 +663,35 @@ def run_visualization(df, custom_flag, key_counter):
                                       'Histogram', 'Scatter Plot',
                                       'Pie Chart', 'Area Chart',
                                       'Box Plot', 'Heatmap',
-                                      'Bubble Chart', 'Map'],
+                                      'Bubble Chart'],
                                      key=f'plot_type_{key_counter}')
-            x_column_list = st.multiselect('Select X Column(s)',
+            x_column_list = st.multiselect('Select Primary Column(s)',
                                            df.columns,
                                            key=f'x_column_{key_counter}')
             y_column_list = (
                 st.multiselect(
-                    'Select Y Column(s)',
+                    'Select Secondary Column(s) if applicable',
                     df.columns,
                     key=f'y_column_{key_counter}'
                 )
-                if plot_type not in ['Pie Chart', 'Heatmap', 'Map'] else None
             )
 
-            if y_column_list is not None:
+            z_column_list = (
+                st.multiselect(
+                    'Select Other Column(s) if applicable',
+                    df.columns,
+                    key=f'z_column_{key_counter}'
+                )
+                if plot_type not in ['Histogram', 'Pie Chart', 'Line Chart',
+                                     'Bar Chart', 'Scatter Plot',
+                                     'Area Chart', 'Box Plot'] else None
+            )
+
+            if z_column_list is not None:
+                plot_data(df, plot_type, x_column_list,
+                          y_column_list, z_column_list)
+            elif y_column_list is not None:
                 plot_data(df, plot_type, x_column_list,
                           y_column_list)
             else:
-                plot_data(df, plot_type, x_column_list,
-                          x_column_list)
+                plot_data(df, plot_type, x_column_list)
