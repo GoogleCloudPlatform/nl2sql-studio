@@ -11,6 +11,12 @@ def set_page_layout():
 
 def draw_sidebar():
     markdown = """This is an Autonomous Assistant which understands all your questions and can intelligently find anything on your DB.
+### Capabilities:
+- Multi-turn conversation allows followup questions.
+- Provide holistic insights and ideas about your Dataset.
+- Understand and implement human feedback
+- Debug generated code by observing error
+- Plot charts smartly by indetifying the best suit chart-type.
     """
 
     st.sidebar.title("About")
@@ -42,21 +48,21 @@ if __name__ == '__main__':
     with col1:
         st.title("Autonomus NL2SQL Bot for your Database 💬")
     with col2:
-        clear_button = st.button("New Chat", help="Deletes the conversation history, which makes your new chat faster", type="primary", use_container_width=True)
+        clear_button = st.button("New Chat", help="Deletes the conversation history, which makes your new chat better and faster.", type="primary", use_container_width=True)
 
 
     col1, col2 = st.columns(2)
     with col1:
         with st.expander("Click for Sample Questions", expanded=False):
             st.write("""
-                - What kind of information is in this database?
-                - Tell about all the tables in this DB.
-                - how many contracts expired last year?
+                - What all can you do? what tools/functions do you have access to?
+                - guide me as best as you can, on how to use you and ask questions on you
+                - Give a detailed insight about all the tables in this DB.
                 - What agreements are going to expire in next 5 years?
-                - what time period of data exists in the agreement table
+                - what time period of data exists in the agreement table?
+                - Give me interesting ideas of plots which can be drawn on this database
                 - Show me a chart of most common months of effective_end_date
                 - Show me a chart of the years and how many contracts expire that year
-                - give me interesting ideas of plots which can be drawn on this database
             """,)
     with col2:
         with st.expander("Click to Configure your DB searches"):
@@ -69,7 +75,7 @@ if __name__ == '__main__':
                 tables_lit = st.text_input(label='List of tables to analyze', value=', '.join(TABLES_LIST))
 
 
-    prompt = st.chat_input("Ask me about information in the database... Make sure to clear conversation to ask a question on new topic.")
+    prompt = st.chat_input("Ask me anything about the database... Make sure to click New Chat for a new conversation.")
 
     if clear_button:
         st.session_state.chat = model.start_chat()

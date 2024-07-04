@@ -20,8 +20,9 @@ from bot_functions import *
 
 
 PROJECT_ID = "proj-kous"
+# DATASET_ID = "thelook_ecommerce"
+# TABLES_LIST = []
 # DATASET_ID = "nl2sql_fiserv"
-# TABLES_LIST = [] 
 DATASET_ID = "Albertsons"
 TABLES_LIST = ['camain_oracle_hcm', 'camain_ps']
 METDATA_CACHE_PATH = f"./metadata_cache_{DATASET_ID}.json"

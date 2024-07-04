@@ -19,6 +19,7 @@
 """
 import os
 import json
+import configparser
 from io import StringIO
 import requests
 from dotenv import load_dotenv
@@ -36,7 +37,6 @@ from utils import get_feedback, message_queue, add_question_to_db
 from utils import view_auth_google, view_login_google, back_to_login_page
 
 load_dotenv()
-
 SHOW_SUCCESS = False
 st.set_page_config(page_title='NL2SQL Studio',
                    page_icon="📊",
@@ -54,12 +54,15 @@ show_pages(
 
 CORE = "NL2SQL Studio Core"
 LITE = "NL2SQL Studio Lite"
-
 LINEAR = "Linear Executor"
 RAG = "Rag Executor"
 COT = "Chain of Thought"
 ZERO_SHOT = "Zero Shot"
 FEW_SHOT = "Few Shot"
+GEN_BY_CORE = "CORE_EXECUTORS"
+GEN_BY_LITE = "LITE_EXECUTORS"
+ZI_URL = "https://cloud.google.com/blog/products/\
+data-analytics/zoominfo-data-cubes-available-via-google-analytics-hub"
 
 
 def define_session_variables() -> None:
@@ -81,6 +84,8 @@ def define_session_variables() -> None:
     st.session_state.add_question_status = False
     st.session_state.result_id = ''
     st.session_state.generation_engine = None
+
+    st.session_state.sql_generated_by = None
 
     # st.session_state.access_token = None
     # st.session_state.token = None
@@ -240,14 +245,17 @@ def define_post_auth_layout() -> None:
         with st.sidebar.container():
             column_1, column_2 = st.columns(2)
             with column_1:
+                # st.write('v1.2')
                 st.image('google.png')
             with column_2:
-                st.write('v1.0')
+                url = 'https://googlecloudplatform.github.io/nl2sql-studio/'
+                st.markdown("[User Guide](%s)" % url)
                 logout_state = st.button("Logout")
-
+        with st.sidebar.container():
+            st.write("     ")
         gen_engine = st.sidebar.selectbox(
             "Choose NL2SQL framework",
-            (LITE, CORE,)
+            (LITE, CORE)
             )
         logger.info(f"Generation using : {gen_engine}")
         if gen_engine == CORE:
@@ -307,17 +315,18 @@ def define_post_auth_layout() -> None:
                     pass
                 with column_3:
                     st.markdown('',
-                                help="""For the purpose of this demo we have
+                                help=f"""For the purpose of this demo we have
                                 setup a demo project with id
                                 'sl-test-project-363109' created a dataset in
                                 BigQuery named 'zoominfo'. This dataset
                                 contains 3 tables with information that is a
-                                subset of Zoominfo Data Cubes. This a the
-                                default dataset to generate SQLs from related
-                                natural language statements.  For custom query
-                                generation, specify the Project ID, Dataset and
-                                Metadata of tables in the Configuration
-                                settings in the Sidebar panel""")
+                                subset of [Zoominfo Data Cubes]({ZI_URL}).
+                                This is the default dataset to generate SQLs
+                                from related natural language statements.  For
+                                custom query generation, specify the Project
+                                ID, Dataset and Metadata of tables in the
+                                Configuration settings in the Sidebar
+                                panel""")
 
         def input_container() -> None:
             """
@@ -421,6 +430,10 @@ def define_post_auth_layout() -> None:
                     uploaded_file = st.file_uploader(
                         "Choose the Metadata Cache file"
                         )
+                    with open('sample_metadata.json', 'rb') as f:
+                        st.download_button('Download Sample Metadata file',
+                                           f,
+                                           file_name='sample_metadata.json')
                     if st.button("Save configuration"):
                         if uploaded_file is not None:
                             # To read file as bytes:
@@ -579,7 +592,10 @@ def when_user_responded() -> None:
             info_text = ':red[👎 User feedback captured ]'
 
         st.session_state.messages[-1]['content'] = resp + " \n\n" + info_text
-        url = os.getenv('EXECUTORS') + '/userfb'
+        genertor_endpoint = GEN_BY_CORE \
+            if st.session_state.sql_generated_by == GEN_BY_CORE\
+            else GEN_BY_LITE
+        url = os.getenv(genertor_endpoint) + '/userfb'
         data = {"result_id": st.session_state.result_id,
                 "user_feedback": user_feedback}
 
@@ -613,39 +629,39 @@ def app_load() -> None:
         On Application load
     """
     logger.info("App loaders")
-    # Code Block for 'With Google Authentication'
-    # UnComment the following lines to enable Google Autentiction
-
-    found_query_params = False
-    try:
-        logger.info(f"Query Parameters - {st.query_params}")
-        code = st.query_params['code']
-        found_query_params = True
-        logger.info(f"Authorisation code : {code}")
-    except Exception:
-        logger.info("Login required")
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    google_oauth = config['DEFAULT']['GOOGLE_OAUTH']
+    if google_oauth == 'ENABLE':
+        # Code Block for 'With Google Authentication'
         found_query_params = False
+        try:
+            logger.info(f"Query Parameters - {st.query_params}")
+            code = st.query_params['code']
+            found_query_params = True
+            logger.info(f"Authorisation code : {code}")
+        except Exception:
+            logger.info("Login required")
+            found_query_params = False
 
-    if found_query_params:
-        id_token, access_token = view_auth_google(st.query_params['code'])
-        logger.info(f"ID Token = {id_token}")
-        logger.info(f"Access Token = {access_token}")
-        st.session_state.token = id_token
-        st.session_state.access_token = access_token
-        st.session_state.login_status = True
+        if found_query_params:
+            id_token, access_token = view_auth_google(st.query_params['code'])
+            logger.info(f"ID Token = {id_token}")
+            logger.info(f"Access Token = {access_token}")
+            st.session_state.token = id_token
+            st.session_state.access_token = access_token
+            st.session_state.login_status = True
+        else:
+            st.session_state.token = None
+            st.session_state.access_token = None
+            st.session_state.login_status = False
+        # Comment for 'With Google Authentication' ends
     else:
-        st.session_state.token = None
-        st.session_state.access_token = None
-        st.session_state.login_status = False
-    # Comment for 'With Google Authentication' ends
-
-    # Code block for 'Without Google Authentication'
-    # Uncomment the below lines to continue without Google Auth
-
-    # st.session_state.login_status = True
-    # st.session_state.token = "dummy token"
-    # st.session_state.access_token = "dummy token"
-    # Code block for without Google Auth ends
+        # Code block for 'Without Google Authentication'
+        st.session_state.login_status = True
+        st.session_state.token = "dummy token"
+        st.session_state.access_token = "dummy token"
+        # Code block for without Google Auth ends
 
     logger.info(f"Login status = {st.session_state.login_status}")
 
@@ -671,10 +687,9 @@ def render_view() -> None:
         "refresh": refresh
     }
 
-    # app_load()
-    # funcs_to_exec = post_auth if st.session_state.login_status \
-    #     else pre_auth_post_logout
-    funcs_to_exec = post_auth
+    app_load()
+    funcs_to_exec = post_auth if st.session_state.login_status \
+        else pre_auth_post_logout
 
     for _, function in funcs_to_exec.items():
         function()
