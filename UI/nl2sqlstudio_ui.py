@@ -33,7 +33,8 @@ from utils import linear_gen_sql, cot_gen_sql, rag_gen_sql, lite_gen_sql
 # import support functions
 from utils import get_feedback, message_queue, add_question_to_db
 # import auth functions
-from utils import view_auth_google, view_login_google, back_to_login_page
+from utils import view_auth_google, view_login_google, \
+    back_to_login_page, run_visualization
 
 load_dotenv()
 SHOW_SUCCESS = False
@@ -527,14 +528,66 @@ def initialize() -> None:
 
 def redraw() -> None:
     """
-        Trigger the re-rendering of the UI
+    Trigger the re-rendering of the UI
     """
-    # st.mc.empty()
+    cntr = 0
     msg_container = st.session_state.mc
+
     with msg_container:
         for message in st.session_state.messages:
+            logger.info(f"message is: {message}")
+            cntr += 1
+
             with st.chat_message(message["role"]):
                 st.markdown(message["content"], unsafe_allow_html=True)
+
+                if message["dataframe"] is not None:
+                    visualise_modal = st.session_state.get(
+                        f'visualise_modal_{cntr}',
+                        Modal("Plot Results", key=f"vm_{cntr}")
+                    )
+                    st.session_state[f'visualise_modal_{cntr}'] = \
+                        visualise_modal
+
+                    cols = st.columns([1, 1, 8])
+                    with cols[0]:
+                        open_modal = st.button("Default Plotting",
+                                               key=f"vr_key_{cntr}")
+                    with cols[1]:
+                        open_modal_new = st.button(
+                            "Custom Plotting", key=f"vru_key_{cntr}")
+
+                    if open_modal or open_modal_new:
+                        st.session_state[
+                            f'v_c_{cntr}'] = (
+                            'n' if open_modal else 'cp'
+                        )
+                        visualise_modal.open()
+
+                    if visualise_modal.is_open():
+                        with visualise_modal.container():
+                            if st.session_state.get(f'v_c_{cntr}') == 'n':
+                                try:
+                                    run_visualization(
+                                        message["dataframe"],
+                                        True, cntr)
+                                except Exception as e:
+                                    st.write(
+                                        f"Error Loading Plot \
+                                        due to error: {str(e)}")
+                            elif st.session_state.get(f'v_c_{cntr}') == 'cp':
+                                try:
+                                    run_visualization(message["dataframe"],
+                                                      False, cntr)
+                                except Exception as e:
+                                    st.write(
+                                        f"Error Loading Plot\
+                                            due to error: {str(e)}")
+                            if st.button("Close Modal",
+                                         key=f"close_vm_key_{cntr}"):
+                                st.session_state[
+                                    f'v_c_{cntr}'] = None
+                                visualise_modal.close()
 
 
 def add_new_question() -> None:
