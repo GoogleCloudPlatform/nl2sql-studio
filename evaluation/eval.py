@@ -4,11 +4,11 @@ import sqlite3
 import pandas as pd
 from langchain_google_vertexai import VertexAI
 from google.cloud import bigquery
-from UI.dbai import datasets
-from nl2sql.executors.linear_executor.core import CoreLinearExecutor
-from nl2sql.llms.vertexai import text_bison_latest
-from nl2sql.datasets import fetch_dataset
-from dbai import DBAI_nl2sql
+# from nl2sql import datasets
+# from nl2sql.executors.linear_executor.core import CoreLinearExecutor
+# from nl2sql.llms.vertexai import text_bison_latest
+# from nl2sql.datasets import fetch_dataset
+from dbai_src.dbai import DBAI_nl2sql
 
 llm = VertexAI(temperature=0, model_name="gemini-pro", max_output_tokens=1024)
 
@@ -43,7 +43,7 @@ def execute_sql_query(query, client, job_config):
     try:
         cleaned_query = query.replace("\\n", " ").replace("\n", "").replace("\\", "")
         query_job = client.query(cleaned_query, job_config=job_config)
-        response = query_job.result()
+        response = query_job.result().to_dataframe()
     except Exception as e:
         response = f"{str(e)}"
 
@@ -80,9 +80,11 @@ def bq_evaluator(sql_generator, bq_project_id, bq_dataset_id, ground_truth_path)
         default_dataset=f'{bq_project_id}.{bq_dataset_id}'
         )
 
+    ts = time.strftime("%y%m%d%H%M")
     df = pd.read_csv(ground_truth_path)
     out = []
-    for _, (_, question, ground_truth_sql) in df.iterrows():
+    for _, (i, question, ground_truth_sql) in df.iterrows():
+        print(_, question)
         generated_query = nl2sql_generate_sql(question, sql_generator,
                                                bq_project_id, bq_dataset_id)
 
@@ -91,20 +93,26 @@ def bq_evaluator(sql_generator, bq_project_id, bq_dataset_id, ground_truth_path)
 
         llm_rating = auto_verify(question, ground_truth_sql, generated_query)
         result_eval = 0
-        if generated_query_result.equals(actual_query_result):
-            result_eval = 1
+
+        try:
+            if generated_query_result.equals(actual_query_result):
+                result_eval = 1
+            else:
+                result_eval = 0
+        except:
+            result_eval = 0
 
         out.append((question, ground_truth_sql, actual_query_result, generated_query,
                     generated_query_result, llm_rating, result_eval))
 
-    df = pd.DataFrame(
-        out,
-        columns=[
-            'question', 'ground_truth_sql', 'actual_query_result',
-            'generated_query', 'generated_query_result', 'query_eval', 'result_eval'
-            ])
-    ts = time.strftime("%y%m%d%H%M")
-    df.to_csv(f'eval_output/eval_result_{ts}.csv', index=False)
+        df = pd.DataFrame(
+            out,
+            columns=[
+                'question', 'ground_truth_sql', 'actual_query_result',
+                'generated_query', 'generated_query_result', 'query_eval', 'result_eval'
+                ])
+        df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv', mode='a', index=False)
+
     print(f'Accuracy: {df.result_eval.sum()/len(df)}')
     return df
 
@@ -180,22 +188,23 @@ def spider_evaluator(spider_db_path, spider_eval_json, ExecutorType,
 
 
 if __name__ == '__main__':
-    BQ_PROJECT_ID = 'vertexai-pgt'
+    BQ_PROJECT_ID = 'proj-kous'
     BQ_DATASET_ID = 'nl2sql_fiserv'
-    GROUND_TRUTH_PATH = './fiserv_ground_truth.csv'
+    GROUND_TRUTH_PATH = 'evaluation/fiserv_ground_truth.csv'
 
     ## BQ data
-    bq_evaluator(CoreLinearExecutor, BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH)
+    # bq_evaluator(CoreLinearExecutor, BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH)
+    bq_evaluator(DBAI_nl2sql, BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH)
 
     ## spider run
     # It will download dataset in /var/tmp/NL2SQL_SPIDER_DATASET/extracted/spider/ folder
-    spider_dataset_path = "/var/tmp/NL2SQL_SPIDER_DATASET/extracted/spider/"
-    #For evaluating on test databases:
-    spider_db_path = spider_dataset_path + "test_database"
-    spider_eval_json = spider_dataset_path + "test_data/dev.json"
+    # spider_dataset_path = "/var/tmp/NL2SQL_SPIDER_DATASET/extracted/spider/"
+    # #For evaluating on test databases:
+    # spider_db_path = spider_dataset_path + "test_database"
+    # spider_eval_json = spider_dataset_path + "test_data/dev.json"
 
-    # run
-    spider_evaluator(spider_db_path, spider_eval_json, ExecutorType = CoreLinearExecutor, eval_limit = 100)
+    # # run
+    # spider_evaluator(spider_db_path, spider_eval_json, ExecutorType = CoreLinearExecutor, eval_limit = 100)
 
 
 

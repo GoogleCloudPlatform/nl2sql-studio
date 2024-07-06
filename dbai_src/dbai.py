@@ -17,9 +17,14 @@ from vertexai.generative_models import (
     # ToolConfig
 )
 import streamlit as st
-from bot_functions import *
+from dbai_src.bot_functions import (
+    list_tables_func,
+    get_table_metadata_func,
+    sql_query_func,
+    plot_chart_auto_func
+)
 
-
+ROOT_PATH = '/Users/koushikchak/_work/nl2sql-studio'
 safety_settings = {
     generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH: generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
     generative_models.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
@@ -76,7 +81,7 @@ class DBAI:
         vertexai.init(project=self.proj_id)
 
     def load_metadata(self):
-        METDATA_CACHE_PATH = f"./metadata_cache_{self.dataset_id}.json"
+        METDATA_CACHE_PATH = f"{ROOT_PATH}/metdata_cache_dbai/metadata_cache_{self.dataset_id}.json"
         if not os.path.exists(METDATA_CACHE_PATH):
             self.metadata = self.create_metadata_cache()
             with open(METDATA_CACHE_PATH, 'w') as f:  # pylint-ignore: unspecified-encoding

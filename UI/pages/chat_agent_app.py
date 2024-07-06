@@ -1,12 +1,12 @@
-from bot_functions import *
-from dbai import *
+from dbai_src.bot_functions import *
+from dbai_src.dbai import *
 import streamlit as st
 import time
 
 def set_page_layout():
     """ """
     st.set_page_config(
-        page_title="NL2SQL Autobot",
+        page_title="Database AI",
         layout="wide",
     )
 

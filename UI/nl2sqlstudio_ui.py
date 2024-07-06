@@ -24,6 +24,8 @@ from io import StringIO
 import requests
 from dotenv import load_dotenv
 from loguru import logger
+from pathlib import Path
+import sys
 
 import streamlit as st
 from streamlit_modal import Modal
@@ -35,6 +37,10 @@ from utils import linear_gen_sql, cot_gen_sql, rag_gen_sql, lite_gen_sql
 from utils import get_feedback, message_queue, add_question_to_db
 # import auth functions
 from utils import view_auth_google, view_login_google, back_to_login_page
+
+curr_path = Path(__file__).resolve()
+sys.path.extend([str(curr_path.parent), str(curr_path.parent.parent)])
+print(sys.path)
 
 load_dotenv()
 SHOW_SUCCESS = False
