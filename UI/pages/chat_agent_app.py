@@ -1,5 +1,5 @@
 from bot_functions import *
-from nl2sql import *
+from UI.dbai import *
 import streamlit as st
 import time
 

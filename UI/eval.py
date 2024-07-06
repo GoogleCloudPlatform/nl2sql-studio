@@ -4,10 +4,11 @@ import sqlite3
 import pandas as pd
 from langchain_google_vertexai import VertexAI
 from google.cloud import bigquery
-from nl2sql import datasets
+from UI.dbai import datasets
 from nl2sql.executors.linear_executor.core import CoreLinearExecutor
 from nl2sql.llms.vertexai import text_bison_latest
 from nl2sql.datasets import fetch_dataset
+from dbai import DBAI_nl2sql
 
 llm = VertexAI(temperature=0, model_name="gemini-pro", max_output_tokens=1024)
 
@@ -51,16 +52,26 @@ def execute_sql_query(query, client, job_config):
 
 
 def nl2sql_generate_sql(question, sql_generator, bq_project_id, bq_dataset_id):
-    executor = sql_generator.from_connection_string_map(
-        {
-            bq_dataset_id: f"bigquery://{bq_project_id}/{bq_dataset_id}"
-        }
-    )
-    return executor(
-            db_name= bq_dataset_id,
-            question = question
-        ).generated_query
+    if 'DBAI' in str(sql_generator):
+        return dbai_framework(question, bq_project_id, bq_dataset_id)
+    else:
+        executor = sql_generator.from_connection_string_map(
+            {
+                bq_dataset_id: f"bigquery://{bq_project_id}/{bq_dataset_id}"
+            }
+        )
+        return executor(
+                db_name= bq_dataset_id,
+                question = question
+            ).generated_query
 
+def dbai_framework(question, bq_project_id, bq_dataset_id, tables_list=[]):
+    dbai_nl2sql = DBAI_nl2sql(
+            proj_id=bq_project_id,
+            dataset_id=bq_dataset_id,
+            tables_list=tables_list
+        )
+    return dbai_nl2sql.get_sql(question).generated_sql
 
 def bq_evaluator(sql_generator, bq_project_id, bq_dataset_id, ground_truth_path):
     client = bigquery.Client(project=bq_project_id)
