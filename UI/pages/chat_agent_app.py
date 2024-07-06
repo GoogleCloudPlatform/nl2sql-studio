@@ -4,12 +4,14 @@ import streamlit as st
 import time
 
 def set_page_layout():
+    """ """
     st.set_page_config(
         page_title="NL2SQL Autobot",
         layout="wide",
     )
 
 def draw_sidebar():
+    """ """
     markdown = """This is an Autonomous Assistant which understands all your questions and can intelligently find anything on your DB.
 ### Capabilities:
 - Multi-turn conversation allows followup questions.
@@ -36,13 +38,12 @@ def show_past_chat():
 
 
 if __name__ == '__main__':
+    PROJ_ID = "proj-kous"
+    DATASET_ID = "Albertsons"
+    TABLES_LIST = "camain_oracle_hcm,camain_ps"
+
     set_page_layout()
     draw_sidebar()
-
-    if "chat" not in st.session_state:
-        st.session_state.chat = model.start_chat()
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
 
     col1, col2 = st.columns([7,1])
     with col1:
@@ -68,17 +69,29 @@ if __name__ == '__main__':
         with st.expander("Click to Configure your DB searches"):
             col1, col2, col3 = st.columns([1,1,2])
             with col1:
-                project_id = st.text_input(label='Project id', value=PROJECT_ID)
+                project_id = st.text_input(label='Project id', value=PROJ_ID)
             with col2:
                 dataset_id = st.text_input(label='Dataset id', value=DATASET_ID)
             with col3:
-                tables_lit = st.text_input(label='List of tables to analyze', value=', '.join(TABLES_LIST))
+                tables_list = st.text_input(label='List of tables to analyze', value=TABLES_LIST)
+                tables_list = tables_list.split(',')
 
+    dbai = DBAI(
+            proj_id=project_id,
+            dataset_id=dataset_id,
+            tables_list=tables_list
+        )
+
+    if "chat" not in st.session_state:
+        st.session_state.chat = dbai.agent.start_chat()
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    
 
     prompt = st.chat_input("Ask me anything about the database... Make sure to click New Chat for a new conversation.")
 
     if clear_button:
-        st.session_state.chat = model.start_chat()
+        st.session_state.chat = dbai.agent.start_chat()
         st.session_state.messages = []
 
     show_past_chat()
@@ -93,11 +106,11 @@ if __name__ == '__main__':
             message_placeholder = st.empty()
 
             with st.spinner('I am working. Please wait...'):
-                response = ask(prompt, st.session_state.chat)
+                response = dbai.ask(prompt, st.session_state.chat)
             # time.sleep(1)
 
             full_response = response.text
-            interims = format_interim_steps(response.interim_steps)
+            interims = dbai.format_interim_steps(response.interim_steps)
             with message_placeholder.container():
                 st.markdown(full_response.replace("$", r"\$"))  # noqa: W605
                 if interims:
