@@ -70,7 +70,7 @@ class DBAI:
 
         self.bq_client = bigquery.Client(project=self.proj_id)
         self.SYSTEM_PROMPT = """ You are a fluent person who efficiently communicates with the user over different Database queries. Please always call the functions at your disposal whenever you need to know something, and do not reply unless you feel you have all information to answer the question satisfactorily. 
-        Only use information that you learn from BigQuery, do not make up information.
+        Only use information that you learn from BigQuery, do not make up information. Always use date or time functions instead of hard-coded values in SQL to reflect true current value.
         """
         self.load_metadata()
 
