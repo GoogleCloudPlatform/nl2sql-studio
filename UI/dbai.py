@@ -32,7 +32,6 @@ gemini = GenerativeModel("gemini-1.5-pro-001",
                         safety_settings=safety_settings,
                         )
 
-
 class Response:
     """ """
     def __init__(self, text, interim_steps) -> None:
@@ -173,21 +172,21 @@ class DBAI:
         detailed_log = ""
         for i in interim_steps:
             detailed_log += f'''### Function call:\n
-    ##### Function name:
-    ```
-    {str(i['function_name'])}
-    ```
-    \n\n
-    ##### Function parameters:
-    ```
-    {str(i['function_params'])}
-    ```
-    \n\n
-    ##### API response:
-    ```
-    {str(i['API_response'])}
-    ```
-    \n\n'''
+##### Function name:
+```
+{str(i['function_name'])}
+```
+\n\n
+##### Function parameters:
+```
+{str(i['function_params'])}
+```
+\n\n
+##### API response:
+```
+{str(i['API_response'])}
+```
+\n\n'''
         return detailed_log
 
 

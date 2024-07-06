@@ -1,5 +1,5 @@
 from bot_functions import *
-from UI.dbai import *
+from dbai import *
 import streamlit as st
 import time
 
