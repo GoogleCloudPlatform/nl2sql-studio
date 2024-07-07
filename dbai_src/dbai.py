@@ -1,16 +1,13 @@
 """The main module for the NL2SQL Autobot."""
 
-import time
 from google.cloud import bigquery
 import os
 import json
 import vertexai
-import pandas as pd
 import plotly.express as px
 from pydantic import BaseModel
 from vertexai import generative_models
 from vertexai.generative_models import (
-    Content,
     GenerativeModel,
     Part,
     Tool,
@@ -338,6 +335,7 @@ class DBAI_nl2sql(DBAI):
             except AttributeError:
                 function_calling_in_process = False
 
+        generated_sql, sql_output = '', ''
         for i in intermediate_steps[::-1]:
             if i['function_name'] == 'sql_query':
                 generated_sql = i['function_params']['query']

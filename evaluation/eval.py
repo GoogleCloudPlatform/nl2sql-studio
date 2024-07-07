@@ -41,7 +41,7 @@ def auto_verify(nl_description, ground_truth, llm_amswer):
 
 def execute_sql_query(query, client, job_config):
     try:
-        cleaned_query = query.replace("\\n", " ").replace("\n", "").replace("\\", "")
+        cleaned_query = query.replace("\\n", " ").replace("\n", " ").replace("\\", "")
         query_job = client.query(cleaned_query, job_config=job_config)
         response = query_job.result().to_dataframe()
     except Exception as e:
@@ -91,7 +91,8 @@ def bq_evaluator(sql_generator, bq_project_id, bq_dataset_id, ground_truth_path)
         generated_query_result = execute_sql_query(generated_query, client, job_config)
         actual_query_result = execute_sql_query(ground_truth_sql, client, job_config)
 
-        llm_rating = auto_verify(question, ground_truth_sql, generated_query)
+        # llm_rating = auto_verify(question, ground_truth_sql, generated_query)
+        llm_rating = 'No'
         result_eval = 0
 
         try:
@@ -111,7 +112,7 @@ def bq_evaluator(sql_generator, bq_project_id, bq_dataset_id, ground_truth_path)
                 'question', 'ground_truth_sql', 'actual_query_result',
                 'generated_query', 'generated_query_result', 'query_eval', 'result_eval'
                 ])
-        df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv', mode='a', index=False)
+        df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv', index=False)
 
     print(f'Accuracy: {df.result_eval.sum()/len(df)}')
     return df
