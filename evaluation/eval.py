@@ -4,10 +4,25 @@ import sqlite3
 import pandas as pd
 from langchain_google_vertexai import VertexAI
 from google.cloud import bigquery
-# from nl2sql import datasets
-# from nl2sql.executors.linear_executor.core import CoreLinearExecutor
-# from nl2sql.llms.vertexai import text_bison_latest
-# from nl2sql.datasets import fetch_dataset
+# 
+from loguru import logger
+import requests
+import json
+import os
+LITE_API_PART = 'lite'
+FEW_SHOT_GENERATION = "Few Shot"
+GEN_BY_CORE = "CORE_EXECUTORS"
+GEN_BY_LITE = "LITE_EXECUTORS"
+os.environ["LITE_EXECUTORS"] = "https://nl2sqlstudio-lite-prod-dot-sl-test-project-363109.uc.r.appspot.com"
+params = dict(
+    execution = False,
+    lite_model = FEW_SHOT_GENERATION,
+    access_token = ""
+)
+
+# # from nl2sql.executors.linear_executor.core import CoreLinearExecutor
+# # from nl2sql.llms.vertexai import text_bison_latest
+# # from nl2sql.datasets import fetch_dataset
 from dbai_src.dbai import DBAI_nl2sql
 
 llm = VertexAI(temperature=0, model_name="gemini-pro", max_output_tokens=1024)
@@ -118,6 +133,82 @@ def bq_evaluator(sql_generator, bq_project_id, bq_dataset_id, ground_truth_path)
     return df
 
 
+def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
+    """
+        Common SQL generation function
+    """
+    if LITE_API_PART in endpoint:
+        api_url = os.getenv('LITE_EXECUTORS')
+        few_shot_gen = False
+        if params["lite_model"] == FEW_SHOT_GENERATION:
+            few_shot_gen = True
+        data = {"question": question,
+                "execute_sql": params["execution"],
+                "few_shot": few_shot_gen}
+    else:
+        api_url = os.getenv('CORE_EXECUTORS')
+        data = {"question": question,
+                "execute_sql": params["execution"]}
+
+    headers = {"Content-type": "application/json",
+               "Authorization": f"Bearer {params["access_token"]}"}
+    api_endpoint = f"{api_url}/{endpoint}"
+
+    logger.info(f"Invoking API : {api_endpoint}")
+    logger.info(f"Provided parameters are : Data = {data}")
+    api_response = requests.post(api_endpoint,
+                                 data=json.dumps(data),
+                                 headers=headers,
+                                 timeout=None)
+
+    exec_result = ""
+    try:
+        resp = api_response.json()
+        logger.info(f"API resonse : {resp}")
+        sql = resp['generated_query']
+        exec_result = resp['sql_result']
+    except RuntimeError:
+        sql = "Execution Failed ! Error encountered in RAG Executor"
+
+    logger.info(f"Generated SQL = {sql}")
+    return sql, exec_result
+
+
+def bq_evaluator_lite(bq_project_id, bq_dataset_id, ground_truth_path):
+    client = bigquery.Client(project=bq_project_id)
+    job_config = bigquery.QueryJobConfig(
+        maximum_bytes_billed=100000000,
+        default_dataset=f'{bq_project_id}.{bq_dataset_id}'
+        )
+
+    df = pd.read_csv(ground_truth_path)
+    out = []
+    for _, (_, question, ground_truth_sql) in df.iterrows():
+        generated_query, _ = call_generate_sql_api(question=question, endpoint='/api/lite/generate')
+
+        generated_query_result = execute_sql_query(generated_query, client, job_config)
+        actual_query_result = execute_sql_query(ground_truth_sql, client, job_config)
+
+        # llm_rating = auto_verify(question, ground_truth_sql, generated_query)
+        llm_rating = 'No'
+        result_eval = 0
+        if generated_query_result == actual_query_result:
+            result_eval = 1
+
+        out.append((question, ground_truth_sql, actual_query_result, generated_query,
+                    generated_query_result, llm_rating, result_eval))
+
+        df = pd.DataFrame(
+            out,
+            columns=[
+                'question', 'ground_truth_sql', 'actual_query_result',
+                'generated_query', 'generated_query_result', 'query_eval', 'result_eval'
+                ])
+        df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv', index=False)
+
+    print(f'Accuracy: {df.result_eval.sum()/len(df)}')
+    return df
+
 # Spider Evaluator Module
 def spider_evaluator(spider_db_path, spider_eval_json, ExecutorType,
                       eval_output_file_name = "eval_results.csv",
@@ -194,15 +285,15 @@ if __name__ == '__main__':
     GROUND_TRUTH_PATH = 'evaluation/fiserv_ground_truth.csv'
 
     ## BQ data
-    # bq_evaluator(CoreLinearExecutor, BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH)
+    # # bq_evaluator(CoreLinearExecutor, BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH)
     bq_evaluator(DBAI_nl2sql, BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH)
-
+    bq_evaluator_lite(BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH)
     ## spider run
     # It will download dataset in /var/tmp/NL2SQL_SPIDER_DATASET/extracted/spider/ folder
-    # spider_dataset_path = "/var/tmp/NL2SQL_SPIDER_DATASET/extracted/spider/"
-    # #For evaluating on test databases:
-    # spider_db_path = spider_dataset_path + "test_database"
-    # spider_eval_json = spider_dataset_path + "test_data/dev.json"
+    spider_dataset_path = "/var/tmp/NL2SQL_SPIDER_DATASET/extracted/spider/"
+    #For evaluating on test databases:
+    spider_db_path = spider_dataset_path + "test_database"
+    spider_eval_json = spider_dataset_path + "test_data/dev.json"
 
     # # run
     # spider_evaluator(spider_db_path, spider_eval_json, ExecutorType = CoreLinearExecutor, eval_limit = 100)
