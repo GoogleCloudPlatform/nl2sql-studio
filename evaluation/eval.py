@@ -13,16 +13,13 @@ LITE_API_PART = 'lite'
 FEW_SHOT_GENERATION = "Few Shot"
 GEN_BY_CORE = "CORE_EXECUTORS"
 GEN_BY_LITE = "LITE_EXECUTORS"
-os.environ["LITE_EXECUTORS"] = "https://nl2sqlstudio-lite-prod-dot-sl-test-project-363109.uc.r.appspot.com"
+# os.environ["LITE_EXECUTORS"] = "https://nl2sqlstudio-lite-prod-dot-sl-test-project-363109.uc.r.appspot.com"
+os.environ[GEN_BY_LITE] = "http://127.0.0.1:5000"
 params = dict(
     execution = False,
     lite_model = FEW_SHOT_GENERATION,
     access_token = ""
 )
-
-# # from nl2sql.executors.linear_executor.core import CoreLinearExecutor
-# # from nl2sql.llms.vertexai import text_bison_latest
-# # from nl2sql.datasets import fetch_dataset
 from dbai_src.dbai import DBAI_nl2sql
 
 llm = VertexAI(temperature=0, model_name="gemini-pro", max_output_tokens=1024)
@@ -174,13 +171,39 @@ def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
     return sql, exec_result
 
 
-def bq_evaluator_lite(bq_project_id, bq_dataset_id, ground_truth_path):
+def db_setup(project_id, dataset_id, metadata_path):
+    with open(metadata_path, "r") as f:
+        string_data = f.read()
+    files = {"file": (metadata_path.split("/")[-1], string_data)}
+    token = f"Bearer "
+    body = {
+        "proj_name": project_id,
+        "bq_dataset": dataset_id,
+        "metadata_file": metadata_path.split("/")[-1]
+    }
+    headers = {"Content-type": "application/json",
+               "Authorization": token}
+    url = os.getenv(GEN_BY_LITE)
+    _ = requests.post(
+            url=url+"/projconfig",
+            data=json.dumps(body),
+            headers=headers,
+            timeout=None)
+    _ = requests.post(
+            url=url+"/uploadfile",
+            headers={"Authorization": token},
+            files=files,
+            timeout=None
+            )
+
+def bq_evaluator_lite(bq_project_id, bq_dataset_id, ground_truth_path, metadata_path):
+    ts = time.strftime("%y%m%d%H%M")
     client = bigquery.Client(project=bq_project_id)
     job_config = bigquery.QueryJobConfig(
         maximum_bytes_billed=100000000,
         default_dataset=f'{bq_project_id}.{bq_dataset_id}'
         )
-
+    db_setup(bq_project_id, bq_dataset_id, metadata_path)
     df = pd.read_csv(ground_truth_path)
     out = []
     for _, (_, question, ground_truth_sql) in df.iterrows():
@@ -192,8 +215,13 @@ def bq_evaluator_lite(bq_project_id, bq_dataset_id, ground_truth_path):
         # llm_rating = auto_verify(question, ground_truth_sql, generated_query)
         llm_rating = 'No'
         result_eval = 0
-        if generated_query_result == actual_query_result:
-            result_eval = 1
+        try:
+            if generated_query_result.equals(actual_query_result):
+                result_eval = 1
+            else:
+                result_eval = 0
+        except:
+            result_eval = 0
 
         out.append((question, ground_truth_sql, actual_query_result, generated_query,
                     generated_query_result, llm_rating, result_eval))
@@ -283,17 +311,18 @@ if __name__ == '__main__':
     BQ_PROJECT_ID = 'proj-kous'
     BQ_DATASET_ID = 'nl2sql_fiserv'
     GROUND_TRUTH_PATH = 'evaluation/fiserv_ground_truth.csv'
+    METADATA_PATH = "./nl2sql_src/cache_metadata/fiserv.json"
 
     ## BQ data
     # # bq_evaluator(CoreLinearExecutor, BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH)
-    bq_evaluator(DBAI_nl2sql, BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH)
-    bq_evaluator_lite(BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH)
+    # bq_evaluator(DBAI_nl2sql, BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH)
+    bq_evaluator_lite(BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH, METADATA_PATH)
     ## spider run
     # It will download dataset in /var/tmp/NL2SQL_SPIDER_DATASET/extracted/spider/ folder
-    spider_dataset_path = "/var/tmp/NL2SQL_SPIDER_DATASET/extracted/spider/"
+    # spider_dataset_path = "/var/tmp/NL2SQL_SPIDER_DATASET/extracted/spider/"
     #For evaluating on test databases:
-    spider_db_path = spider_dataset_path + "test_database"
-    spider_eval_json = spider_dataset_path + "test_data/dev.json"
+    # spider_db_path = spider_dataset_path + "test_database"
+    # spider_eval_json = spider_dataset_path + "test_data/dev.json"
 
     # # run
     # spider_evaluator(spider_db_path, spider_eval_json, ExecutorType = CoreLinearExecutor, eval_limit = 100)
