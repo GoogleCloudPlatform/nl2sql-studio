@@ -1,4 +1,6 @@
+""" """
 import streamlit as st
+from io import StringIO
 from loguru import logger
 
 CORE = "NL2SQL Studio Core"
@@ -16,7 +18,7 @@ st.sidebar.title("Evaluation Settings")
 
 gen_engine = st.sidebar.selectbox(
     "Choose NL2SQL framework",
-    (LITE, CORE,)
+    (LITE, CORE, "DBAI")
     )
 logger.info(f"Generation using : {gen_engine}")
 if gen_engine == CORE:
@@ -47,26 +49,24 @@ tables_list = st.text_input(
     )
 
 uploaded_file = st.file_uploader(
-                "Choose the test dataset file (csv format) (must have columns: query, golden_sql, golden_result)",
-                type="csv"
-                )
+            "Choose the test dataset file (csv format) (must have columns: Question, golden_sql)",
+            type="csv"
+            )
 
 proj_conf = st.button(" Start Evaluation")
 
 
-def pc_modal_active() -> None:
-    """
-        Modal output when the Project Configuration button on the
-        Side bar is pressed
-    """
-    if uploaded_file is not None:
-        # To convert to a string based IO:
-        stringio = StringIO(
-            uploaded_file.getvalue().decode("utf-8")
-            )
+if uploaded_file is not None:
+    # To convert to a string based IO:
+    stringio = StringIO(
+        uploaded_file.getvalue().decode("utf-8")
+        )
 
-        logger.info(
-            f"Uploading file : {uploaded_file.name}"
-            )
-        # To read file as string:
-        string_data = stringio.read()
+    logger.info(
+        f"Uploading file : {uploaded_file.name}"
+        )
+    # To read file as string:
+    string_data = stringio.read()
+
+
+# st.session_state.generation_engine

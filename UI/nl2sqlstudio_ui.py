@@ -21,11 +21,11 @@ import os
 import json
 import configparser
 from io import StringIO
+from pathlib import Path
+import sys
 import requests
 from dotenv import load_dotenv
 from loguru import logger
-from pathlib import Path
-import sys
 
 import streamlit as st
 from streamlit_modal import Modal
@@ -40,7 +40,7 @@ from utils import view_auth_google, view_login_google, back_to_login_page
 
 curr_path = Path(__file__).resolve()
 sys.path.extend([str(curr_path.parent), str(curr_path.parent.parent)])
-print(sys.path)
+# print(sys.path)
 
 load_dotenv()
 SHOW_SUCCESS = False
