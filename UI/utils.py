@@ -19,6 +19,7 @@
 """
 
 import os
+import re
 import time
 import json
 import configparser
@@ -30,6 +31,13 @@ from loguru import logger
 # from google.auth.transport import requests
 import requests
 from jose import jwt
+import plotly.express as px
+from fuzzywuzzy import process
+
+import vertexai
+from google.cloud import bigquery
+from vertexai.generative_models import GenerativeModel
+import vertexai.preview.generative_models as generative_models
 
 load_dotenv()
 
@@ -93,12 +101,17 @@ def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
         sql = resp['generated_query']
         st.session_state.result_id = resp['result_id']
         exec_result = resp['sql_result']
+        try:
+            exec_result_df = run_query(sql)
+        except Exception as e:
+            logger.info(f"SQL query execution failed due to {str(e)}")
+            exec_result_df = None
     except RuntimeError:
         sql = "Execution Failed ! Error encountered in RAG Executor"
 
     logger.info(f"Generated SQL = {sql}")
     logger.info(f"Generation ID = {st.session_state.result_id}")
-    return sql, exec_result
+    return sql, exec_result, exec_result_df
 
 
 def rag_gen_sql(question) -> str:
@@ -106,13 +119,22 @@ def rag_gen_sql(question) -> str:
         SQL Generation using the RAG Executor
     """
     logger.info("Invoking the RAG Executor")
-    sql, exec_result = call_generate_sql_api(question, 'api/executor/rag')
-    st.session_state.messages[-1]['content'] = format_response(sql,
-                                                               exec_result)
-
-    st.session_state.new_question = False
-    st.rerun()
-    return sql
+    sql, exec_result, exec_result_df = \
+        call_generate_sql_api(question, 'api/executor/rag')
+    if exec_result_df is not None and st.session_state.execution:
+        st.session_state.messages[-1]['content'] = \
+            format_response(sql, exec_result)
+        st.session_state.messages[-1]['dataframe'] = exec_result_df
+        st.session_state.new_question = False
+        st.rerun()
+        return sql
+    else:
+        st.session_state.messages[-1]['content'] = \
+            format_response(sql, exec_result)
+        st.session_state.messages[-1]['dataframe'] = exec_result_df
+        st.session_state.new_question = False
+        st.rerun()
+        return sql
 
 
 def cot_gen_sql(question) -> str:
@@ -120,14 +142,23 @@ def cot_gen_sql(question) -> str:
         SQL Generation using the Chain of Thought executor
     """
     logger.info("Invoking the Chain of Thought Executor")
-    sql, exec_result = call_generate_sql_api(question, 'api/executor/cot')
+    sql, exec_result, exec_result_df = \
+        call_generate_sql_api(question, 'api/executor/cot')
 
-    st.session_state.messages[-1]['content'] = format_response(sql,
-                                                               exec_result)
-
-    st.session_state.new_question = False
-    st.rerun()
-    return sql
+    if exec_result_df is not None and st.session_state.execution:
+        st.session_state.messages[-1]['content'] = \
+            format_response(sql, exec_result)
+        st.session_state.messages[-1]['dataframe'] = exec_result_df
+        st.session_state.new_question = False
+        st.rerun()
+        return sql
+    else:
+        st.session_state.messages[-1]['content'] = \
+            format_response(sql, exec_result)
+        st.session_state.messages[-1]['dataframe'] = exec_result_df
+        st.session_state.new_question = False
+        st.rerun()
+        return sql
 
 
 def linear_gen_sql(question) -> str:
@@ -135,14 +166,23 @@ def linear_gen_sql(question) -> str:
         SQL Generation using the Linear executor
     """
     logger.info("Invoking the Linear Executor")
-    sql, exec_result = call_generate_sql_api(question, 'api/executor/linear')
+    sql, exec_result, exec_result_df = \
+        call_generate_sql_api(question, 'api/executor/linear')
 
-    st.session_state.messages[-1]['content'] = format_response(sql,
-                                                               exec_result)
-
-    st.session_state.new_question = False
-    st.rerun()
-    return sql
+    if exec_result_df is not None and st.session_state.execution:
+        st.session_state.messages[-1]['content'] = \
+            format_response(sql, exec_result)
+        st.session_state.messages[-1]['dataframe'] = exec_result_df
+        st.session_state.new_question = False
+        st.rerun()
+        return sql
+    else:
+        st.session_state.messages[-1]['content'] = \
+            format_response(sql, exec_result)
+        st.session_state.messages[-1]['dataframe'] = exec_result_df
+        st.session_state.new_question = False
+        st.rerun()
+        return sql
 
 
 def lite_gen_sql(question) -> str:
@@ -150,14 +190,23 @@ def lite_gen_sql(question) -> str:
         SQL Generation using the NL2SQLStudio Lite
     """
     logger.info("Invoking the NL2SQLStudio Lite Generator")
-    sql, exec_result = call_generate_sql_api(question, '/api/lite/generate')
+    sql, exec_result, exec_result_df = \
+        call_generate_sql_api(question, '/api/lite/generate')
 
-    st.session_state.messages[-1]['content'] = format_response(sql,
-                                                               exec_result)
-
-    st.session_state.new_question = False
-    st.rerun()
-    return sql
+    if exec_result_df is not None and st.session_state.execution:
+        st.session_state.messages[-1]['content'] = \
+            format_response(sql, exec_result)
+        st.session_state.messages[-1]['dataframe'] = exec_result_df
+        st.session_state.new_question = False
+        st.rerun()
+        return sql
+    else:
+        st.session_state.messages[-1]['content'] = \
+            format_response(sql, exec_result)
+        st.session_state.messages[-1]['dataframe'] = exec_result_df
+        st.session_state.new_question = False
+        st.rerun()
+        return sql
 
 
 def format_response(sql, exec_result):
@@ -201,10 +250,12 @@ def message_queue(question) -> None:
     """
     base_url = "https://cdn3.emoji.gg/emojis/7048-loading.gif"
     emoj_url = "https://emoji.gg/emoji/7048-loading"
-    st.session_state.messages.append({"role": "user", "content": question})
+    st.session_state.messages.append({"role": "user",
+                                      "content": question, "dataframe": None})
     st.session_state.messages.append({"role": "assistant",
                                       "content": f"""Fetching results..
-                                      [![Loading]({base_url})]({emoj_url})"""})
+                                      [![Loading]({base_url})]({emoj_url})""",
+                                      "dataframe": None})
 
 
 def get_feedback() -> None:
@@ -391,3 +442,224 @@ def view_get_token(token) -> None:
         logger.error("Something went wrong while decooding")
         return "Decode error due to Algorithmm mismatch"
     # return jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["RS256"])
+
+
+def run_query(sql_query):
+    """Runs a BigQuery SQL query and returns results as a Pandas DataFrame."""
+
+    client = bigquery.Client()
+
+    # Execute the query
+    job = client.query(sql_query)
+
+    # Convert to Pandas DataFrame
+    df = job.to_dataframe()
+
+    return df
+
+
+def generate_result(query):
+    generation_config = {
+        "max_output_tokens": 8192,
+        "temperature": 1,
+        "top_p": 0.95
+        }
+
+    safety_settings = {
+        generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH:
+            generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        generative_models.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT:
+            generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        generative_models.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT:
+            generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        generative_models.HarmCategory.HARM_CATEGORY_HARASSMENT:
+            generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+    }
+
+    vertexai.init(project="my-project-1-361607", location="us-central1")
+    model = GenerativeModel("gemini-1.5-pro-001")
+    responses = model.generate_content(
+        [query],
+        generation_config=generation_config,
+        safety_settings=safety_settings,
+        stream=True,
+        )
+
+    final_response = """"""
+    for response in responses:
+        final_response = final_response + response.text
+    return final_response
+
+
+def extract_substring(input_string):
+    match = re.search(r'{([^}]*)}', input_string)
+    if match:
+        match_result = match.group(1)
+        if match_result.startswith('{'):
+            return match_result
+        else:
+            return "{" + match_result + "}"
+    else:
+        return {}
+
+
+def get_best_fuzzy_match(input_string, string_list):
+    best_match = process.extractOne(input_string, string_list)
+    return best_match[0] if best_match else None
+
+
+# Plotting Functions
+def plot_line_chart(df, x_cols, y_cols):
+    for y_col in y_cols:
+        st.plotly_chart(px.line(df, x=x_cols[0], y=y_col,
+                                title=f'Line Chart of {y_col} vs {x_cols[0]}'))
+
+
+def plot_bar_chart(df, x_cols, y_cols):
+    for y_col in y_cols:
+        st.plotly_chart(px.bar(df, x=x_cols[0], y=y_col,
+                               title=f'Bar Chart of {y_col} vs {x_cols[0]}'))
+
+
+def plot_histogram(df, x_cols):
+    for x_col in x_cols:
+        st.plotly_chart(px.histogram(df, x=x_col,
+                                     title=f'Histogram of {x_col}'))
+
+
+def plot_scatter_plot(df, x_cols, y_cols):
+    st.plotly_chart(px.scatter(df, x=x_cols[0], y=y_cols[0],
+                               title=f'Scatter Plot of {y_cols[0]} \
+                                   vs {x_cols[0]}'))
+
+
+def plot_pie_chart(df, x_cols):
+    st.plotly_chart(px.pie(df, names=x_cols[0],
+                           title=f'Pie Chart of {x_cols[0]}'))
+
+
+def plot_area_chart(df, x_cols, y_cols):
+    for y_col in y_cols:
+        st.plotly_chart(px.area(df, x=x_cols[0],
+                                y=y_col, title=f'Area Chart of \
+                                    {y_col} vs {x_cols[0]}'))
+
+
+def plot_box_plot(df, x_cols, y_cols):
+    for y_col in y_cols:
+        st.plotly_chart(px.box(df, x=x_cols[0], y=y_col,
+                               title=f'Box Plot of {y_col} vs {x_cols[0]}'))
+
+
+def plot_heatmap(df, x_cols):
+    st.plotly_chart(px.imshow(df[x_cols].corr(), title='Heatmap'))
+
+
+def plot_bubble_chart(df, x_cols, y_cols):
+    st.plotly_chart(px.scatter(df, x=x_cols[0], y=y_cols[0],
+                               size=y_cols[0],
+                               title=f'Bubble Chart of {y_cols[0]} \
+                                   vs {x_cols[0]}'))
+
+
+def plot_map(df, lat_col='lat', lon_col='lon'):
+    st.map(df)
+
+
+def plot_data(df, plot_type, x_column_list, y_column_list):
+    # Plot based on plot_type
+    if plot_type == 'Line Chart' and x_column_list and y_column_list:
+        plot_line_chart(df, x_column_list, y_column_list)
+    elif plot_type == 'Bar Chart' and x_column_list and y_column_list:
+        plot_bar_chart(df, x_column_list, y_column_list)
+    elif plot_type == 'Histogram' and x_column_list:
+        plot_histogram(df, x_column_list)
+    elif plot_type == 'Scatter Plot' and x_column_list and y_column_list:
+        plot_scatter_plot(df, x_column_list, y_column_list)
+    elif plot_type == 'Pie Chart' and x_column_list:
+        plot_pie_chart(df, x_column_list)
+    elif plot_type == 'Area Chart' and x_column_list and y_column_list:
+        plot_area_chart(df, x_column_list, y_column_list)
+    elif plot_type == 'Box Plot' and x_column_list and y_column_list:
+        plot_box_plot(df, x_column_list, y_column_list)
+    elif plot_type == 'Heatmap' and x_column_list:
+        plot_heatmap(df, x_column_list)
+    elif plot_type == 'Bubble Chart' and x_column_list and y_column_list:
+        plot_bubble_chart(df, x_column_list, y_column_list)
+    elif plot_type == 'Map':
+        plot_map(df)
+    else:
+        st.write('Please select appropriate columns for the chosen plot type.')
+
+
+def run_visualization(df, custom_flag, key_counter):
+    columns = df.columns.tolist()
+    data_types = [str(dtype) for dtype in df.dtypes]
+    metadata = dict(zip(columns, data_types))
+    plot_chart_list = ['Line Chart', 'Bar Chart',
+                       'Histogram', 'Scatter Plot',
+                       'Pie Chart', 'Area Chart',
+                       'Box Plot', 'Heatmap', 'Bubble Chart', 'Map']
+
+    # 3. "plot_chooser" Prompt Template
+    plot_chooser_template = f"""
+    You are an expert in data visualization.
+    Given the following DataFrame metadata:
+
+    dataframe columns: {columns}
+    Data Types: {metadata}
+
+    You are tasked to suggest:
+    1. The best plot type out of {plot_chart_list}
+    2. The dataframe columns to use for plotting.
+    Consider the data types and potential relationships between columns.
+
+    Output should be strictly in json format as described below:
+    ```{{
+    "plot_type": "...",
+    "x_column": "[...]",
+    "y_column": "[...]" // Optional, depending on plot type
+    }}
+    ```
+    """
+
+    result_json_string = generate_result(plot_chooser_template)
+    result_json = json.loads(extract_substring(result_json_string))
+
+    if custom_flag:
+        plot_type = result_json.get("plot_type", "line")
+        x_column_list = result_json.get("x_column", columns[0])
+        logger.info(f"Plot type is : {plot_type}")
+
+        if len(columns) > 1:
+            y_column_list = result_json.get("y_column", columns[1])
+            plot_data(df, plot_type, x_column_list, y_column_list)
+        else:
+            plot_data(df, plot_type, x_column_list, x_column_list)
+    else:
+        with st.container():
+            plot_type = st.selectbox('Select Plot Type',
+                                     ['Line Chart', 'Bar Chart',
+                                      'Histogram', 'Scatter Plot',
+                                      'Pie Chart', 'Area Chart',
+                                      'Box Plot', 'Heatmap',
+                                      'Bubble Chart', 'Map'],
+                                     key=f'plot_type_{key_counter}')
+            x_column_list = st.multiselect('Select X Column(s)',
+                                           df.columns,
+                                           key=f'x_column_{key_counter}')
+            y_column_list = (
+                st.multiselect(
+                    'Select Y Column(s)',
+                    df.columns,
+                    key=f'y_column_{key_counter}'
+                )
+                if plot_type not in ['Pie Chart', 'Heatmap', 'Map'] else None
+            )
+
+            if y_column_list is not None:
+                plot_data(df, plot_type, x_column_list,
+                          y_column_list)
+            else:
+                plot_data(df, plot_type, x_column_list,
+                          x_column_list)
