@@ -4,6 +4,7 @@ from io import StringIO
 from loguru import logger
 import pandas as pd
 import os
+from evaluation.eval import bq_evaluator
 
 UPLOAD_DIRECTORY = "./"
 
@@ -46,7 +47,7 @@ else:
 
 st.title("NL2SQL Evaluation Studio")
 
-st.markdown("Latest NL2SQL Benchmark Report")
+# st.markdown("Latest NL2SQL Benchmark Report")
 
 df = pd.DataFrame(
         [(86, 75, 82), (91, 80, 86), (93, 83, 90)],
@@ -55,7 +56,7 @@ df = pd.DataFrame(
     )
 
 df = df.map(lambda x: str(x)+'%')
-st.dataframe(df)
+# st.dataframe(df)
 
 project = st.text_input('Mention the GCP project name')
 dataset = st.text_input(
@@ -73,7 +74,7 @@ uploaded_file = st.file_uploader(
 
 start_eval = st.button("Start Evaluation")
 
-
+st.session_state.uploaded_file_path = None
 if uploaded_file is not None:
     # Get the file details
     file_details = {
@@ -102,3 +103,4 @@ if start_eval:
     
     st.markdown(f'Accuracy is {eval_results['accuracy']}')
     st.dataframe(eval_results['output'])
+

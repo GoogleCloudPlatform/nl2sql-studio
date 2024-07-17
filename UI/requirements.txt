@@ -102,3 +102,4 @@ fuzzywuzzy==0.18.0
 plotly-express==0.4.1
 google-cloud-aiplatform==1.57.0
 db-dtypes==1.2.0
+st-pages

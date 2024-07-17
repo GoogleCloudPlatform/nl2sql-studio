@@ -1,7 +1,11 @@
 from dbai_src.bot_functions import *
 from dbai_src.dbai import *
 import streamlit as st
-import time
+
+
+PROJ_ID = "proj-kous"
+DATASET_ID = "Albertsons"
+TABLES_LIST = "camain_oracle_hcm,camain_ps"
 
 def set_page_layout():
     """ """
@@ -22,6 +26,9 @@ def draw_sidebar():
     """
 
     st.sidebar.title("About")
+    url = "go/nl2sql-studio-demo"
+    st.sidebar.markdown(f"Demo Video: [{url}](//{url})")
+
     st.sidebar.info(markdown)
     # st.sidebar.image( "https://i.imgur.com/UbOXYAU.png")
 
@@ -38,10 +45,6 @@ def show_past_chat():
 
 
 if __name__ == '__main__':
-    PROJ_ID = "proj-kous"
-    DATASET_ID = "Albertsons"
-    TABLES_LIST = "camain_oracle_hcm,camain_ps"
-
     set_page_layout()
     draw_sidebar()
 
