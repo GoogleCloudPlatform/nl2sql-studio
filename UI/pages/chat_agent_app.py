@@ -3,9 +3,9 @@ from dbai_src.dbai import *
 import streamlit as st
 
 
-PROJ_ID = "proj-kous"
-DATASET_ID = "Albertsons"
-TABLES_LIST = "camain_oracle_hcm,camain_ps"
+PROJ_ID = "sl-test-project-363109"
+DATASET_ID = "nl2sql_spider"
+TABLES_LIST = ""
 
 def set_page_layout():
     """ """

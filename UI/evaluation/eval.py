@@ -2,7 +2,7 @@ import json
 import time
 import sqlite3
 import pandas as pd
-from langchain_google_vertexai import VertexAI
+# from langchain_google_vertexai import VertexAI
 from google.cloud import bigquery
 # 
 from loguru import logger
@@ -31,33 +31,33 @@ params = dict(
 )
 from dbai_src.dbai import DBAI_nl2sql
 
-llm = VertexAI(temperature=0, model_name="gemini-1.5-pro-001", max_output_tokens=1024)
+# llm = VertexAI(temperature=0, model_name="gemini-1.5-pro-001", max_output_tokens=1024)
 
-def auto_verify(nl_description, ground_truth, llm_amswer):
-    """
-    This function verifies the accuracy of SQL query based on a natural language description
-    and a ground truth query, using text-bison model.
+# def auto_verify(nl_description, ground_truth, llm_amswer):
+#     """
+#     This function verifies the accuracy of SQL query based on a natural language description
+#     and a ground truth query, using text-bison model.
 
-    Parameters:
-    - nl_description (str): The natural language description of the SQL query.
-    - ground_truth (str): The ground truth SQL query.
-    - llm_amswer (str): The student's generated SQL query for validation.
+#     Parameters:
+#     - nl_description (str): The natural language description of the SQL query.
+#     - ground_truth (str): The ground truth SQL query.
+#     - llm_amswer (str): The student's generated SQL query for validation.
 
-    Returns:
-    str: "Yes" if the student's answer matches the ground truth and fits the NL description correctly,
-         "No" otherwise.
-    """
+#     Returns:
+#     str: "Yes" if the student's answer matches the ground truth and fits the NL description correctly,
+#          "No" otherwise.
+#     """
     
-    prompt = f'''You are an expert at validating SQL queries. Given the Natrual language description
-      and the SQL query corresponding to that description, please check if the students answer is correct.
-      There can be different ways to achieve the same result by forming the query differently.
-      If the students SQL query matches the ground truth and fits the NL description correctly, then return yes
-      else return no.
-      Natural language description: {nl_description}
-      Ground truth: {ground_truth}
-      students answer: {llm_amswer}
-    '''
-    return llm(prompt)
+#     prompt = f'''You are an expert at validating SQL queries. Given the Natrual language description
+#       and the SQL query corresponding to that description, please check if the students answer is correct.
+#       There can be different ways to achieve the same result by forming the query differently.
+#       If the students SQL query matches the ground truth and fits the NL description correctly, then return yes
+#       else return no.
+#       Natural language description: {nl_description}
+#       Ground truth: {ground_truth}
+#       students answer: {llm_amswer}
+#     '''
+#     return llm(prompt)
 
 
 def execute_sql_query(query, client, job_config):
@@ -98,7 +98,7 @@ def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
                 "execute_sql": params["execution"]}
 
     headers = {"Content-type": "application/json",
-               "Authorization": f"Bearer {params["access_token"]}"}
+               "Authorization": f"Bearer {params['access_token']}"}
     api_endpoint = f"{api_url}/{endpoint}"
 
     logger.info(f"Invoking API : {api_endpoint}")
@@ -166,13 +166,13 @@ def bq_evaluator(
         maximum_bytes_billed=100000000,
         default_dataset=f'{bq_project_id}.{bq_dataset_id}'
         )
-    if method != "dbai":
+    if method != "DBAI":
         db_setup(bq_project_id, bq_dataset_id, metadata_path, method)
     df = pd.read_csv(ground_truth_path)
     out = []
     for _, (question, ground_truth_sql) in df.iterrows():
         match method:
-            case "dbai":
+            case "DBAI":
                 generated_query = dbai_framework(
                     question, bq_project_id, bq_dataset_id)
             case _:

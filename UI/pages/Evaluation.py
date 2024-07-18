@@ -101,6 +101,6 @@ if start_eval:
         st.session_state.uploaded_file_path,
         st.session_state.model, None)
     
-    st.markdown(f'Accuracy is {eval_results['accuracy']}')
+    st.markdown(f'Accuracy is {eval_results["accuracy"]}')
     st.dataframe(eval_results['output'])
 
