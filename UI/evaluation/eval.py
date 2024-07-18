@@ -159,7 +159,9 @@ def bq_evaluator(
         bq_dataset_id,
         ground_truth_path,
         method,
-        metadata_path=None):
+        metadata_path=None,
+        pb=None
+        ):
     ts = time.strftime("%y%m%d%H%M")
     client = bigquery.Client(project=bq_project_id)
     job_config = bigquery.QueryJobConfig(
@@ -170,7 +172,7 @@ def bq_evaluator(
         db_setup(bq_project_id, bq_dataset_id, metadata_path, method)
     df = pd.read_csv(ground_truth_path)
     out = []
-    for _, (question, ground_truth_sql) in df.iterrows():
+    for idx, (question, ground_truth_sql) in df.iterrows():
         match method:
             case "DBAI":
                 generated_query = dbai_framework(
@@ -196,19 +198,22 @@ def bq_evaluator(
         out.append((question, ground_truth_sql, actual_query_result, generated_query,
                     generated_query_result, llm_rating, result_eval))
 
-        df = pd.DataFrame(
+        out_df = pd.DataFrame(
             out,
             columns=[
                 'question', 'ground_truth_sql', 'actual_query_result',
                 'generated_query', 'generated_query_result', 'query_eval', 'result_eval'
                 ])
-        df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv', index=False)
-
-    accuracy = df.result_eval.sum()/len(df)
+        out_df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv', index=False)
+        if pb:
+            pb.progress((idx+1)/len(df), text=f"Evaluation in progress. Please wait... {idx+1}/{len(df)}")
+    
+    pb.empty()
+    accuracy = out_df.result_eval.sum()/len(df)
     print(f'Accuracy: {accuracy}')
     return {
         "accuracy": accuracy,
-        "output": df
+        "output": out_df
     }
 
 

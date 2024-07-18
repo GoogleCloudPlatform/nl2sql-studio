@@ -95,12 +95,25 @@ if uploaded_file is not None:
 # st.session_state.generation_engine
 
 if start_eval:
+    pb = st.progress(0, text="Evaluation in progress. Please wait...")
     eval_results = bq_evaluator(
         project,
         dataset,
         st.session_state.uploaded_file_path,
-        st.session_state.model, None)
+        st.session_state.model, None, pb)
     
     st.markdown(f'Accuracy is {eval_results["accuracy"]}')
     st.dataframe(eval_results['output'])
+
+    @st.cache_data
+    def convert_df(df):
+        return df.to_csv(index=False).encode('utf-8')
+    csv = convert_df(eval_results["output"])
+    st.download_button(
+        "Download",
+        csv,
+        "results.csv",
+        "text/csv",
+        key='download-csv'
+    )
 
