@@ -1,10 +1,10 @@
 import json
 import time
-import sqlite3
 import pandas as pd
 # from langchain_google_vertexai import VertexAI
 from google.cloud import bigquery
-# 
+import streamlit as st
+
 from loguru import logger
 import requests
 import json
@@ -160,7 +160,8 @@ def bq_evaluator(
         ground_truth_path,
         method,
         metadata_path=None,
-        pb=None
+        pb=None,
+        render_result=True,
         ):
     ts = time.strftime("%y%m%d%H%M")
     client = bigquery.Client(project=bq_project_id)
@@ -171,7 +172,8 @@ def bq_evaluator(
     if method != "DBAI":
         db_setup(bq_project_id, bq_dataset_id, metadata_path, method)
     df = pd.read_csv(ground_truth_path)
-    out = []
+
+    all_results = []
     for idx, (question, ground_truth_sql) in df.iterrows():
         match method:
             case "DBAI":
@@ -195,8 +197,9 @@ def bq_evaluator(
         except:
             result_eval = 0
 
-        out.append((question, ground_truth_sql, actual_query_result, generated_query,
-                    generated_query_result, llm_rating, result_eval))
+        out = [(question, ground_truth_sql, actual_query_result, generated_query,
+                    generated_query_result, llm_rating, result_eval)]
+        all_results.extend(out)
 
         out_df = pd.DataFrame(
             out,
@@ -204,16 +207,28 @@ def bq_evaluator(
                 'question', 'ground_truth_sql', 'actual_query_result',
                 'generated_query', 'generated_query_result', 'query_eval', 'result_eval'
                 ])
-        out_df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv', index=False)
+        out_df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv', index=False, mode='a')
+
         if pb:
             pb.progress((idx+1)/len(df), text=f"Evaluation in progress. Please wait... {idx+1}/{len(df)}")
+        if render_result:
+            if idx == 0:
+                redndered_df = st.dataframe(out_df)
+            else:
+                redndered_df.add_rows(out_df)
     
     pb.empty()
     accuracy = out_df.result_eval.sum()/len(df)
+    all_results_df = pd.DataFrame(
+        all_results,
+        columns=[
+            'question', 'ground_truth_sql', 'actual_query_result',
+            'generated_query', 'generated_query_result', 'query_eval', 'result_eval'
+            ])
     print(f'Accuracy: {accuracy}')
     return {
         "accuracy": accuracy,
-        "output": out_df
+        "output": all_results_df
     }
 
 

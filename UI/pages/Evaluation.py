@@ -37,7 +37,7 @@ elif gen_engine == LITE:
     with st.sidebar.container(height=115):
         st.session_state.model = st.radio(
             'Select Prompting Technique',
-            [ZERO_SHOT, FEW_SHOT])
+            [FEW_SHOT, ZERO_SHOT])
 elif gen_engine == DBAI:
     st.session_state.model = DBAI
 else:
@@ -58,9 +58,10 @@ df = pd.DataFrame(
 df = df.map(lambda x: str(x)+'%')
 # st.dataframe(df)
 
-project = st.text_input('Mention the GCP project name')
+project = st.text_input('Mention the GCP project name', value="sl-test-project-363109")
 dataset = st.text_input(
-    'Specify the BigQuery dataset name'
+    'Specify the BigQuery dataset name',
+    value="nl2sql_spider"
     )
 
 tables_list = st.text_input(
@@ -100,10 +101,9 @@ if start_eval:
         project,
         dataset,
         st.session_state.uploaded_file_path,
-        st.session_state.model, None, pb)
+        st.session_state.model, None, pb, render_result=True)
     
     st.markdown(f'Accuracy is {eval_results["accuracy"]}')
-    st.dataframe(eval_results['output'])
 
     @st.cache_data
     def convert_df(df):

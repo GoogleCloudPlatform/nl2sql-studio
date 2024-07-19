@@ -276,7 +276,7 @@ def define_post_auth_layout() -> None:
             with st.sidebar.container(height=115):
                 st.session_state.lite_model = st.radio(
                     'Select Prompting Technique',
-                    [ZERO_SHOT, FEW_SHOT])
+                    [FEW_SHOT, ZERO_SHOT])
         else:
             st.session_state.generation_engine = None
 
