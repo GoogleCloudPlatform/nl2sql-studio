@@ -459,6 +459,12 @@ def run_query(sql_query):
 
 
 def generate_result(query):
+
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    project_id = config['DEFAULT']['PROJECT_ID']
+    location = config['DEFAULT']['LOCATION']
+
     generation_config = {
         "max_output_tokens": 8192,
         "temperature": 1,
@@ -476,7 +482,7 @@ def generate_result(query):
             generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
     }
 
-    vertexai.init(project="my-project-1-361607", location="us-central1")
+    vertexai.init(project=project_id, location=location)
     model = GenerativeModel("gemini-1.5-pro-001")
     responses = model.generate_content(
         [query],
