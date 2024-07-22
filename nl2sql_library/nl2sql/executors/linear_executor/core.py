@@ -68,6 +68,7 @@ class CoreLinearExecutor(BaseLinearExecutor):
         default_factory=lambda: CoreEvalFix(llm=text_bison_32k())
     )
 
+
     def __call__(self, db_name: str, question: str) -> CoreLinearExecutorResult:
         """
         Runs the Core Linear Executor
@@ -116,7 +117,9 @@ class CoreLinearExecutor(BaseLinearExecutor):
             if result_generated_query:
                 try:
                     eval_fix_result = self.core_eval_fix(
-                        db=database, question=question, query=result_generated_query
+                        db=database,
+                        question=question,
+                        query=result_generated_query
                     )
                 except Exception as exc:
                     logger.error(f"EvalFix failed: {exc}")
@@ -125,10 +128,11 @@ class CoreLinearExecutor(BaseLinearExecutor):
                         {"eval_fix": eval_fix_result.intermediate_steps}
                     )
                     result_generated_query = eval_fix_result.modified_query
-
-        # Generated SQL cleanup : Remove Backticks if any
+        
+        #Generated SQL cleanup : Remove Backticks if any
         if result_generated_query is not None:
-            result_generated_query = re.sub("```|sql", "", result_generated_query)
+            result_generated_query = re.sub("```|sql", "",
+                                            result_generated_query)
 
         return CoreLinearExecutorResult(
             db_name=db_name,
