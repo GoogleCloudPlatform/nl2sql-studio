@@ -18,7 +18,6 @@ from nl2sql.tasks.column_selection.core import (
 )
 from nl2sql.tasks.sql_generation.core import CoreSqlGenerator
 from nl2sql.tasks.sql_generation.core import prompts as csg_prompts
-from sample_executors.rag_executor import RAG_Executor
 
 vertexai.init(
     project=get_project_config()["config"]["proj_name"], location="us-central1"
@@ -99,15 +98,6 @@ class NL2SQL_Executors:
         result = executor_cot(db_name=dataset_name, question=question)
         logger.info(f"Chain of Thought output: [{result.generated_query}]")
         return result.result_id, result.generated_query
-
-    def rag_executor(self, question=question_to_gen):
-        """
-        SQL Generation using RAG Executor
-        """
-        ragexec = RAG_Executor()
-        res_id, sql = ragexec.generate_sql(question)
-
-        return res_id, sql
 
 
 if __name__ == "__main__":
