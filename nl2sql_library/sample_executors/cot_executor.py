@@ -19,14 +19,15 @@ from nl2sql.tasks.column_selection.core import (
 )
 from nl2sql.tasks.sql_generation.core import CoreSqlGenerator, prompts as csg_prompts
 
-f = open("../utils/zoominfo_tables.json", encoding="utf-8")
-zi = json.load(f)
+dataset_name = "nl2sql_spider"  # @param {type:"string"}
+f = open("../utils/spider_md_cache.json", encoding="utf-8")
+spider_data = json.load(f)
 data_dictionary_read = {
-    "zoominfo": {
-        "description": "This dataset contains information of Zoominfo Data\
-                      with details on headquarters, marketing professionaals and \
-                        providng tuition services.",
-        "tables": zi,
+    "nl2sql_spider": {
+        "description": "This dataset contains information about the concerts\
+                      singers, country they belong to, stadiums where the  \
+                      concerts happened",
+        "tables": spider_data,
     },
 }
 
@@ -44,8 +45,8 @@ core_sql_generator = CoreSqlGenerator(
 )
 logger.enable("nl2sql.datasets.base")
 
-bigquery_connection_string = "bigquery://sl-test-project-363109/zoominfo"
-dataset_name = "zoominfo"
+bigquery_connection_string = "bigquery://sl-test-project-363109/nl2sql_spider"
+dataset_name = "nl2sql_spider"
 
 dd_cot_executor = CoreLinearExecutor.from_connection_string_map(
     {dataset_name: bigquery_connection_string},
@@ -62,7 +63,7 @@ print("Executor ID :", dd_cot_executor.executor_id)
 
 dd_cot_result = dd_cot_executor(
     db_name=dataset_name,
-    question="What is the revenue of construction industry?",  # @param {type:"string"}
+    question="What is the average , minimum , and maximum age of all singers from France ?",  # @param {type:"string"}
 )
 print("\n\n", "=" * 50, "Generated SQL", "=" * 50, "\n\n")
 print("Result ID:", dd_cot_result.result_id, "\n\n")

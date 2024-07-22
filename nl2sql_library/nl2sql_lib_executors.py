@@ -18,12 +18,13 @@ from nl2sql.tasks.column_selection.core import (
 )
 from nl2sql.tasks.sql_generation.core import CoreSqlGenerator
 from nl2sql.tasks.sql_generation.core import prompts as csg_prompts
+from sample_executors.rag_executor import RAG_Executor
 
 vertexai.init(
     project=get_project_config()["config"]["proj_name"], location="us-central1"
 )
 
-dataset_name = get_project_config()["config"]["dataset"]  # "zoominfo"
+dataset_name = get_project_config()["config"]["dataset"]  # "nl2sql_spider"
 bigquery_connection_string = initialize_db(
     get_project_config()["config"]["proj_name"],
     get_project_config()["config"]["dataset"],
@@ -33,7 +34,7 @@ logger.info(
     f"Data = {bigquery_connection_string}, {dataset_name}, {data_file_name}"
     )
 
-question_to_gen = "What is the revenue for construction industry?"
+question_to_gen = "What is the average , minimum , and maximum age of all singers from France ?"
 
 
 class NL2SQL_Executors:
@@ -99,6 +100,15 @@ class NL2SQL_Executors:
         logger.info(f"Chain of Thought output: [{result.generated_query}]")
         return result.result_id, result.generated_query
 
+    def rag_executor(self, question=question_to_gen):
+        """
+        SQL Generation using RAG Executor
+        """
+        ragexec = RAG_Executor()
+        res_id, sql = ragexec.generate_sql(question)
+
+        return res_id, sql
+
 
 if __name__ == "__main__":
 
@@ -120,15 +130,16 @@ if __name__ == "__main__":
         executor = "linear"
 
     f = open(f"utils/{data_file_name}", encoding="utf-8")
-    zi = json.load(f)
+    spider_data = json.load(f)
     data_dictionary_read = {
-        "zoominfo": {
-            "description": "This dataset contains information of Zoominfo Data\
-                        with details on headquarters, marketing professionaals\
-                            and providng tuition services.",
-            "tables": zi,
+        "nl2sql_spider": {
+            "description": "This dataset contains information about the concerts\
+                          singers, country they belong to, stadiums where the  \
+                          concerts happened",
+            "tables": spider_data,
         },
     }
+
 
     nle = NL2SQL_Executors()
     if executor == "linear":

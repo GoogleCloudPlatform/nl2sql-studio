@@ -43,14 +43,13 @@ bigquery_connection_string = initialize_db(
 data_file_name = get_project_config()["config"]["metadata_file"]
 
 f = open(f"utils/{data_file_name}", encoding="utf-8")
-zi = json.load(f)
+spider_data = json.load(f)
 data_dictionary_read = {
-    "zoominfo": {
-        "description": "This dataset contains information of Zoominfo Data\
-                      with details on headquarters, \
-                        marketing professionaals and \
-                          providng tuition services.",
-        "tables": zi,
+    "nl2sql_spider": {
+        "description": "This dataset contains information about the concerts\
+                      singers, country they belong to, stadiums where the  \
+                      concerts happened",
+        "tables": spider_data,
     },
 }
 

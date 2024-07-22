@@ -85,7 +85,7 @@ def generate_metadata(project_id,
 if __name__ == "__main__":
     PROJECT_ID = os.environ.get('PROJECT_ID')  # 'sl-test--project'
     DATASET = os.environ.get('DATASET_NAME')  # "sl-test--project.zoominfo"
-    OUTPUTFILE = "./cache_metadata/metadata_cache.json"
+    OUTPUTFILE = "./cache_metadata/spider_metadata_cache.json"
 
     if PROJECT_ID is None or DATASET is None:
         print("Ensure you set the PROJECT_ID and DATASET_NAME env variables ")
