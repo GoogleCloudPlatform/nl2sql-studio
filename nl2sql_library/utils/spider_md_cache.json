@@ -1,151 +1,105 @@
 {
     "concert": {
-        "name": "concert",
         "description": "The 'concert' table contains information about concerts held at various venues. Each row represents a concert event. The table includes the following columns:\n\n- concert_id: Unique identifier for each concert event.\n\n- venue_id: Identifier for the venue where the concert is held.\n\n- concert_date: Date on which the concert is held.\n\n- concert_time: Time at which the concert starts.\n\n- artist_id: Identifier for the artist or band performing at the concert.\n\n- genre: Genre of music performed at the concert.\n\n- ticket_price: Price of each ticket.",
-        "Columns": {
+        "columns": {
             "concert_ID": {
-                "name": "concert_ID",
-                "type": "INTEGER",
                 "description": "Unique identifier for each concert.  This column is also a foriegn key reference in 'singer_in_concert' table ",
-                "examples": "1 or 5 or 2"
+                "type": "INTEGER"
             },
             "concert_name": {
-                "name": "concert_Name",
-                "type": "STRING",
                 "description": "Name of the concert",
-                "examples": "Auditions"
+                "type": "STRING"
             },
             "Theme": {
-                "name": "Theme",
-                "type": "STRING",
                 "description": "Theme of the concert",
-                "examples": "Free Choice"
+                "type": "STRING"
             },
             "Stadium_ID": {
-                "name": "Stadium_ID",
-                "type": "INTEGER",
                 "description": "ID of the stadium where the concert is held.  This is one of the primary key in the 'stadium' field",
-                "examples": "1 or 7 or 2"
+                "type": "INTEGER"
             },
             "Year": {
-                "name": "Year",
-                "type": "STRING",
                 "description": "Year in which the concert is held",
-                "examples": "2014"
+                "type": "STRING"
             }
         }
     },
     "singer": {
-        "name": "singer",
         "description": "The 'singer' table contains information about singers. Each row represents a singer and includes the following columns:\n\n- SingerId: Unique identifier for each singer.\n- Name: Name of the singer.\n- Genre: Genre of music the singer is associated with.\n- Age: Age of the singer.\n- Gender: Gender of the singer.\n- RecordLabel: Record label the singer is signed to.\n- Awards: Number of awards the singer has won.\n- NetWorth: Estimated net worth of the singer.",
-        "Columns": {
+        "columns": {
             "Singer_ID": {
-                "name": "Singer_ID",
-                "type": "INTEGER",
                 "description": "Unique identifier for each singer.",
-                "examples": "1 or 2 or 3"
+                "type": "INTEGER"
             },
             "Name": {
-                "name": "Name",
-                "type": "STRING",
                 "description": "Name of the singer.",
-                "examples": "Justin Brown"
+                "type": "STRING"
             },
             "Country": {
-                "name": "Country",
-                "type": "STRING",
                 "description": "Country of origin for the singer.",
-                "examples": "France"
+                "type": "STRING"
             },
             "Song_Name": {
-                "name": "Song_Name",
-                "type": "STRING",
                 "description": "Name of the song sung by the singer.",
-                "examples": "Hey Oh"
+                "type": "STRING"
             },
             "Song_release_year": {
-                "name": "Song_release_year",
-                "type": "STRING",
                 "description": "Year in which the song was released.",
-                "examples": "2013"
+                "type": "STRING"
             },
             "Age": {
-                "name": "Age",
-                "type": "INTEGER",
                 "description": "Age of the singer.",
-                "examples": "29"
+                "type": "INTEGER"
             },
             "Is_male": {
-                "name": "Is_male",
-                "type": "BOOLEAN",
                 "description": "Boolean value indicating the gender of the singer (True for male, False for female).",
-                "examples": "true"
+                "type": "BOOLEAN"
             }
         }
     },
     "singer_in_concert": {
-        "name": "singer_in_concert",
         "description": "The 'singer_in_concert' table contains information about singers and their concerts. Each row represents a unique concert event. The table includes the following columns:\n\n- concert_id: Unique identifier for each concert event.\n- singer_id: Unique identifier for each singer.",
-        "Columns": {
+        "columns": {
             "concert_ID": {
-                "name": "concert_ID",
-                "type": "INTEGER",
                 "description": "Unique identifier for each concert. This is primary key of 'concert' table",
-                "examples": "1 or 2 or 5"
+                "type": "INTEGER"
             },
             "Singer_ID": {
-                "name": "Singer_ID",
-                "type": "INTEGER",
                 "description": "Unique identifier for each singer. This is primary key of 'singer' table",
-                "examples": "2 or 3 or 5"
+                "type": "INTEGER"
             }
         }
     },
     "stadium": {
-        "name": "stadium",
         "description": "The 'stadium' table contains information about various stadiums around the world. Each row in the table represents a single stadium. The table includes the following columns:\n\n- StadiumID: A unique identifier for each stadium.\n- StadiumName: The name of the stadium.\n- City: The city where the stadium is located.\n- Country: The country where the stadium is located.\n- Capacity: The maximum number of people that the stadium can hold.\n- Highest: The highest recorded attendance at the stadium\n- Lowest: The lowest recorded attendance at the stadium.\n- Average: Average attendance recorded at the stadium.",
-        "Columns": {
+        "columns": {
             "Stadium_ID": {
-                "name": "Stadium_ID",
-                "type": "INTEGER",
                 "description": "Unique identifier for each stadium",
-                "examples": "1 or 2 or 5"
+                "type": "INTEGER"
             },
             "Location": {
-                "name": "Location",
-                "type": "STRING",
                 "description": "City and state where the stadium is located",
-                "examples": "Peterhead"
+                "type": "STRING"
             },
             "Name": {
-                "name": "Name",
-                "type": "STRING",
                 "description": "Official name of the stadium",
-                "examples": "Balmoor"
+                "type": "STRING"
             },
             "Capacity": {
-                "name": "Capacity",
-                "type": "INTEGER",
                 "description": "Total number of spectators the stadium can accommodate",
-                "examples": "4000"
+                "type": "INTEGER"
             },
             "Highest": {
-                "name": "Highest",
-                "type": "INTEGER",
                 "description": "Highest attendance recorded at the stadium",
-                "examples": "837"
+                "type": "INTEGER"
             },
             "Lowest": {
-                "name": "Lowest",
-                "type": "INTEGER",
                 "description": "Lowest attendance recorded at the stadium",
-                "examples": "400"
+                "type": "INTEGER"
             },
             "Average": {
-                "name": "Average",
-                "type": "INTEGER",
                 "description": "Average attendance for all the matches played at the stadium",
-                "examples": "615"
+                "type": "INTEGER"
             }
         }
     }

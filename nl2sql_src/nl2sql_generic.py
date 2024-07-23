@@ -1070,7 +1070,7 @@ if __name__ == '__main__':
         model_name="text-bison"
         # model_name="code-bison"
         )
-#     questions = ["How have these race and ethnicity trends changed over time?",
+#     questions = ["How have these race & ethnicity trends changed over time?",
 #                  "What about three or more additional programs?",
 #                  "Which five counties have the lowest number of WIC\
 #                      authorized vendors compared to WIC participants?",
@@ -1100,6 +1100,9 @@ if __name__ == '__main__':
 #                               PGDB,
 #                               PGUSER,
 #                               PGPWD)
+    question = "What is the average, minimum, and maximum age \
+                of all singers from France?"
+
     sql_query, _ = nl2sqlbq_client.text_to_sql_execute_few_shot(
         question,
         'medi-cal-and-calfresh-enrollment'

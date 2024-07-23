@@ -7,10 +7,11 @@ import json
 import sys
 from os.path import dirname, abspath
 
-sys.path.insert(1, dirname(dirname(abspath(__file__))))
 
 # from nl2sql.datasets.base import Dataset
 from nl2sql.executors.linear_executor.core import CoreLinearExecutor
+
+sys.path.insert(1, dirname(dirname(abspath(__file__))))
 
 dataset_name = "nl2sql_spider"  # @param {type:"string"}
 f = open("../utils/spider_md_cache.json", encoding="utf-8")
@@ -41,10 +42,11 @@ executor = CoreLinearExecutor.from_connection_string_map(
 print("\n\n", "=" * 25, "Executor Created", "=" * 25, "\n\n")
 print("Executor ID :", executor.executor_id)
 
-## Now run the executor with a sample question
+# Now run the executor with a sample question
 result = executor(
     db_name=dataset_name,
-    question="What is the average , minimum , and maximum age of all singers from France ?",  # @param {type:"string"}
+    question="What is the average, minimum, and maximum age\
+             of all singers from France ?",  # @param {type:"string"}
 )
 print("\n\n", "=" * 50, "Generated SQL", "=" * 50, "\n\n")
 print("Result ID:", result.result_id, "\n\n")

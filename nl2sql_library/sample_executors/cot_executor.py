@@ -8,16 +8,18 @@ import sys
 from os.path import dirname, abspath
 from loguru import logger
 
-sys.path.insert(1, dirname(dirname(abspath(__file__))))
-
 from nl2sql.llms.vertexai import text_bison_32k
 from nl2sql.executors.linear_executor.core import CoreLinearExecutor
-from nl2sql.tasks.table_selection.core import CoreTableSelector, prompts as cts_prompts
+from nl2sql.tasks.table_selection.core import CoreTableSelector
+from nl2sql.tasks.table_selection.core import prompts as cts_prompts
 from nl2sql.tasks.column_selection.core import (
     CoreColumnSelector,
     prompts as ccs_prompts,
 )
-from nl2sql.tasks.sql_generation.core import CoreSqlGenerator, prompts as csg_prompts
+from nl2sql.tasks.sql_generation.core import CoreSqlGenerator
+from nl2sql.tasks.sql_generation.core import prompts as csg_prompts
+
+sys.path.insert(1, dirname(dirname(abspath(__file__))))
 
 dataset_name = "nl2sql_spider"  # @param {type:"string"}
 f = open("../utils/spider_md_cache.json", encoding="utf-8")
@@ -63,7 +65,8 @@ print("Executor ID :", dd_cot_executor.executor_id)
 
 dd_cot_result = dd_cot_executor(
     db_name=dataset_name,
-    question="What is the average , minimum , and maximum age of all singers from France ?",  # @param {type:"string"}
+    question="What is the average, minimum, and maximum age \
+             of all singers from France ?",  # @param {type:"string"}
 )
 print("\n\n", "=" * 50, "Generated SQL", "=" * 50, "\n\n")
 print("Result ID:", dd_cot_result.result_id, "\n\n")

@@ -121,7 +121,9 @@ def nl2sql_lite_generate():
                     "error_msg": "Error - NL2SQL Studio Lite Query Generation",
                 }
     except Exception as e:
-        logger.error(f"NL2SQL Lite SQL Generation uncussessful: [{question}] {e}")
+        logger.error(
+            f"NL2SQL Lite SQL Generation unsuccessful: [{question}] {e}"
+            )
         response_string = {
             "result_id": 0,
             "generated_query": "",

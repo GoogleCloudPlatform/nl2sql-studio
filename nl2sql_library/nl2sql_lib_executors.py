@@ -34,7 +34,8 @@ logger.info(
     f"Data = {bigquery_connection_string}, {dataset_name}, {data_file_name}"
     )
 
-question_to_gen = "What is the average , minimum , and maximum age of all singers from France ?"
+question_to_gen = "What is the average, minimum, and maximum age\
+                  of all singers from France ?"
 
 
 class NL2SQL_Executors:
@@ -133,13 +134,13 @@ if __name__ == "__main__":
     spider_data = json.load(f)
     data_dictionary_read = {
         "nl2sql_spider": {
-            "description": "This dataset contains information about the concerts\
-                          singers, country they belong to, stadiums where the  \
-                          concerts happened",
+            "description": "This dataset contains information about the \
+                           concerts singers, country they belong to, \
+                           stadiums where the  \
+                           concerts happened",
             "tables": spider_data,
         },
     }
-
 
     nle = NL2SQL_Executors()
     if executor == "linear":
