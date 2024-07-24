@@ -16,3 +16,5 @@ __pycache__
 /nl2sql_library/test
 *.pyc
 /nl2sql_library/nl2sql/__pycache__
+/nl2sql_library/nl2sql/__pycache__
+/nl2sql_library/nl2sql/assets/__pycache__

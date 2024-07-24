@@ -63,14 +63,14 @@ show_pages(
 CORE = "NL2SQL Studio Core"
 LITE = "NL2SQL Studio Lite"
 LINEAR = "Linear Executor"
-RAG = "Rag Executor"
+#RAG = "Rag Executor"
 COT = "Chain of Thought"
 ZERO_SHOT = "Zero Shot"
 FEW_SHOT = "Few Shot"
 GEN_BY_CORE = "CORE_EXECUTORS"
 GEN_BY_LITE = "LITE_EXECUTORS"
-ZI_URL = "https://cloud.google.com/blog/products/\
-data-analytics/zoominfo-data-cubes-available-via-google-analytics-hub"
+ZI_URL = " https://www.kaggle.com/datasets/"
+ZI_URL+= "jeromeblanchet/yale-universitys-spider-10-nlp-dataset/data"
 
 
 def define_session_variables() -> None:
@@ -270,7 +270,7 @@ def define_post_auth_layout() -> None:
             st.session_state.generation_engine = CORE
             with st.sidebar.container(height=140):
                 st.session_state.model = st.radio('Select Prompting Technique',
-                                                  [LINEAR, RAG, COT])
+                                                  [LINEAR, COT])
         elif gen_engine == LITE:
             st.session_state.generation_engine = LITE
             with st.sidebar.container(height=115):
@@ -326,9 +326,10 @@ def define_post_auth_layout() -> None:
                                 help=f"""For the purpose of this demo we have
                                 setup a demo project with id
                                 'sl-test-project-363109' created a dataset in
-                                BigQuery named 'zoominfo'. This dataset
-                                contains 3 tables with information that is a
-                                subset of [Zoominfo Data Cubes]({ZI_URL}).
+                                BigQuery named 'spider'. This dataset
+                                contains 4 tables with information that has
+                                schedule of singers concert
+                                [Spider Dataset]({ZI_URL}).
                                 This is the default dataset to generate SQLs
                                 from related natural language statements.  For
                                 custom query generation, specify the Project
