@@ -15,3 +15,4 @@ __pycache__
 /nl2sql_library/utils/__pycache__
 /nl2sql_library/test
 *.pyc
+/nl2sql_library/nl2sql/__pycache__
