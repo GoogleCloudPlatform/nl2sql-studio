@@ -18,3 +18,4 @@ __pycache__
 /nl2sql_library/nl2sql/__pycache__
 /nl2sql_library/nl2sql/__pycache__
 /nl2sql_library/nl2sql/assets/__pycache__
+*.pyc

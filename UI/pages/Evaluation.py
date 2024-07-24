@@ -31,7 +31,7 @@ if gen_engine == CORE:
     st.session_state.generation_engine = CORE
     with st.sidebar.container(height=140):
         st.session_state.model = st.radio('Select Prompting Technique',
-                                            [LINEAR, RAG, COT])
+                                          [LINEAR, RAG, COT])
 elif gen_engine == LITE:
     st.session_state.generation_engine = LITE
     with st.sidebar.container(height=115):
@@ -42,8 +42,6 @@ elif gen_engine == DBAI:
     st.session_state.model = DBAI
 else:
     st.session_state.generation_engine = None
-
-
 
 st.title("NL2SQL Evaluation Studio")
 
@@ -58,7 +56,8 @@ df = pd.DataFrame(
 df = df.map(lambda x: str(x)+'%')
 # st.dataframe(df)
 
-project = st.text_input('Mention the GCP project name', value="sl-test-project-363109")
+project = st.text_input('Mention the GCP project name',
+                        value="sl-test-project-363109")
 dataset = st.text_input(
     'Specify the BigQuery dataset name',
     value="nl2sql_spider"
@@ -69,9 +68,15 @@ tables_list = st.text_input(
     )
 
 uploaded_file = st.file_uploader(
-            "Choose the test dataset file (csv format) (must have columns: Question, golden_sql)",
+            "Choose the test dataset file (csv format) \
+                (must have columns: Question, golden_sql)",
             type="csv"
             )
+
+with open('concert_singer_spider.csv', 'rb') as f:
+    st.download_button('Download Spider Sample file',
+    f,
+    file_name='concert_singer_spider.csv')
 
 start_eval = st.button("Start Evaluation")
 
@@ -90,7 +95,6 @@ if uploaded_file is not None:
         f.write(uploaded_file.getbuffer())
 
     st.session_state.uploaded_file_path = uploaded_file_path
-    
 
 
 # st.session_state.generation_engine
@@ -102,7 +106,7 @@ if start_eval:
         dataset,
         st.session_state.uploaded_file_path,
         st.session_state.model, None, pb, render_result=True)
-    
+
     st.markdown(f'Accuracy is {eval_results["accuracy"]}')
 
     @st.cache_data
@@ -116,4 +120,3 @@ if start_eval:
         "text/csv",
         key='download-csv'
     )
-

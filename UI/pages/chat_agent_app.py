@@ -7,6 +7,7 @@ PROJ_ID = "sl-test-project-363109"
 DATASET_ID = "nl2sql_spider"
 TABLES_LIST = ""
 
+
 def set_page_layout():
     """ """
     st.set_page_config(
@@ -14,9 +15,11 @@ def set_page_layout():
         layout="wide",
     )
 
+
 def draw_sidebar():
     """ """
-    markdown = """This is an Autonomous Assistant which understands all your questions and can intelligently find anything on your DB.
+    markdown = """This is an Autonomous Assistant which understands
+      all your questions and can intelligently find anything on your DB.
 ### Capabilities:
 - Multi-turn conversation allows followup questions.
 - Provide holistic insights and ideas about your Dataset.
@@ -31,6 +34,7 @@ def draw_sidebar():
 
     st.sidebar.info(markdown)
     # st.sidebar.image( "https://i.imgur.com/UbOXYAU.png")
+
 
 def show_past_chat():
     for message in st.session_state.messages:
@@ -48,35 +52,45 @@ if __name__ == '__main__':
     set_page_layout()
     draw_sidebar()
 
-    col1, col2 = st.columns([7,1])
+    col1, col2 = st.columns([7, 1])
     with col1:
         st.title("Autonomus NL2SQL Bot for your Database 💬")
     with col2:
-        clear_button = st.button("New Chat", help="Deletes the conversation history, which makes your new chat better and faster.", type="primary", use_container_width=True)
-
+        clear_button = st.button("New Chat",
+                                 help="Deletes the conversation history, which\
+                                      makes your new chat better and faster.",
+                                 type="primary",
+                                 use_container_width=True)
 
     col1, col2 = st.columns(2)
     with col1:
         with st.expander("Click for Sample Questions", expanded=False):
             st.write("""
-                - What all can you do? what tools/functions do you have access to?
-                - guide me as best as you can, on how to use you and ask questions on you
+                - What all can you do? what tools/functions do you have \
+                     access to?
+                - guide me as best as you can, on how to use you and ask \
+                     questions on you
                 - Give a detailed insight about all the tables in this DB.
                 - What agreements are going to expire in next 5 years?
                 - what time period of data exists in the agreement table?
-                - Give me interesting ideas of plots which can be drawn on this database
+                - Give me interesting ideas of plots which can be drawn on \
+                     this database
                 - Show me a chart of most common months of effective_end_date
-                - Show me a chart of the years and how many contracts expire that year
+                - Show me a chart of the years and how many contracts expire \
+                     that year
             """,)
     with col2:
         with st.expander("Click to Configure your DB searches"):
-            col1, col2, col3 = st.columns([1,1,2])
+            col1, col2, col3 = st.columns([1, 1, 2])
             with col1:
-                project_id = st.text_input(label='Project id', value=PROJ_ID)
+                project_id = st.text_input(label='Project id',
+                                           value=PROJ_ID)
             with col2:
-                dataset_id = st.text_input(label='Dataset id', value=DATASET_ID)
+                dataset_id = st.text_input(label='Dataset id',
+                                           value=DATASET_ID)
             with col3:
-                tables_list = st.text_input(label='List of tables to analyze', value=TABLES_LIST)
+                tables_list = st.text_input(label='List of tables to analyze',
+                                            value=TABLES_LIST)
                 tables_list = tables_list.split(',')
 
     dbai = DBAI(
@@ -89,9 +103,10 @@ if __name__ == '__main__':
         st.session_state.chat = dbai.agent.start_chat()
     if "messages" not in st.session_state:
         st.session_state.messages = []
-    
 
-    prompt = st.chat_input("Ask me anything about the database... Make sure to click New Chat for a new conversation.")
+    prompt = st.chat_input(
+        "Ask me anything about the database... \
+        Make sure to click New Chat for a new conversation.")
 
     if clear_button:
         st.session_state.chat = dbai.agent.start_chat()
@@ -125,8 +140,3 @@ if __name__ == '__main__':
             "content": full_response,
             "backend_details": interims,
         })
-
-
-
-
-

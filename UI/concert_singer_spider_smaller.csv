@@ -1,7 +1,0 @@
-Question,Query
-"What is the average , minimum , and maximum age of all singers from France ?","select avg(age) ,  min(age) ,  max(age) from singer where country  =  'france'"
-Show all countries and the number of singers in each country .,"select country ,  count(*) from singer group by country"
-List all song names by singers above the average age .,select song_name from singer where age  >  (select avg(age) from singer)
-Show the stadium name and the number of concerts in each stadium .,"select t2.name ,  count(*) from concert as t1 join stadium as t2 on t1.stadium_id  =  t2.stadium_id group by t1.stadium_id"
-Show countries where a singer above age 40 and a singer below 30 are from .,select country from singer where age  >  40 intersect select country from singer where age  <  30
-Find the number of concerts happened in the stadium with the highest capacity .,select count(*) from concert where stadium_id = (select stadium_id from stadium order by capacity desc limit 1)
