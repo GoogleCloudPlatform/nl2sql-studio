@@ -34,7 +34,8 @@ from st_pages import Page, show_pages
 # import the executors
 from utils import linear_gen_sql, cot_gen_sql, rag_gen_sql, lite_gen_sql
 # import support functions
-from utils import get_feedback, message_queue, add_question_to_db
+from utils import get_feedback, message_queue, \
+    add_question_to_db, create_look_ui
 # import auth functions
 from utils import view_auth_google, view_login_google, \
     back_to_login_page, run_visualization
@@ -63,14 +64,14 @@ show_pages(
 CORE = "NL2SQL Studio Core"
 LITE = "NL2SQL Studio Lite"
 LINEAR = "Linear Executor"
-#RAG = "Rag Executor"
+# RAG = "Rag Executor"
 COT = "Chain of Thought"
 ZERO_SHOT = "Zero Shot"
 FEW_SHOT = "Few Shot"
 GEN_BY_CORE = "CORE_EXECUTORS"
 GEN_BY_LITE = "LITE_EXECUTORS"
 ZI_URL = " https://www.kaggle.com/datasets/"
-ZI_URL+= "jeromeblanchet/yale-universitys-spider-10-nlp-dataset/data"
+ZI_URL += "jeromeblanchet/yale-universitys-spider-10-nlp-dataset/data"
 
 
 def define_session_variables() -> None:
@@ -567,7 +568,7 @@ def redraw() -> None:
                     st.session_state[f'visualise_modal_{cntr}'] = \
                         visualise_modal
 
-                    cols = st.columns([1, 1, 8])
+                    cols = st.columns([1, 1, 1, 7])
                     with cols[0]:
                         open_modal = st.button("Default Plotting",
                                                key=f"vr_key_{cntr}")
@@ -575,20 +576,27 @@ def redraw() -> None:
                         open_modal_new = st.button(
                             "Custom Plotting", key=f"vru_key_{cntr}")
 
-                    if open_modal or open_modal_new:
+                    with cols[2]:
+                        open_modal_lk = st.button(
+                            "Looker Plotting", key=f"vrlk_key_{cntr}")
+
+                    if open_modal or open_modal_new or open_modal_lk:
                         st.session_state[
                             f'v_c_{cntr}'] = (
-                            'n' if open_modal else 'cp'
-                        )
+                                'n' if open_modal else (
+                                    'cp' if open_modal_new else 'clk'
+                                    )
+                                )
                         visualise_modal.open()
 
-                    if visualise_modal.is_open():
+                    sql_exec_flag = st.session_state.execution
+                    if visualise_modal.is_open() and sql_exec_flag:
                         with visualise_modal.container():
                             if st.session_state.get(f'v_c_{cntr}') == 'n':
                                 try:
                                     run_visualization(
                                         message["dataframe"],
-                                        True, cntr)
+                                        False, cntr)
                                 except Exception as e:
                                     st.write(
                                         f"Error Loading Plot \
@@ -596,7 +604,20 @@ def redraw() -> None:
                             elif st.session_state.get(f'v_c_{cntr}') == 'cp':
                                 try:
                                     run_visualization(message["dataframe"],
-                                                      False, cntr)
+                                                      True, cntr)
+                                except Exception as e:
+                                    st.write(
+                                        f"Error Loading Plot\
+                                            due to error: {str(e)}")
+                            elif st.session_state.get(f'v_c_{cntr}') == 'clk':
+                                try:
+                                    look, base_url = create_look_ui()
+                                    new_look_id = look.id
+                                    embed_url = (f"{base_url}/embed/looks/"
+                                                 f"{new_look_id}"
+                                                 "?refresh=true")
+                                    st.components.v1.iframe(embed_url,
+                                                            height=500)
                                 except Exception as e:
                                     st.write(
                                         f"Error Loading Plot\
