@@ -77,7 +77,7 @@ def linear_executor():
 
     try:
         nle = NL2SQL_Executors()
-        res_id, sql = nle.linear_executor(
+        res_id, sql, df = nle.linear_executor(
             question=question, data_dict=data_dictionary_read
         )
         sql_result = ""
@@ -96,6 +96,7 @@ def linear_executor():
                     "result_id": res_id,
                     "generated_query": sql,
                     "sql_result": sql_result,
+                    "df": df.to_json(),
                     "error_msg": "",
                 }
             except RuntimeError:
@@ -104,6 +105,7 @@ def linear_executor():
                     "result_id": res_id,
                     "generated_query": sql,
                     "sql_result": sql_result,
+                    "df": df.to_json(),
                     "error_msg": "",
                 }
     except RuntimeError:
@@ -115,7 +117,7 @@ def linear_executor():
             "error_msg": "Error encountered in Linear executor",
         }
 
-    return json.dumps(response_string)
+    return response_string
 
 
 @app.route("/api/executor/cot", methods=["POST"])
@@ -132,7 +134,7 @@ def cot_executor():
     try:
         logger.info("CoT initialising the class")
         nle = NL2SQL_Executors()
-        res_id, sql = nle.cot_executor(
+        res_id, sql, df = nle.cot_executor(
             question=question, data_dict=data_dictionary_read
         )
         sql_result = ""
@@ -152,6 +154,7 @@ def cot_executor():
                     "result_id": res_id,
                     "generated_query": sql,
                     "sql_result": sql_result,
+                    "df": df.to_json(),
                     "error_msg": "",
                 }
             except RuntimeError:
@@ -160,6 +163,7 @@ def cot_executor():
                     "result_id": res_id,
                     "generated_query": sql,
                     "sql_result": sql_result,
+                    "df": df.to_json(),
                     "error_msg": "",
                 }
     except RuntimeError:
@@ -171,7 +175,7 @@ def cot_executor():
             "error_msg": "Error encountered in CoT executor",
         }
 
-    return json.dumps(response_string)
+    return response_string
 
 
 @app.route("/api/executor/rag", methods=["POST"])
