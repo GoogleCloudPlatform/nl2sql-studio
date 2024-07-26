@@ -225,7 +225,7 @@ class DBAI:
                     print(type(params['code']), params['code'])
                     local_namespace = {}
                     # Execute the code string in the local namespace
-                    exec(params['code'].replace('\n', '\n'), globals(), local_namespace)
+                    exec(params['code'].replace('\r\n', '\n'), globals(), local_namespace)
                     # Access the 'fig' variable from the local namespace
                     fig = local_namespace['fig']
 

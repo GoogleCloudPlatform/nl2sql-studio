@@ -81,7 +81,7 @@ if __name__ == '__main__':
             """,)
     with col2:
         with st.expander("Click to Configure your DB searches"):
-            col1, col2, col3 = st.columns([1, 1, 2])
+            col1, col2, col3 = st.columns([1, 1, 1])
             with col1:
                 project_id = st.text_input(label='Project id',
                                            value=PROJ_ID)
