@@ -1,7 +1,7 @@
 runtime: python
 env: flex
 
-service: nl2sqlstudio-ui-prod
+service: nl2sqlstudio-ui-dev
 
 entrypoint: streamlit run nl2sqlstudio_ui.py --server.port=8080 --server.address=0.0.0.0
 
