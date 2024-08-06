@@ -16,21 +16,21 @@ from vertexai.language_models import TextGenerationModel
 import vertexai
 
 load_dotenv()
-# bigquery_connection_string = "bigquery://sl-test-project-363109/zoominfo"
+# bigquery_connection_string = "bigquery://sl-test-project-363109/nl2sql_spider"
 PROJ_CONFIG_FILE = "utils/proj_config.json"
 SQL_LOG_FILE = "utils/sqlgen_log.json"
 
 proj_config_dict = {
     "default": {
         "proj_name": "sl-test-project-363109",
-        "dataset": "zoominfo",
-        "metadata_file": "zoominfo_tables.json",
+        "dataset": "nl2sql_spider",
+        "metadata_file": "spider_md_cache.json",
     },
     "config": {"proj_name": "", "dataset": "", "metadata_file": ""},
 }
 
 
-def initialize_db(proj="sl-test-project-363109", dataset="zoominfo"):
+def initialize_db(proj="sl-test-project-363109", dataset="nl2sql_spider"):
     """
     Initialize the BQ connection string
     """
@@ -43,8 +43,8 @@ def initialize_db(proj="sl-test-project-363109", dataset="zoominfo"):
 
 def config_project(
     proj_name="sl-test-project-363109",
-    dataset="zoominfo",
-    metadata_file="zoominfo_tables.json",
+    dataset="nl2sql_spider",
+    metadata_file="spider_md_cache.json",
 ):
     """
     Save the project configuration details

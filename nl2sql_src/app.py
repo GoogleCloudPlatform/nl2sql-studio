@@ -34,7 +34,7 @@ from nl2sql_query_embeddings import Nl2Sql_embed
 
 PROJECT_ID = 'sl-test-project-363109'
 LOCATION = 'us-central1'
-DATASET_ID = 'zoominfo'
+DATASET_ID = 'nl2sql_spider'
 
 load_dotenv()
 
@@ -43,7 +43,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 
-dataset_name = 'zoominfo'
+dataset_name = 'nl2sql_spider'
 
 
 @app.route("/")
