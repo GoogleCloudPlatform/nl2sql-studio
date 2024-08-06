@@ -19,7 +19,6 @@ import json
 import os
 from flask_cors import CORS
 from flask import Flask, request
-from dotenv import load_dotenv
 from loguru import logger
 import uuid
 
@@ -29,8 +28,6 @@ from dbai import *
 PROJECT_ID = 'sl-test-project-363109'
 DATASET_ID = 'nl2sql_spider'
 TABLES_LIST = []
-
-load_dotenv()
 
 app = Flask(__name__)
 cors = CORS(app)
