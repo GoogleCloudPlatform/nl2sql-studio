@@ -41,7 +41,7 @@ from utils import view_auth_google, view_login_google, \
     back_to_login_page, run_visualization
 
 curr_path = Path(__file__).resolve()
-sys.path.extend([str(curr_path.parent), str(curr_path.parent.parent)])
+# sys.path.extend([str(curr_path.parent), str(curr_path.parent.parent)])
 
 # print(sys.path)
 
