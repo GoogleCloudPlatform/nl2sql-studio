@@ -60,6 +60,7 @@ params = dict(
 #     '''
 #     return llm(prompt)
 
+
 def execute_sql_query(query, client, job_config):
     """Execute given SQL query to fetch result"""
     try:
@@ -199,7 +200,7 @@ def bq_evaluator(
                 result_eval = 1
             else:
                 result_eval = 0
-        except:  # pylint: disable=bare-except
+        except RuntimeError:
             result_eval = 0
 
         out = [(
@@ -218,13 +219,14 @@ def bq_evaluator(
 
         if pb:
             pb.progress((idx+1)/len(df),
-                         text=f"Evaluation in progress. Please wait... {idx+1}/{len(df)}")
+                         text=f"Evaluation in progress. Please wait... {idx+1}/{len(df)}"
+                         )
         if render_result:
             if idx == 0:
                 redndered_df = st.dataframe(out_df)
             else:
                 redndered_df.add_rows(out_df)
-    
+
     pb.empty()
     accuracy = out_df.result_eval.sum()/len(df)
     all_results_df = pd.DataFrame(
