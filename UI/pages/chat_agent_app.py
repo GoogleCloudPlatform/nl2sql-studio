@@ -1,5 +1,4 @@
-from dbai_src.bot_functions import *
-from dbai_src.dbai import *
+from dbai_src.dbai import DBAI
 import streamlit as st
 
 
@@ -37,6 +36,7 @@ def draw_sidebar():
 
 
 def show_past_chat():
+    """ """
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"].replace("$", r"\$"))  # noqa: W605

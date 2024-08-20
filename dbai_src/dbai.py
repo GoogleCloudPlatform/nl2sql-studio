@@ -36,6 +36,7 @@ gemini = GenerativeModel("gemini-1.5-pro-001",
                         safety_settings=safety_settings,
                         )
 
+
 class Response:
     """The base response template class for DBAI output"""
     def __init__(self, text, interim_steps) -> None:
@@ -90,10 +91,10 @@ class DBAI:
         metdata_cache_path = f"./metadata_cache_{self.dataset_id}.json"
         if not os.path.exists(metdata_cache_path):
             self.metadata = self.create_metadata_cache()
-            with open(metdata_cache_path, 'w') as f:  # pylint: disable=unspecified-encoding
+            with open(metdata_cache_path, 'w') as f:  #  pylint: disable=unspecified-encoding
                 f.write(json.dumps(self.metadata))
         else:
-            with open(metdata_cache_path, 'r') as f: # pylint: disable=unspecified-encoding
+            with open(metdata_cache_path, 'r') as f:  #  pylint: disable=unspecified-encoding
                 self.metadata = json.load(f)
 
     def create_metadata_cache(self):
@@ -103,7 +104,7 @@ class DBAI:
         TABLE: {table_id}
         columns_info: {columns_info}"""
 
-        if self.tables_list in [ [], [''], '' ]:
+        if self.tables_list in [[], [''], '']:
             api_response = self.bq_client.list_tables(self.dataset_id)
             self.tables_list = [table.table_id for table in api_response]
 
@@ -124,14 +125,13 @@ class DBAI:
 
         return metadata
 
-
     def api_list_tables(self):
         """Gemini Tool for listing all tables info. """
         # api_response = client.list_tables(DATASET_ID)
         # api_response = str([table.table_id for table in api_response])
         try:
             api_response = self.metadata
-        except Exception: # pylint: disable=broad-except
+        except Exception: #  pylint: disable=broad-except
             api_response = self.tables_list
         return api_response
 
@@ -139,7 +139,7 @@ class DBAI:
         """Gemini Tool to fetch metadata for the given Table"""
         try:
             table_metadata = str(self.metadata[table_id])
-        except Exception: # pylint: disable=broad-except
+        except Exception: #  pylint: disable=broad-except
             ## if table_id is in form of dataset_id.table_id then remove dataset_id
             table_metadata = str(self.metadata[table_id.split('.')[-1]])
         return table_metadata
@@ -156,7 +156,7 @@ class DBAI:
             api_response = query_job.result()
             api_response = str([dict(row) for row in api_response])
             api_response = api_response.replace("\\", "").replace("\n", "")
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e: #  pylint: disable=broad-except
             api_response = f"{str(e)}"
 
         return api_response
@@ -203,7 +203,6 @@ class DBAI:
 \n\n'''
         return detailed_log
 
-
     def ask(self, question, chat):
         """main interface for interacting in multi-turn chat mode. """
         prompt = question + f"\n The dataset_id is {self.dataset_id}" + self.system_prompt
@@ -238,7 +237,7 @@ class DBAI:
                     print(type(params['code']), params['code'])
                     local_namespace = {}
                     # Execute the code string in the local namespace
-                    exec(  # pylint: disable=exec-used
+                    exec(  #  pylint: disable=exec-used
                         params['code'].replace('\r\n', '\n'),
                         globals(),
                         local_namespace
@@ -246,7 +245,7 @@ class DBAI:
                     # Access the 'fig' variable from the local namespace
                     fig = local_namespace['fig']
 
-                    st.plotly_chart(fig)#, use_container_width=True)
+                    st.plotly_chart(fig)  # use_container_width=True)
                     api_response = "here is the plot of the data shown below in separate tab."
 
                 response = chat.send_message(
@@ -271,7 +270,6 @@ class DBAI:
         return Response(text=response.text, interim_steps=intermediate_steps)
 
 
-
 class NL2SQLResp:
     """NL2SQL output format class"""
     def __init__(self, nl_output, generated_sql, sql_output) -> None:
@@ -285,7 +283,7 @@ class NL2SQLResp:
           SQL_OUTPUT: {self.sql_output}'''
 
 
-class DBAI_nl2sql(DBAI): # pylint: disable=invalid-name
+class DBAI_nl2sql(DBAI): #  pylint: disable=invalid-name
     """DBAI child class for generating NL2SQL response, instead of multi-turn chat-agent. """
     def __init__(
             self,

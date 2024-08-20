@@ -49,8 +49,8 @@ get_table_metadata_func = FunctionDeclaration(
 
 sql_query_func = FunctionDeclaration(
     name="sql_query",
-    description="Get information from data in BigQuery using SQL queries. Also generates SQL by"
-     " observing the error output from previous SQL execution if SQL query fails to execute",
+    description="""Get information from data in BigQuery using SQL queries. Also generates SQL by 
+observing the error output from previous SQL execution if SQL query fails to execute""",
     parameters={
         "type": "object",
         "properties": {

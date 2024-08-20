@@ -1,14 +1,15 @@
 import json
 import time
+import requests
+import os
 import pandas as pd
 # from langchain_google_vertexai import VertexAI
 from google.cloud import bigquery
 import streamlit as st
-
 from loguru import logger
-import requests
-import json
-import os
+
+from dbai_src.dbai import DBAI_nl2sql
+
 LITE_API_PART = 'lite'
 FEW_SHOT_GENERATION = "Few Shot"
 GEN_BY_CORE = "CORE_EXECUTORS"
@@ -25,11 +26,10 @@ ENDPOINTS = {
 }
 
 params = dict(
-    execution = False,
-    lite_model = FEW_SHOT_GENERATION,
-    access_token = ""
+    execution=False,
+    lite_model=FEW_SHOT_GENERATION,
+    access_token=""
 )
-from dbai_src.dbai import DBAI_nl2sql
 
 # llm = VertexAI(temperature=0, model_name="gemini-1.5-pro-001", max_output_tokens=1024)
 
@@ -61,6 +61,7 @@ from dbai_src.dbai import DBAI_nl2sql
 
 
 def execute_sql_query(query, client, job_config):
+    """ """
     try:
         cleaned_query = query.replace("\\n", " ").replace("\n", " ").replace("\\", "")
         query_job = client.query(cleaned_query, job_config=job_config)
@@ -72,6 +73,7 @@ def execute_sql_query(query, client, job_config):
 
 
 def dbai_framework(question, bq_project_id, bq_dataset_id, tables_list=[]):
+    """ """
     dbai_nl2sql = DBAI_nl2sql(
             proj_id=bq_project_id,
             dataset_id=bq_dataset_id,
@@ -122,6 +124,7 @@ def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
 
 
 def db_setup(project_id, dataset_id, metadata_path, method):
+    """ """
     token = f"Bearer "
     body = {
         "proj_name": project_id,
@@ -152,7 +155,7 @@ def db_setup(project_id, dataset_id, metadata_path, method):
                 headers={"Authorization": token},
                 files=files,
                 timeout=None
-                )
+            )
 
 def bq_evaluator(
         bq_project_id,
@@ -163,6 +166,7 @@ def bq_evaluator(
         pb=None,
         render_result=True,
         ):
+    """ """
     ts = time.strftime("%y%m%d%H%M")
     client = bigquery.Client(project=bq_project_id)
     job_config = bigquery.QueryJobConfig(
@@ -230,7 +234,6 @@ def bq_evaluator(
         "accuracy": accuracy,
         "output": all_results_df
     }
-
 
 
 if __name__ == '__main__':
