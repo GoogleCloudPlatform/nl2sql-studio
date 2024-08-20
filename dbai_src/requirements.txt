@@ -1,0 +1,9 @@
+gunicorn
+streamlit
+pydantic
+plotly
+google-cloud-aiplatform
+google-cloud-bigquery
+flask
+flask-cors
+loguru
