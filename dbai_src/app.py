@@ -16,13 +16,13 @@
 Main file serving the DBAI module exposing the APIs
 """
 import json
-import os
+import uuid
 from flask_cors import CORS
 from flask import Flask, request
 from loguru import logger
-import uuid
 
-from dbai import *
+
+from dbai import DBAI_nl2sql
 
 
 PROJECT_ID = 'sl-test-project-363109'
@@ -73,7 +73,7 @@ def nl2sql_lite_generate():
             "error_msg": ""
         }
 
-    except Exception as e:
+    except Exception as e: # pylint: disable=broad-except
         logger.error(
             f"DBAI SQL Generation unsuccessful: [{question}] {e}"
         )
