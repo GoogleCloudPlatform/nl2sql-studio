@@ -12,14 +12,13 @@ from vertexai.generative_models import (
     # ToolConfig
 )
 import streamlit as st
-from bot_functions import (
+from dbai_src.bot_functions import (
     list_tables_func,
     get_table_metadata_func,
     sql_query_func,
     plot_chart_auto_func
 )
 
-ROOT_PATH = '/Users/koushikchak/_work/nl2sql-studio'
 safety_settings = {
     generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH:
         generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,

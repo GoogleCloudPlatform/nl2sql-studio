@@ -19,7 +19,6 @@ from bot_functions import (
     plot_chart_auto_func
 )
 
-ROOT_PATH = '/Users/koushikchak/_work/nl2sql-studio'
 safety_settings = {
     generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH:
         generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
