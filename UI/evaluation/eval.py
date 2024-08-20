@@ -45,12 +45,10 @@ params = dict(
 #     - nl_description (str): The natural language description of the SQL query.
 #     - ground_truth (str): The ground truth SQL query.
 #     - llm_amswer (str): The student's generated SQL query for validation.
-
 #     Returns:
 #     str: "Yes" if the student's answer matches the ground truth and fits the NL description correctly,
 #          "No" otherwise.
 #     """
-    
 #     prompt = f'''You are an expert at validating SQL queries. Given the Natrual language description
 #       and the SQL query corresponding to that description, please check if the students answer is correct.
 #       There can be different ways to achieve the same result by forming the query differently.
@@ -62,9 +60,8 @@ params = dict(
 #     '''
 #     return llm(prompt)
 
-
 def execute_sql_query(query, client, job_config):
-    """ """
+    """Execute given SQL query to fetch result"""
     try:
         cleaned_query = query.replace("\\n", " ").replace("\n", " ").replace("\\", "")
         query_job = client.query(cleaned_query, job_config=job_config)
@@ -76,7 +73,7 @@ def execute_sql_query(query, client, job_config):
 
 
 def dbai_framework(question, bq_project_id, bq_dataset_id, tables_list=[]):
-    """ """
+    """call DBAI to get nl2sql response"""
     dbai_nl2sql = DBAI_nl2sql(
             proj_id=bq_project_id,
             dataset_id=bq_dataset_id,
@@ -128,7 +125,7 @@ def call_generate_sql_api(question, endpoint) -> tuple[str, str]:
 
 def db_setup(project_id, dataset_id, metadata_path, method):
     """ """
-    token = f"Bearer "
+    token = "Bearer "
     body = {
         "proj_name": project_id,
         "bq_dataset": dataset_id,
@@ -159,6 +156,7 @@ def db_setup(project_id, dataset_id, metadata_path, method):
                 files=files,
                 timeout=None
             )
+
 
 def bq_evaluator(
         bq_project_id,
@@ -201,11 +199,13 @@ def bq_evaluator(
                 result_eval = 1
             else:
                 result_eval = 0
-        except Exception as e:  # pylint: disable=broad-except
+        except:  # pylint: disable=bare-except
             result_eval = 0
 
-        out = [(question, ground_truth_sql, actual_query_result, generated_query,
-                    generated_query_result, llm_rating, result_eval)]
+        out = [(
+            question, ground_truth_sql, actual_query_result, generated_query,
+            generated_query_result, llm_rating, result_eval
+            )]
         all_results.extend(out)
 
         out_df = pd.DataFrame(

@@ -1,6 +1,5 @@
-""" """
+"""Page for Evaluation framework """
 import streamlit as st
-from io import StringIO
 from loguru import logger
 import pandas as pd
 import os
@@ -75,8 +74,9 @@ uploaded_file = st.file_uploader(
 
 with open('concert_singer_spider.csv', 'rb') as f:
     st.download_button('Download Spider Sample file',
-    f,
-    file_name='concert_singer_spider.csv')
+                       f,
+                       file_name='concert_singer_spider.csv'
+                       )
 
 start_eval = st.button("Start Evaluation")
 

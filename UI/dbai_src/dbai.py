@@ -71,7 +71,7 @@ class DBAI:
                                      generation_config={"temperature": 0.05},
                                      safety_settings=safety_settings,
                                      tools=[self.sql_query_tool],
-                                    )
+                                     )
 
         self.bq_client = bigquery.Client(project=self.proj_id)
         self.system_prompt = """ You are a fluent person who efficiently communicates with the user
@@ -113,7 +113,7 @@ columns_info: {columns_info}"""
             columns_info = self.bq_client.get_table(
                     f'{self.dataset_id}.{table_id}'
                 ).to_api_repr()['schema']
-            ## remove unwanted details like 'mode'
+            # remove unwanted details like 'mode'
             for field in columns_info.get('fields', []):
                 field.pop('mode', None)
 
@@ -140,7 +140,7 @@ columns_info: {columns_info}"""
         try:
             table_metadata = str(self.metadata[table_id])
         except Exception:  # pylint: disable=broad-except
-            ## if table_id is in form of dataset_id.table_id then remove dataset_id
+            # if table_id is in form of dataset_id.table_id then remove dataset_id
             table_metadata = str(self.metadata[table_id.split('.')[-1]])
         return table_metadata
 
@@ -305,8 +305,7 @@ class DBAI_nl2sql(DBAI):  # pylint: disable=invalid-name
                                      generation_config={"temperature": 0.05},
                                      safety_settings=safety_settings,
                                      tools=[self.nl2sql_tool],
-                                    )
-
+                                     )
 
     def get_sql(self, question):
         """For given question, returns the genrated SQL, result and description"""

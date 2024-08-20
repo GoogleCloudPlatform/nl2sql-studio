@@ -22,7 +22,6 @@ import json
 import configparser
 from io import StringIO
 from pathlib import Path
-import sys
 import requests
 from dotenv import load_dotenv
 from loguru import logger

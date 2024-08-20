@@ -1,3 +1,4 @@
+"""Page for DBAI chat agent"""
 from dbai_src.dbai import DBAI
 import streamlit as st
 
