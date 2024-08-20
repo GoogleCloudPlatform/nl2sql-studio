@@ -73,7 +73,7 @@ def nl2sql_lite_generate():
             "error_msg": ""
         }
 
-    except Exception as e: #  pylint: disable=broad-except
+    except Exception as e:  # pylint: disable=broad-except
         logger.error(
             f"DBAI SQL Generation unsuccessful: [{question}] {e}"
         )

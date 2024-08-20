@@ -1,7 +1,10 @@
+"""
+Evaluation main code for different NL2SQL frameworks
+"""
+import os
 import json
 import time
 import requests
-import os
 import pandas as pd
 # from langchain_google_vertexai import VertexAI
 from google.cloud import bigquery
@@ -66,7 +69,7 @@ def execute_sql_query(query, client, job_config):
         cleaned_query = query.replace("\\n", " ").replace("\n", " ").replace("\\", "")
         query_job = client.query(cleaned_query, job_config=job_config)
         response = query_job.result().to_dataframe()
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-except
         response = f"{str(e)}"
 
     return response
@@ -198,7 +201,7 @@ def bq_evaluator(
                 result_eval = 1
             else:
                 result_eval = 0
-        except:
+        except Exception as e:  # pylint: disable=broad-except
             result_eval = 0
 
         out = [(question, ground_truth_sql, actual_query_result, generated_query,
@@ -214,7 +217,8 @@ def bq_evaluator(
         out_df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv', index=False, mode='a')
 
         if pb:
-            pb.progress((idx+1)/len(df), text=f"Evaluation in progress. Please wait... {idx+1}/{len(df)}")
+            pb.progress((idx+1)/len(df),
+                         text=f"Evaluation in progress. Please wait... {idx+1}/{len(df)}")
         if render_result:
             if idx == 0:
                 redndered_df = st.dataframe(out_df)

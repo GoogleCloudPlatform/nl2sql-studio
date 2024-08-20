@@ -31,10 +31,11 @@ safety_settings = {
         generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
 }
 
-gemini = GenerativeModel("gemini-1.5-pro-001",
-                        generation_config={"temperature": 0.05},
-                        safety_settings=safety_settings,
-                        )
+gemini = GenerativeModel(
+    "gemini-1.5-pro-001",
+    generation_config={"temperature": 0.05},
+    safety_settings=safety_settings,
+    )
 
 
 class Response:
@@ -68,19 +69,19 @@ class DBAI:
         )
 
         self.agent = GenerativeModel("gemini-1.5-pro-001",
-                            generation_config={"temperature": 0.05},
-                            safety_settings=safety_settings,
-                            tools=[self.sql_query_tool],
-                            )
+                                     generation_config={"temperature": 0.05},
+                                     safety_settings=safety_settings,
+                                     tools=[self.sql_query_tool],
+                                    )
 
         self.bq_client = bigquery.Client(project=self.proj_id)
         self.system_prompt = """ You are a fluent person who efficiently communicates with the user
-         over different Database queries. Please always call the functions at your disposal
-         whenever you need to know something, and do not reply unless you feel you have all
-         information to answer the question satisfactorily. 
-        Only use information that you learn from BigQuery, do not make up information.
-         Always use date or time functions instead of hard-coded values in SQL
-         to reflect true current value.
+ over different Database queries. Please always call the functions at your disposal
+ whenever you need to know something, and do not reply unless you feel you have all
+ information to answer the question satisfactorily.
+ Only use information that you learn from BigQuery, do not make up information.
+ Always use date or time functions instead of hard-coded values in SQL
+ to reflect true current value.
         """
         self.load_metadata()
 
@@ -91,18 +92,18 @@ class DBAI:
         metdata_cache_path = f"./metadata_cache_{self.dataset_id}.json"
         if not os.path.exists(metdata_cache_path):
             self.metadata = self.create_metadata_cache()
-            with open(metdata_cache_path, 'w') as f:  #  pylint: disable=unspecified-encoding
+            with open(metdata_cache_path, 'w') as f:  # pylint: disable=unspecified-encoding
                 f.write(json.dumps(self.metadata))
         else:
-            with open(metdata_cache_path, 'r') as f:  #  pylint: disable=unspecified-encoding
+            with open(metdata_cache_path, 'r') as f:  # pylint: disable=unspecified-encoding
                 self.metadata = json.load(f)
 
     def create_metadata_cache(self):
         """create the metadata cache file for the specified Tables in DB for all columns. """
         gen_description_prompt = """Based on the columns information of this table.
-        Generate a very brief description for this table.
-        TABLE: {table_id}
-        columns_info: {columns_info}"""
+Generate a very brief description for this table.
+TABLE: {table_id}
+columns_info: {columns_info}"""
 
         if self.tables_list in [[], [''], '']:
             api_response = self.bq_client.list_tables(self.dataset_id)
@@ -131,7 +132,7 @@ class DBAI:
         # api_response = str([table.table_id for table in api_response])
         try:
             api_response = self.metadata
-        except Exception: #  pylint: disable=broad-except
+        except Exception:  # pylint: disable=broad-except
             api_response = self.tables_list
         return api_response
 
@@ -139,7 +140,7 @@ class DBAI:
         """Gemini Tool to fetch metadata for the given Table"""
         try:
             table_metadata = str(self.metadata[table_id])
-        except Exception: #  pylint: disable=broad-except
+        except Exception:  # pylint: disable=broad-except
             ## if table_id is in form of dataset_id.table_id then remove dataset_id
             table_metadata = str(self.metadata[table_id.split('.')[-1]])
         return table_metadata
@@ -156,7 +157,7 @@ class DBAI:
             api_response = query_job.result()
             api_response = str([dict(row) for row in api_response])
             api_response = api_response.replace("\\", "").replace("\n", "")
-        except Exception as e: #  pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             api_response = f"{str(e)}"
 
         return api_response
@@ -237,7 +238,7 @@ class DBAI:
                     print(type(params['code']), params['code'])
                     local_namespace = {}
                     # Execute the code string in the local namespace
-                    exec(  #  pylint: disable=exec-used
+                    exec(  # pylint: disable=exec-used
                         params['code'].replace('\r\n', '\n'),
                         globals(),
                         local_namespace
@@ -283,7 +284,7 @@ class NL2SQLResp:
           SQL_OUTPUT: {self.sql_output}'''
 
 
-class DBAI_nl2sql(DBAI): #  pylint: disable=invalid-name
+class DBAI_nl2sql(DBAI):  # pylint: disable=invalid-name
     """DBAI child class for generating NL2SQL response, instead of multi-turn chat-agent. """
     def __init__(
             self,
@@ -302,11 +303,10 @@ class DBAI_nl2sql(DBAI): #  pylint: disable=invalid-name
         )
 
         self.agent = GenerativeModel("gemini-1.5-pro-001",
-                            generation_config={"temperature": 0.05},
-                            safety_settings=safety_settings,
-                            tools=[self.nl2sql_tool],
-                            )
-
+                                     generation_config={"temperature": 0.05},
+                                     safety_settings=safety_settings,
+                                     tools=[self.nl2sql_tool],
+                                    )
 
     def get_sql(self, question):
         """For given question, returns the genrated SQL, result and description"""

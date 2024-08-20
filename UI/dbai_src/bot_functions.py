@@ -49,8 +49,8 @@ get_table_metadata_func = FunctionDeclaration(
 
 sql_query_func = FunctionDeclaration(
     name="sql_query",
-    description="""Get information from data in BigQuery using SQL queries. Also generates SQL by 
-observing the error output from previous SQL execution if SQL query fails to execute""",
+    description="""Get information from data in BigQuery using SQL queries. Also generates SQL by
+ observing the error output from previous SQL execution if SQL query fails to execute""",
     parameters={
         "type": "object",
         "properties": {
@@ -59,7 +59,7 @@ observing the error output from previous SQL execution if SQL query fails to exe
                 "description": '''SQL query on a single line that will help give quantitative
  answers to the user's question when run on a BigQuery dataset and table. In the SQL query, always
  use the fully qualified dataset and table names. Do not use hardcoded dates in query, always use
- date or time functiond instead. If SQL query failed to execute in past, then observe the past error 
+ date or time functiond instead. If SQL query failed to execute in past, then observe the past error
  and correct that and then create the SQL.''',
             }
         },
@@ -100,7 +100,7 @@ plot_chart_auto_func = FunctionDeclaration(
             "code": {
                 "type": "string",
                 "description": textwrap.dedent('''
-First extract the neseccary data, best suitable chart-type for that data, title, axis 
+First extract the neseccary data, best suitable chart-type for that data, title, axis
 and any other required information to plot the chart successfully.
 Get the data in such a way that it does not take too many repetitions or large number of characters.
 Then write python code to create a plot using this information in plotly module.
