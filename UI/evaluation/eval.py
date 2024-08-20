@@ -218,9 +218,10 @@ def bq_evaluator(
         out_df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv', index=False, mode='a')
 
         if pb:
-            pb.progress((idx+1)/len(df),
-                         text=f"Evaluation in progress. Please wait... {idx+1}/{len(df)}"
-                         )
+            pb.progress(
+                (idx+1)/len(df),
+                text=f"Evaluation in progress. Please wait... {idx+1}/{len(df)}"
+                )
         if render_result:
             if idx == 0:
                 redndered_df = st.dataframe(out_df)
