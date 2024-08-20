@@ -1,0 +1,152 @@
+{
+    "concert": {
+        "Name": "concert",
+        "Description": "The 'concert' table contains information about concerts held at various venues. Each row represents a concert event. The table includes the following columns:\n\n- concert_id: Unique identifier for each concert event.\n\n- venue_id: Identifier for the venue where the concert is held.\n\n- concert_date: Date on which the concert is held.\n\n- concert_time: Time at which the concert starts.\n\n- artist_id: Identifier for the artist or band performing at the concert.\n\n- genre: Genre of music performed at the concert.\n\n- ticket_price: Price of each ticket.",
+        "Columns": {
+            "concert_ID": {
+                "Name": "concert_ID",
+                "Type": "INTEGER",
+                "Description": "Unique identifier for each concert.  This column is also a foriegn key reference in 'singer_in_concert' table ",
+                "Examples": "1 or 5 or 2"
+            },
+            "concert_Name": {
+                "Name": "concert_Name",
+                "Type": "STRING",
+                "Description": "Name of the concert",
+                "Examples": "Auditions"
+            },
+            "Theme": {
+                "Name": "Theme",
+                "Type": "STRING",
+                "Description": "Theme of the concert",
+                "Examples": "Free Choice"
+            },
+            "Stadium_ID": {
+                "Name": "Stadium_ID",
+                "Type": "INTEGER",
+                "Description": "ID of the stadium where the concert is held.  This is one of the primary key in the 'stadium' field",
+                "Examples": "1 or 7 or 2"
+            },
+            "Year": {
+                "Name": "Year",
+                "Type": "STRING",
+                "Description": "Year in which the concert is held",
+                "Examples": "2014"
+            }
+        }
+    },
+    "singer": {
+        "Name": "singer",
+        "Description": "The 'singer' table contains information about singers. Each row represents a singer and includes the following columns:\n\n- SingerId: Unique identifier for each singer.\n- Name: Name of the singer.\n- Genre: Genre of music the singer is associated with.\n- Age: Age of the singer.\n- Gender: Gender of the singer.\n- RecordLabel: Record label the singer is signed to.\n- Awards: Number of awards the singer has won.\n- NetWorth: Estimated net worth of the singer.",
+        "Columns": {
+            "Singer_ID": {
+                "Name": "Singer_ID",
+                "Type": "INTEGER",
+                "Description": "Unique identifier for each singer.",
+                "Examples": "1 or 2 or 3"
+            },
+            "Name": {
+                "Name": "Name",
+                "Type": "STRING",
+                "Description": "Name of the singer.",
+                "Examples": "Justin Brown"
+            },
+            "Country": {
+                "Name": "Country",
+                "Type": "STRING",
+                "Description": "Country of origin for the singer.",
+                "Examples": "France"
+            },
+            "Song_Name": {
+                "Name": "Song_Name",
+                "Type": "STRING",
+                "Description": "Name of the song sung by the singer.",
+                "Examples": "Hey Oh"
+            },
+            "Song_release_year": {
+                "Name": "Song_release_year",
+                "Type": "STRING",
+                "Description": "Year in which the song was released.",
+                "Examples": "2013"
+            },
+            "Age": {
+                "Name": "Age",
+                "Type": "INTEGER",
+                "Description": "Age of the singer.",
+                "Examples": "29"
+            },
+            "Is_male": {
+                "Name": "Is_male",
+                "Type": "BOOLEAN",
+                "Description": "Boolean value indicating the gender of the singer (True for male, False for female).",
+                "Examples": "true"
+            }
+        }
+    },
+    "singer_in_concert": {
+        "Name": "singer_in_concert",
+        "Description": "The 'singer_in_concert' table contains information about singers and their concerts. Each row represents a unique concert event. The table includes the following columns:\n\n- concert_id: Unique identifier for each concert event.\n- singer_id: Unique identifier for each singer.",
+        "Columns": {
+            "concert_ID": {
+                "Name": "concert_ID",
+                "Type": "INTEGER",
+                "Description": "Unique identifier for each concert. This is primary key of 'concert' table",
+                "Examples": "1 or 2 or 5"
+            },
+            "Singer_ID": {
+                "Name": "Singer_ID",
+                "Type": "INTEGER",
+                "Description": "Unique identifier for each singer. This is primary key of 'singer' table",
+                "Examples": "2 or 3 or 5"
+            }
+        }
+    },
+    "stadium": {
+        "Name": "stadium",
+        "Description": "The 'stadium' table contains information about various stadiums around the world. Each row in the table represents a single stadium. The table includes the following columns:\n\n- StadiumID: A unique identifier for each stadium.\n- StadiumName: The name of the stadium.\n- City: The city where the stadium is located.\n- Country: The country where the stadium is located.\n- Capacity: The maximum number of people that the stadium can hold.\n- Highest: The highest recorded attendance at the stadium\n- Lowest: The lowest recorded attendance at the stadium.\n- Average: Average attendance recorded at the stadium.",
+        "Columns": {
+            "Stadium_ID": {
+                "Name": "Stadium_ID",
+                "Type": "INTEGER",
+                "Description": "Unique identifier for each stadium",
+                "Examples": "1 or 2 or 5"
+            },
+            "Location": {
+                "Name": "Location",
+                "Type": "STRING",
+                "Description": "City and state where the stadium is located",
+                "Examples": "Peterhead"
+            },
+            "Name": {
+                "Name": "Name",
+                "Type": "STRING",
+                "Description": "Official name of the stadium",
+                "Examples": "Balmoor"
+            },
+            "Capacity": {
+                "Name": "Capacity",
+                "Type": "INTEGER",
+                "Description": "Total number of spectators the stadium can accommodate",
+                "Examples": "4000"
+            },
+            "Highest": {
+                "Name": "Highest",
+                "Type": "INTEGER",
+                "Description": "Highest attendance recorded at the stadium",
+                "Examples": "837"
+            },
+            "Lowest": {
+                "Name": "Lowest",
+                "Type": "INTEGER",
+                "Description": "Lowest attendance recorded at the stadium",
+                "Examples": "400"
+            },
+            "Average": {
+                "Name": "Average",
+                "Type": "INTEGER",
+                "Description": "Average attendance for all the matches played at the stadium",
+                "Examples": "615"
+            }
+        }
+    }
+}

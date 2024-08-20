@@ -21,20 +21,28 @@ import os
 import json
 import configparser
 from io import StringIO
+from pathlib import Path
 import requests
 from dotenv import load_dotenv
 from loguru import logger
 
 import streamlit as st
 from streamlit_modal import Modal
+from st_pages import Page, show_pages
 
 # import the executors
 from utils import linear_gen_sql, cot_gen_sql, rag_gen_sql, lite_gen_sql
 # import support functions
-from utils import get_feedback, message_queue, add_question_to_db
+from utils import get_feedback, message_queue, \
+    add_question_to_db, create_look_ui
 # import auth functions
 from utils import view_auth_google, view_login_google, \
     back_to_login_page, run_visualization
+
+curr_path = Path(__file__).resolve()
+# sys.path.extend([str(curr_path.parent), str(curr_path.parent.parent)])
+
+# print(sys.path)
 
 load_dotenv()
 SHOW_SUCCESS = False
@@ -43,17 +51,26 @@ st.set_page_config(page_title='NL2SQL Studio',
                    initial_sidebar_state="expanded",
                    layout='wide')
 
+show_pages(
+    [
+        Page("nl2sqlstudio_ui.py", "NL2SQL Home", "🏠"),
+        Page("pages/chat_agent_app.py", "Database AI", ":robot_face:"),
+        Page("pages/Evaluation.py", "Evaluation", ":books:"),
+    ]
+)
+
+
 CORE = "NL2SQL Studio Core"
 LITE = "NL2SQL Studio Lite"
 LINEAR = "Linear Executor"
-RAG = "Rag Executor"
+# RAG = "Rag Executor"
 COT = "Chain of Thought"
 ZERO_SHOT = "Zero Shot"
 FEW_SHOT = "Few Shot"
 GEN_BY_CORE = "CORE_EXECUTORS"
 GEN_BY_LITE = "LITE_EXECUTORS"
-ZI_URL = "https://cloud.google.com/blog/products/\
-data-analytics/zoominfo-data-cubes-available-via-google-analytics-hub"
+ZI_URL = " https://www.kaggle.com/datasets/"
+ZI_URL += "jeromeblanchet/yale-universitys-spider-10-nlp-dataset/data"
 
 
 def define_session_variables() -> None:
@@ -253,13 +270,13 @@ def define_post_auth_layout() -> None:
             st.session_state.generation_engine = CORE
             with st.sidebar.container(height=140):
                 st.session_state.model = st.radio('Select Prompting Technique',
-                                                  [LINEAR, RAG, COT])
+                                                  [LINEAR, COT])
         elif gen_engine == LITE:
             st.session_state.generation_engine = LITE
             with st.sidebar.container(height=115):
                 st.session_state.lite_model = st.radio(
                     'Select Prompting Technique',
-                    [ZERO_SHOT, FEW_SHOT])
+                    [FEW_SHOT, ZERO_SHOT])
         else:
             st.session_state.generation_engine = None
 
@@ -309,9 +326,10 @@ def define_post_auth_layout() -> None:
                                 help=f"""For the purpose of this demo we have
                                 setup a demo project with id
                                 'sl-test-project-363109' created a dataset in
-                                BigQuery named 'zoominfo'. This dataset
-                                contains 3 tables with information that is a
-                                subset of [Zoominfo Data Cubes]({ZI_URL}).
+                                BigQuery named 'spider'. This dataset
+                                contains 4 tables with information that has
+                                schedule of singers concert
+                                [Spider Dataset]({ZI_URL}).
                                 This is the default dataset to generate SQLs
                                 from related natural language statements.  For
                                 custom query generation, specify the Project
@@ -549,7 +567,7 @@ def redraw() -> None:
                     st.session_state[f'visualise_modal_{cntr}'] = \
                         visualise_modal
 
-                    cols = st.columns([1, 1, 8])
+                    cols = st.columns([1, 1, 1, 7])
                     with cols[0]:
                         open_modal = st.button("Default Plotting",
                                                key=f"vr_key_{cntr}")
@@ -557,20 +575,27 @@ def redraw() -> None:
                         open_modal_new = st.button(
                             "Custom Plotting", key=f"vru_key_{cntr}")
 
-                    if open_modal or open_modal_new:
+                    with cols[2]:
+                        open_modal_lk = st.button(
+                            "Looker Plotting", key=f"vrlk_key_{cntr}")
+
+                    if open_modal or open_modal_new or open_modal_lk:
                         st.session_state[
                             f'v_c_{cntr}'] = (
-                            'n' if open_modal else 'cp'
-                        )
+                                'n' if open_modal else (
+                                    'cp' if open_modal_new else 'clk'
+                                    )
+                                )
                         visualise_modal.open()
 
-                    if visualise_modal.is_open():
+                    sql_exec_flag = st.session_state.execution
+                    if visualise_modal.is_open() and sql_exec_flag:
                         with visualise_modal.container():
                             if st.session_state.get(f'v_c_{cntr}') == 'n':
                                 try:
                                     run_visualization(
                                         message["dataframe"],
-                                        True, cntr)
+                                        False, cntr)
                                 except Exception as e:
                                     st.write(
                                         f"Error Loading Plot \
@@ -578,7 +603,20 @@ def redraw() -> None:
                             elif st.session_state.get(f'v_c_{cntr}') == 'cp':
                                 try:
                                     run_visualization(message["dataframe"],
-                                                      False, cntr)
+                                                      True, cntr)
+                                except Exception as e:
+                                    st.write(
+                                        f"Error Loading Plot\
+                                            due to error: {str(e)}")
+                            elif st.session_state.get(f'v_c_{cntr}') == 'clk':
+                                try:
+                                    look, base_url = create_look_ui()
+                                    new_look_id = look.id
+                                    embed_url = (f"{base_url}/embed/looks/"
+                                                 f"{new_look_id}"
+                                                 "?refresh=true")
+                                    st.components.v1.iframe(embed_url,
+                                                            height=500)
                                 except Exception as e:
                                     st.write(
                                         f"Error Loading Plot\
