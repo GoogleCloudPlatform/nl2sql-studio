@@ -147,7 +147,6 @@ columns_info: {columns_info}"""
     def execute_sql_query(self, query):
         """Gemini Tool to execute given SQL and return execution result. """
         job_config = bigquery.QueryJobConfig(
-            maximum_bytes_billed=100000000,
             default_dataset=f'{self.proj_id}.{self.dataset_id}'
             )
         try:
