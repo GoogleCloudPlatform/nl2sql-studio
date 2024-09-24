@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Allows importing and Spider Dataset
+Allows importing and using Standard Datasets
 """
 import json
 import os
@@ -21,9 +21,6 @@ import typing
 from abc import ABC
 from tempfile import gettempdir
 from zipfile import ZipFile
-
-import datasets as hf_dataset
-from datasets import config as hf_config
 from google.cloud import storage  # type: ignore[attr-defined]
 from typing_extensions import TypedDict
 
@@ -83,6 +80,10 @@ SpiderCoreSpec = TypedDict(
 
 
 class Spider(StandardDataset):
+    """
+    Allows downloading and interacting with the Spider Dataset
+    """
+
     dataset_id: str = "Spider"
     dataset_splits: list[str] = ["test", "train"]
     bucket_name: str = "nl2sql-internal-v2"
