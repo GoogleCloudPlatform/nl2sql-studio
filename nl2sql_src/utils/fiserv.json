@@ -1,0 +1,3392 @@
+{
+    "authorizations_search": {
+        "Name": "authorizations_search",
+        "Description": "This table contains information about all the transactions in sales and their details like status, date, network, payment methods etc. keywords Auth, Sale, Flow, Transaction",
+        "Columns": {
+            "a_approvalCode": {
+                "Name": "a_approvalCode",
+                "Type": "STRING",
+                "Description": "Identifies if the authorization was approved or declined.",
+                "Examples": "It contains values : \"Declined\", \"Approved\"."
+            },
+            "a_type": {
+                "Name": "a_type",
+                "Type": "STRING",
+                "Description": "Transaction type code e.g., sale, refund etc.",
+                "Examples": "It contains values : \"Pre Auth Request\", \"Purchase\", \"Return\"."
+            },
+            "a_transactionDateTime": {
+                "Name": "a_transactionDateTime",
+                "Type": "DATETIME",
+                "Description": "Date & time of the authorization transaction.",
+                "Examples": ""
+            },
+            "a_accountNumber": {
+                "Name": "a_accountNumber",
+                "Type": "STRING",
+                "Description": "Card number used for authorization transaction.",
+                "Examples": ""
+            },
+            "a_cardExpiryDate": {
+                "Name": "a_cardExpiryDate",
+                "Type": "STRING",
+                "Description": "Indicates expiration date on card.",
+                "Examples": ""
+            },
+            "a_amount": {
+                "Name": "a_amount",
+                "Type": "FLOAT",
+                "Description": "Amount requested for the authorization transaction.",
+                "Examples": ""
+            },
+            "a_currency": {
+                "Name": "a_currency",
+                "Type": "STRING",
+                "Description": "Currency code used for the transaction.",
+                "Examples": "It contains values : \"USD\"."
+            },
+            "a_network": {
+                "Name": "a_network",
+                "Type": "STRING",
+                "Description": "Name of the authorizing network associated with the transaction.",
+                "Examples": "It contains values : \"Mastercard\", \"Visa\", \"Star\", \"Pulse\", \"NYCE\", \"Discover\", \"American Express\", \"Unknown\"."
+            },
+            "a_paymentMethod": {
+                "Name": "a_paymentMethod",
+                "Type": "STRING",
+                "Description": "Identifies the method of payment used on the transaction.",
+                "Examples": "It contains values : \"Manual\", \"Mobile & ECommerce\", \"Credential on File\"."
+            },
+            "a_declineReason": {
+                "Name": "a_declineReason",
+                "Type": "STRING",
+                "Description": "Identifies the decline reason for the transaction.",
+                "Examples": ""
+            },
+            "a_authCode": {
+                "Name": "a_authCode",
+                "Type": "STRING",
+                "Description": "Authorization code from association(s). Generally, 6/7 alphanumeric code that gets printed on the receipt.",
+                "Examples": ""
+            },
+            "a_siteID": {
+                "Name": "a_siteID",
+                "Type": "STRING",
+                "Description": "An unique identifier assigned to the merchant. Also known as a MID.",
+                "Examples": "It contains values : \"311200311885\"."
+            },
+            "a_processor": {
+                "Name": "a_processor",
+                "Type": "STRING",
+                "Description": "Identifies the originating platform (Switch).",
+                "Examples": "It contains values : \"North\"."
+            },
+            "a_merchantCategory": {
+                "Name": "a_merchantCategory",
+                "Type": "STRING",
+                "Description": "Identifies the standard merchant category code assigned to the transaction.",
+                "Examples": "It contains values : \"5818\"."
+            },
+            "a_customerName": {
+                "Name": "a_customerName",
+                "Type": "STRING",
+                "Description": "Name on the Card.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_giftCardNumber": {
+                "Name": "a_giftCardNumber",
+                "Type": "STRING",
+                "Description": "Gift card number used for authorization transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_partnerOrderID": {
+                "Name": "a_partnerOrderID",
+                "Type": "STRING",
+                "Description": "Order identifier originated from Merchant.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_source": {
+                "Name": "a_source",
+                "Type": "STRING",
+                "Description": "Indicates the source.",
+                "Examples": "It contains values : \"Regular\"."
+            },
+            "a_sendMode": {
+                "Name": "a_sendMode",
+                "Type": "STRING",
+                "Description": "Indicates store and forward mode of the transaction.",
+                "Examples": "It contains values : \"Normal\"."
+            },
+            "a_mobileWallet": {
+                "Name": "a_mobileWallet",
+                "Type": "STRING",
+                "Description": "Identifies wallet type indicator (e.g., Apple Pay, Samsung Pay, Google Pay, etc.).",
+                "Examples": "It contains values : \"Non Mobile Wallet\"."
+            },
+            "a_ECIIndicator": {
+                "Name": "a_ECIIndicator",
+                "Type": "STRING",
+                "Description": "Indicates the electronic commerce indicator used for the transaction.",
+                "Examples": "It contains values : \"Channel Encrypted E-Comm\", \"Recurring Transaction\", \"No ECI Provided\", \"Secure E-Comm\", \"Non-Secure E-Comm\"."
+            },
+            "a_terminalID": {
+                "Name": "a_terminalID",
+                "Type": "STRING",
+                "Description": "Identifies terminal identifier for the transaction.",
+                "Examples": "It contains values : \"04221150\"."
+            },
+            "a_CAVVResponse": {
+                "Name": "a_CAVVResponse",
+                "Type": "STRING",
+                "Description": "Identifies name verification result response from the authorizer.",
+                "Examples": "It contains values : \"Not Validated\", \"Not Validated - Erroneous Data\", \"Passed Validation\", \"Issuer Does Not Participate\", \"Failed Validation - Attempt\"."
+            },
+            "a_AVSResponse": {
+                "Name": "a_AVSResponse",
+                "Type": "STRING",
+                "Description": "Identifies the result, obtained from the cardholder's name, during address verification.",
+                "Examples": "It contains values : \"Not Provided\", \"Address & Zip Match\", \"Address & Zip Does Not Match\", \"Card Type Not Supported\", \"Information/System Not Available\", \"Retry\", \"Addr Only (Discover: Addr & Zip) Match\", \"Zip Matches, Address Does Not\", \"9 Digit Zip Matches, Address Does Not\"."
+            },
+            "a_CVVResult": {
+                "Name": "a_CVVResult",
+                "Type": "STRING",
+                "Description": "Identifies the card verification value (CVV2) response from the authorizer.",
+                "Examples": "It contains values : \"Not Provided\", \"Match/Passed Validation\", \"No Match/Failed Validation\", \"Issuer Attempted/Not Complete\"."
+            },
+            "a_banknetRef": {
+                "Name": "a_banknetRef",
+                "Type": "STRING",
+                "Description": "Indicates Mastercard assigned Banknet reference number.",
+                "Examples": ""
+            },
+            "a_subType": {
+                "Name": "a_subType",
+                "Type": "STRING",
+                "Description": "Transaction sub type codes e.g., Pin, Signature, etc.",
+                "Examples": "It contains values : \"Not Provided\"."
+            },
+            "a_cardGroup": {
+                "Name": "a_cardGroup",
+                "Type": "STRING",
+                "Description": "The group of the card that is used in the transaction.",
+                "Examples": "It contains values : \"Mastercard\", \"Visa\", \"Discover\", \"Amex\", \"Debit\"."
+            },
+            "a_tokenId": {
+                "Name": "a_tokenId",
+                "Type": "STRING",
+                "Description": "Token number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_tokenResponseInd": {
+                "Name": "a_tokenResponseInd",
+                "Type": "STRING",
+                "Description": "Tokenization response indicator.",
+                "Examples": "It contains values : \"Success\"."
+            },
+            "a_ordNo": {
+                "Name": "a_ordNo",
+                "Type": "STRING",
+                "Description": "Order number sent by merchant.",
+                "Examples": ""
+            },
+            "a_nativeRejectCode": {
+                "Name": "a_nativeRejectCode",
+                "Type": "STRING",
+                "Description": "The reject code as received from the front-end switches.",
+                "Examples": ""
+            },
+            "a_nativeDebitRejectCode": {
+                "Name": "a_nativeDebitRejectCode",
+                "Type": "STRING",
+                "Description": "Native debit reject code.",
+                "Examples": "It contains values : \"0S9\", \"062\", \"054\", \"014\", \"042\", \"051\", \"005\", \"012\", \"059\"."
+            },
+            "a_linkResponseCode": {
+                "Name": "a_linkResponseCode",
+                "Type": "STRING",
+                "Description": "Identifies the Card N/w (i.e., VISA, Mastercard, Discover, AMEX) link response.",
+                "Examples": ""
+            },
+            "a_externalMid": {
+                "Name": "a_externalMid",
+                "Type": "STRING",
+                "Description": "External merchant ID.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_txnID": {
+                "Name": "a_txnID",
+                "Type": "STRING",
+                "Description": "Network transaction ID.",
+                "Examples": ""
+            },
+            "a_mrchTranId": {
+                "Name": "a_mrchTranId",
+                "Type": "STRING",
+                "Description": "External reference ID.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_DCCIND": {
+                "Name": "a_DCCIND",
+                "Type": "STRING",
+                "Description": "Identifies the acceptance of dynamic currency code transaction processing.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_DCCCurrency": {
+                "Name": "a_DCCCurrency",
+                "Type": "STRING",
+                "Description": "Identifies non-local merchant enabled dynamic currency code.",
+                "Examples": "It contains values : \"N/A\"."
+            },
+            "a_DCCAmount": {
+                "Name": "a_DCCAmount",
+                "Type": "STRING",
+                "Description": "Identifies the total transaction amount in the currency of the card rather than in the currency of the place of purchase.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_assocRespCode": {
+                "Name": "a_assocRespCode",
+                "Type": "STRING",
+                "Description": "Identifies the initial association response code for the transaction.",
+                "Examples": ""
+            },
+            "a_oldAccountNumber": {
+                "Name": "a_oldAccountNumber",
+                "Type": "STRING",
+                "Description": "Old Card number.",
+                "Examples": ""
+            },
+            "a_nativeAuthOpAction": {
+                "Name": "a_nativeAuthOpAction",
+                "Type": "STRING",
+                "Description": "Native Authorization Operation Action.",
+                "Examples": "It contains values : \"01\", \"2A\", \"2B\", \"2BE1\", \"2B06\", \"2BN1\", \"06\", \"011B\", \"011BN1\"."
+            },
+            "a_merchandiseCode": {
+                "Name": "a_merchandiseCode",
+                "Type": "STRING",
+                "Description": "Describes the type of fuel purchased.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_nativeMerchandiseCode": {
+                "Name": "a_nativeMerchandiseCode",
+                "Type": "STRING",
+                "Description": "Native merchandise code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_pumpRegisterNumber": {
+                "Name": "a_pumpRegisterNumber",
+                "Type": "STRING",
+                "Description": "Identifies the pump number.",
+                "Examples": "It contains values : \"04221150\"."
+            },
+            "a_fuelPurchaseLocation": {
+                "Name": "a_fuelPurchaseLocation",
+                "Type": "STRING",
+                "Description": "Identifies whether the fuel was purchased at the pump or In-Store",
+                "Examples": "It contains values : \"0\"."
+            },
+            "a_quantity": {
+                "Name": "a_quantity",
+                "Type": "STRING",
+                "Description": "Indicates the quantity of gas in gallons purchased.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_lcldt": {
+                "Name": "a_lcldt",
+                "Type": "STRING",
+                "Description": "Local date time of the transaction.",
+                "Examples": ""
+            },
+            "a_transactionTime": {
+                "Name": "a_transactionTime",
+                "Type": "STRING",
+                "Description": "Time (EPOCH) of the authorization transaction.",
+                "Examples": ""
+            },
+            "a_guid": {
+                "Name": "a_guid",
+                "Type": "STRING",
+                "Description": "Globally unique identifier.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_cshbAmount": {
+                "Name": "a_cshbAmount",
+                "Type": "STRING",
+                "Description": "Cash back amount provided for the transaction.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_first6": {
+                "Name": "a_first6",
+                "Type": "STRING",
+                "Description": "First six digits of card number.",
+                "Examples": ""
+            },
+            "a_last4": {
+                "Name": "a_last4",
+                "Type": "STRING",
+                "Description": "Last four digits of card number.",
+                "Examples": ""
+            },
+            "a_paypalAccountNumber": {
+                "Name": "a_paypalAccountNumber",
+                "Type": "STRING",
+                "Description": "PayPal account number used for authorization transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_paypalTransactionID": {
+                "Name": "a_paypalTransactionID",
+                "Type": "STRING",
+                "Description": "PayPal transaction ID.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_referenceNumber": {
+                "Name": "a_referenceNumber",
+                "Type": "STRING",
+                "Description": "Authorizer retrieval reference number, a unique RRN issued by the authorizer for each transaction.",
+                "Examples": ""
+            },
+            "a_seqno": {
+                "Name": "a_seqno",
+                "Type": "STRING",
+                "Description": "A unique reference number assigned to a transaction by the merchant, and will be returned as is in the response message if exist.",
+                "Examples": ""
+            },
+            "a_trckrid": {
+                "Name": "a_trckrid",
+                "Type": "STRING",
+                "Description": "Uniquely identifies a transaction.",
+                "Examples": ""
+            },
+            "a_fraudScore": {
+                "Name": "a_fraudScore",
+                "Type": "STRING",
+                "Description": "Indicates the fraud score on the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_timeTaken": {
+                "Name": "a_timeTaken",
+                "Type": "STRING",
+                "Description": "Indicates time taken to send a transaction to issuer.",
+                "Examples": ""
+            },
+            "a_settleCutOffTime": {
+                "Name": "a_settleCutOffTime",
+                "Type": "STRING",
+                "Description": "Cutoff time setup for settlement of transaction(s) for a Merchant.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_recurring": {
+                "Name": "a_recurring",
+                "Type": "STRING",
+                "Description": "Describes the recurrence type for the transaction.",
+                "Examples": "It contains values : \"One Time\", \"Recurring\"."
+            },
+            "a_networkTokenEligibleIndicator": {
+                "Name": "a_networkTokenEligibleIndicator",
+                "Type": "STRING",
+                "Description": "Network Token Eligible Indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_networkInputIndicator": {
+                "Name": "a_networkInputIndicator",
+                "Type": "STRING",
+                "Description": "Identifies the value that merchant sent in the cardholder ID field as PAN or NT.",
+                "Examples": "It contains values : \"Primary Account Number\"."
+            },
+            "a_networkAuthIndicator": {
+                "Name": "a_networkAuthIndicator",
+                "Type": "STRING",
+                "Description": "Identifies if auth was performed with PAN or NT - 1st Try.",
+                "Examples": "It contains values : \"Primary Account Number\", \"Network Token\"."
+            },
+            "a_networkAuthIndicator2": {
+                "Name": "a_networkAuthIndicator2",
+                "Type": "STRING",
+                "Description": "Identifies if auth was performed with PAN or NT - 2nd Try.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_networkAuthIndicator3": {
+                "Name": "a_networkAuthIndicator3",
+                "Type": "STRING",
+                "Description": "Identifies if auth was performed with PAN or NT - 3rd",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_networkTokenRetryAttempt": {
+                "Name": "a_networkTokenRetryAttempt",
+                "Type": "STRING",
+                "Description": "Identifies the successful auth attempt",
+                "Examples": "It contains values : \"Unknown\"."
+            },
+            "a_networkTokenNumber": {
+                "Name": "a_networkTokenNumber",
+                "Type": "STRING",
+                "Description": "Network token number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_parID": {
+                "Name": "a_parID",
+                "Type": "STRING",
+                "Description": "Par ID",
+                "Examples": ""
+            },
+            "a_bankFiid": {
+                "Name": "a_bankFiid",
+                "Type": "STRING",
+                "Description": "Identifies the bank FIID for a financial institution or customer.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_cashBackIndicator": {
+                "Name": "a_cashBackIndicator",
+                "Type": "STRING",
+                "Description": "Cash back transaction Indicator.",
+                "Examples": "It contains values : \"Unknown/Not Provided\"."
+            },
+            "a_termCapCode": {
+                "Name": "a_termCapCode",
+                "Type": "STRING",
+                "Description": "Identifies the transaction capabilities of the terminal associated with the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_mktSpecificDataInd": {
+                "Name": "a_mktSpecificDataInd",
+                "Type": "STRING",
+                "Description": "Identifies the data\u2019s market type.",
+                "Examples": "It contains values : \"Unknown / Not Provided\", \"Bill payment\"."
+            },
+            "a_cardLevelResult": {
+                "Name": "a_cardLevelResult",
+                "Type": "STRING",
+                "Description": "Result obtained from the account type & track data type information supplied by the issuer.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_cavvDowngradeReason": {
+                "Name": "a_cavvDowngradeReason",
+                "Type": "STRING",
+                "Description": "Identifies the Mastercard CAVV downgrade reason.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_posTermCap": {
+                "Name": "a_posTermCap",
+                "Type": "STRING",
+                "Description": "Identifies the term-cap sent in the initial or original authorization request.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_productAmount": {
+                "Name": "a_productAmount",
+                "Type": "STRING",
+                "Description": "Identifies the amount of the item described in this record.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_productQuantity": {
+                "Name": "a_productQuantity",
+                "Type": "STRING",
+                "Description": "Identifies the number of units in the transaction.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_productUnitPrice": {
+                "Name": "a_productUnitPrice",
+                "Type": "STRING",
+                "Description": "Identifies the unit price of the product described in this record.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_dccCountryCode": {
+                "Name": "a_dccCountryCode",
+                "Type": "STRING",
+                "Description": "Identifies the country in which the acquiring institution resides.",
+                "Examples": "It contains values : \"840\"."
+            },
+            "a_dccRate": {
+                "Name": "a_dccRate",
+                "Type": "STRING",
+                "Description": "Identifies the non-US currency conversion rate used to convert the value of total transaction amount to the value of DCC amount.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_voucherNumber": {
+                "Name": "a_voucherNumber",
+                "Type": "STRING",
+                "Description": "Identifies the voucher number in the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_lodgingArrivalDate": {
+                "Name": "a_lodgingArrivalDate",
+                "Type": "STRING",
+                "Description": "Identifies the check-in date in the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_lodgingDuration": {
+                "Name": "a_lodgingDuration",
+                "Type": "STRING",
+                "Description": "Identifies the number of days of lodging in the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_lodgingAmount": {
+                "Name": "a_lodgingAmount",
+                "Type": "STRING",
+                "Description": "Identifies the room rate for Amex or the total authorized amount for Visa.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_lodgingChargeType": {
+                "Name": "a_lodgingChargeType",
+                "Type": "STRING",
+                "Description": "Identifies the charge type or preferred customer indicator/no show indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_folioNumber": {
+                "Name": "a_folioNumber",
+                "Type": "STRING",
+                "Description": "Identifies the portfolio number associated with the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_unpredictableNumber": {
+                "Name": "a_unpredictableNumber",
+                "Type": "STRING",
+                "Description": "Identifies a random number generated by the device to add additional variability to the cryptogram.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_terminalSerialNumber": {
+                "Name": "a_terminalSerialNumber",
+                "Type": "STRING",
+                "Description": "Identifies the Interface Device (IFD) serial number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_issuerScriptResults": {
+                "Name": "a_issuerScriptResults",
+                "Type": "STRING",
+                "Description": "Identifies the results of script processing.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_terminalType": {
+                "Name": "a_terminalType",
+                "Type": "STRING",
+                "Description": "Identifies the terminal type",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_issuerScript1": {
+                "Name": "a_issuerScript1",
+                "Type": "STRING",
+                "Description": "Identifies the issuer script commands the issuer sends to the card in the response.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_tppVarID": {
+                "Name": "a_tppVarID",
+                "Type": "STRING",
+                "Description": "Identifies the third-party processor or value added reseller involved in the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_partialApprovalFlag": {
+                "Name": "a_partialApprovalFlag",
+                "Type": "STRING",
+                "Description": "Indicates whether partial approval processing is supported.",
+                "Examples": "It contains values : \"0\"."
+            },
+            "a_crossBorderIndicator": {
+                "Name": "a_crossBorderIndicator",
+                "Type": "STRING",
+                "Description": "Indicates whether the transaction qualifies as a fee program transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_authorizationTraceNumber": {
+                "Name": "a_authorizationTraceNumber",
+                "Type": "STRING",
+                "Description": "Identifies the authorization\u2019s trace number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_origAuthResponse": {
+                "Name": "a_origAuthResponse",
+                "Type": "STRING",
+                "Description": "Original authorization response.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_aci": {
+                "Name": "a_aci",
+                "Type": "STRING",
+                "Description": "Authorization characteristics indicators.",
+                "Examples": "It contains values : \"Y\"."
+            },
+            "a_mcPromotionCode": {
+                "Name": "a_mcPromotionCode",
+                "Type": "STRING",
+                "Description": "Identifies the MC promotion code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_visaValidCode": {
+                "Name": "a_visaValidCode",
+                "Type": "STRING",
+                "Description": "Identifies the visa valid code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_recordNumber": {
+                "Name": "a_recordNumber",
+                "Type": "STRING",
+                "Description": "This internal number is the unique identifier on the OmniPay platform for the authorizations.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_alternativeMerchantId": {
+                "Name": "a_alternativeMerchantId",
+                "Type": "STRING",
+                "Description": "Identifies the alternative merchant ID.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_posConditionCode": {
+                "Name": "a_posConditionCode",
+                "Type": "STRING",
+                "Description": "POS condition description.",
+                "Examples": "It contains values : \"Unknown\", \"Card Verification Required\", \"Mail/Phone/Recurring Order\", \"ECI-Open Network Transaction\", \"Internet Only Recurring (PINless)\"."
+            },
+            "a_messageTypeIdentifier": {
+                "Name": "a_messageTypeIdentifier",
+                "Type": "STRING",
+                "Description": "Message type identifier (MTID) of the response message.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_masterCardBanknetDt": {
+                "Name": "a_masterCardBanknetDt",
+                "Type": "STRING",
+                "Description": "Identifies the date of the authorization response received from MasterCard.",
+                "Examples": "It contains values : \"0000\", \"0801\"."
+            },
+            "a_addendumNumber": {
+                "Name": "a_addendumNumber",
+                "Type": "STRING",
+                "Description": "Used in conjunction to the item no to uniquely identify a record.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_vatReferenceNumber": {
+                "Name": "a_vatReferenceNumber",
+                "Type": "STRING",
+                "Description": "Identification number assigned by the taxing authorities to the purchasing company.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_lodgingDailyRoomRate": {
+                "Name": "a_lodgingDailyRoomRate",
+                "Type": "STRING",
+                "Description": "Lodging daily room rate.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_lodgingDailyRoomTax": {
+                "Name": "a_lodgingDailyRoomTax",
+                "Type": "STRING",
+                "Description": "Lodging daily room tax.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_lodgingOtherSvcCharges": {
+                "Name": "a_lodgingOtherSvcCharges",
+                "Type": "STRING",
+                "Description": "Lodging other service charges.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_adjustmentIndicator": {
+                "Name": "a_adjustmentIndicator",
+                "Type": "STRING",
+                "Description": "Adjustment Indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_adjustmentAmount": {
+                "Name": "a_adjustmentAmount",
+                "Type": "STRING",
+                "Description": "Adjustment amount.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_lodgNoShowIndicator": {
+                "Name": "a_lodgNoShowIndicator",
+                "Type": "STRING",
+                "Description": "Lodging/Rental no show indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_rentalAgreementNumber": {
+                "Name": "a_rentalAgreementNumber",
+                "Type": "STRING",
+                "Description": "Invoice number of original rental agreement.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_renterName": {
+                "Name": "a_renterName",
+                "Type": "STRING",
+                "Description": "Identifies the renter's name.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_rentalState": {
+                "Name": "a_rentalState",
+                "Type": "STRING",
+                "Description": "The state, county or province where the rented car was picked up.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_rentalClass": {
+                "Name": "a_rentalClass",
+                "Type": "STRING",
+                "Description": "Car rental classification.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_dailyRentalRate": {
+                "Name": "a_dailyRentalRate",
+                "Type": "STRING",
+                "Description": "Daily car rental rate.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_odometerReading": {
+                "Name": "a_odometerReading",
+                "Type": "STRING",
+                "Description": "Odometer reading.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_driverID": {
+                "Name": "a_driverID",
+                "Type": "STRING",
+                "Description": "Driver license lumber.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_rentalDate": {
+                "Name": "a_rentalDate",
+                "Type": "STRING",
+                "Description": "Identifies the rental date.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_rentalReturnDate": {
+                "Name": "a_rentalReturnDate",
+                "Type": "STRING",
+                "Description": "Car rental return date.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_rentalReturnLocationID": {
+                "Name": "a_rentalReturnLocationID",
+                "Type": "STRING",
+                "Description": "Address, phone number, etc. Identifying rental return location",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_rentalReturnCity": {
+                "Name": "a_rentalReturnCity",
+                "Type": "STRING",
+                "Description": "Renter return city.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_rentalReturnState": {
+                "Name": "a_rentalReturnState",
+                "Type": "STRING",
+                "Description": "State where the car was returned to the rental agency.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_rentalReturnCountry": {
+                "Name": "a_rentalReturnCountry",
+                "Type": "STRING",
+                "Description": "Country where the car was returned to the rental agency.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_extraChargeAmount": {
+                "Name": "a_extraChargeAmount",
+                "Type": "STRING",
+                "Description": "Additional charges added to customer bill after check-out.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_velocityIndicator": {
+                "Name": "a_velocityIndicator",
+                "Type": "STRING",
+                "Description": "Indicating whether this record is under Velocity controls.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_sourceType": {
+                "Name": "a_sourceType",
+                "Type": "STRING",
+                "Description": "Indicates source type.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_serverId": {
+                "Name": "a_serverId",
+                "Type": "STRING",
+                "Description": "Indicates server Id for certain types of transactions like eating joints.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_posData": {
+                "Name": "a_posData",
+                "Type": "STRING",
+                "Description": "Identifies Card N/w (i.e., VISA, Mastercard, Discover, AMEX) POS data.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_cardNetworkDataError": {
+                "Name": "a_cardNetworkDataError",
+                "Type": "STRING",
+                "Description": "Identifies a MasterCard Banknet\u00ae data error (track, POS, or MasterCard transaction category code error) for the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_cardNetworkCVCError": {
+                "Name": "a_cardNetworkCVCError",
+                "Type": "STRING",
+                "Description": "Identifies Banknet\u00ae interchange data returned by MasterCard, indicating an invalid card validation code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_salesTaxAmount": {
+                "Name": "a_salesTaxAmount",
+                "Type": "STRING",
+                "Description": "Identifies the amount of sales tax in the transaction.",
+                "Examples": ""
+            },
+            "a_freightAmount": {
+                "Name": "a_freightAmount",
+                "Type": "STRING",
+                "Description": "Identifies the amount of freight charges in the transaction.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_dutyAmount": {
+                "Name": "a_dutyAmount",
+                "Type": "STRING",
+                "Description": "Identifies the amount of duty charges in the transaction.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_emvAppCryptogram": {
+                "Name": "a_emvAppCryptogram",
+                "Type": "STRING",
+                "Description": "Identifies the online card authentication cryptogram generated by the card during the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvAppInterchangeProfile": {
+                "Name": "a_emvAppInterchangeProfile",
+                "Type": "STRING",
+                "Description": "Identifies a series of indicators reflecting the specific functions supported by the chip card application.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvAppTxnCounter": {
+                "Name": "a_emvAppTxnCounter",
+                "Type": "STRING",
+                "Description": "Identifies the counter from the card. Used to identify possible fraud.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvChipAuthResult": {
+                "Name": "a_emvChipAuthResult",
+                "Type": "STRING",
+                "Description": "Identifies the card authentication results for a chip card.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvChipTxnInd": {
+                "Name": "a_emvChipTxnInd",
+                "Type": "STRING",
+                "Description": "Identifies if it is a chip transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvExpDate": {
+                "Name": "a_emvExpDate",
+                "Type": "STRING",
+                "Description": "Identifies the expiration date of the application.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvIssuerAppData": {
+                "Name": "a_emvIssuerAppData",
+                "Type": "STRING",
+                "Description": "Identifies the various card-related data which is transmitted from the issuer.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvTermCountryCode": {
+                "Name": "a_emvTermCountryCode",
+                "Type": "STRING",
+                "Description": "Identifies the country where the merchant device is located.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvTermVerificationResult": {
+                "Name": "a_emvTermVerificationResult",
+                "Type": "STRING",
+                "Description": "Identifies the results of risk management performed by the device.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvCVMResult": {
+                "Name": "a_emvCVMResult",
+                "Type": "STRING",
+                "Description": "Identifies the Cardholder Verification Method (CVM) used for the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvCryptoInfoData": {
+                "Name": "a_emvCryptoInfoData",
+                "Type": "STRING",
+                "Description": "Identifies the type of Application Cryptogram (AC) carried in the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvTxnType": {
+                "Name": "a_emvTxnType",
+                "Type": "STRING",
+                "Description": "Identifies the type of EMV financial transaction as represented by the first two digits of the processing code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvTermCapProfile": {
+                "Name": "a_emvTermCapProfile",
+                "Type": "STRING",
+                "Description": "Identifies the card data input, Cardholder Verification Method (CVM) & the security capabilities supported by the chip terminal.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvAppVersionNumber": {
+                "Name": "a_emvAppVersionNumber",
+                "Type": "STRING",
+                "Description": "Identifies the application version number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvDedicatedFileName": {
+                "Name": "a_emvDedicatedFileName",
+                "Type": "STRING",
+                "Description": "Identifies the Application Identifier (AID) of the chip application.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_emvIssuerAuthData": {
+                "Name": "a_emvIssuerAuthData",
+                "Type": "STRING",
+                "Description": "Identifies the issuer authentication data sent by the issuer to the card in the authorization response.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_txnCatCode": {
+                "Name": "a_txnCatCode",
+                "Type": "STRING",
+                "Description": "Identifies the category code of the transaction.",
+                "Examples": "It contains values : \"T\"."
+            },
+            "a_shipmentToZip": {
+                "Name": "a_shipmentToZip",
+                "Type": "STRING",
+                "Description": "Identifies the ZIP + 4 post office code in the shipping destination address.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_shipmentFromZip": {
+                "Name": "a_shipmentFromZip",
+                "Type": "STRING",
+                "Description": "Identifies the ZIP + 4 post office code in the shipping source address.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_shipmentToCountryCode": {
+                "Name": "a_shipmentToCountryCode",
+                "Type": "STRING",
+                "Description": "Identifies the post office country code in the shipping destination address.",
+                "Examples": "It contains values : \"840\"."
+            },
+            "a_purchaseCode": {
+                "Name": "a_purchaseCode",
+                "Type": "STRING",
+                "Description": "Identifies the merchant\u2019s purchase order number.",
+                "Examples": ""
+            },
+            "a_serviceCode": {
+                "Name": "a_serviceCode",
+                "Type": "STRING",
+                "Description": "Value determines if card is chip capable.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_productUnitOfMeasure": {
+                "Name": "a_productUnitOfMeasure",
+                "Type": "STRING",
+                "Description": "Unit of measure.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_taxRate": {
+                "Name": "a_taxRate",
+                "Type": "STRING",
+                "Description": "Rate used to generate VAT/tax amount on freight/shipping.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_origAuthResponseDesc": {
+                "Name": "a_origAuthResponseDesc",
+                "Type": "STRING",
+                "Description": "Original Authorization Response Description.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_lineItemTotal": {
+                "Name": "a_lineItemTotal",
+                "Type": "STRING",
+                "Description": "Line item total. May be zero for zero cost items.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_authResponseCode": {
+                "Name": "a_authResponseCode",
+                "Type": "STRING",
+                "Description": "Identifies the response code from the authorizer.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_formFactor": {
+                "Name": "a_formFactor",
+                "Type": "STRING",
+                "Description": "Identifies the form factor in the chip.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_entryModeIndicator": {
+                "Name": "a_entryModeIndicator",
+                "Type": "STRING",
+                "Description": "Identifies the account number method of data entry, the PIN pad capabilities.",
+                "Examples": "It contains values : \"010\", \"810\", \"100\"."
+            },
+            "a_debitFeeAmount": {
+                "Name": "a_debitFeeAmount",
+                "Type": "STRING",
+                "Description": "Identifies amount of the debit fees.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_reversed": {
+                "Name": "a_reversed",
+                "Type": "STRING",
+                "Description": "Contains the character Y if the authorization has been reversed else N.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_tipAmount": {
+                "Name": "a_tipAmount",
+                "Type": "STRING",
+                "Description": "Applicable for certain types of transactions, like eating joints.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_discountAmount": {
+                "Name": "a_discountAmount",
+                "Type": "STRING",
+                "Description": "Total amount of item discount.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "a_merchantAdviceCode": {
+                "Name": "a_merchantAdviceCode",
+                "Type": "STRING",
+                "Description": "Authorization merchant advice code.",
+                "Examples": "It contains values : \"Unknown\", \"Will never approve\", \"Cannot approve currently\", \"Additional data available\", \"Revocation of Authorization Order\"."
+            },
+            "a_nativeExprProvider": {
+                "Name": "a_nativeExprProvider",
+                "Type": "STRING",
+                "Description": "Native value for host-based discount value based on the relationship.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_exprProvider": {
+                "Name": "a_exprProvider",
+                "Type": "STRING",
+                "Description": "Host based discount value based on the relationship.",
+                "Examples": "It contains values : \"Unknown\"."
+            },
+            "a_equivalentTrack2Data": {
+                "Name": "a_equivalentTrack2Data",
+                "Type": "STRING",
+                "Description": "Identifies the track 2 data.",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_onlineTxnInd": {
+                "Name": "a_onlineTxnInd",
+                "Type": "STRING",
+                "Description": "Indicating whether this transaction came via online or batch server (compass)",
+                "Examples": "It contains values : \"0\"."
+            },
+            "a_networkTokenOfferingType": {
+                "Name": "a_networkTokenOfferingType",
+                "Type": "STRING",
+                "Description": "Network Token Program Participation - Offering Type",
+                "Examples": "It contains values : \"Unknown\"."
+            },
+            "a_txnOriginator": {
+                "Name": "a_txnOriginator",
+                "Type": "STRING",
+                "Description": "Originating System of the txn",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_subMerchantId": {
+                "Name": "a_subMerchantId",
+                "Type": "STRING",
+                "Description": "Sub Merchant ID",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_merchantName": {
+                "Name": "a_merchantName",
+                "Type": "STRING",
+                "Description": "Merchant Name",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_externalTerminalID": {
+                "Name": "a_externalTerminalID",
+                "Type": "STRING",
+                "Description": "External Terminal ID",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_drdRegulatorIndicator": {
+                "Name": "a_drdRegulatorIndicator",
+                "Type": "STRING",
+                "Description": "Signifies if the BIN if is regulated or unregulated",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_drdNetwork": {
+                "Name": "a_drdNetwork",
+                "Type": "STRING",
+                "Description": "The two digit network ID that was routed to for Authorization",
+                "Examples": "It contains values : \"\"."
+            },
+            "a_nativeTxnSubType": {
+                "Name": "a_nativeTxnSubType",
+                "Type": "STRING",
+                "Description": "Native Transaction SubType",
+                "Examples": "It contains values : \"\"."
+            }
+        }
+    },
+    "chargebacks_search": {
+        "Name": "chargebacks_search",
+        "Description": "Chargebacks Search Table",
+        "Columns": {
+            "cb_siteID": {
+                "Name": "cb_siteID",
+                "Type": "STRING",
+                "Description": "Site ID (BE) - merchant number associated with each the business location.",
+                "Examples": "It contains values : \"311200311885\", \"372793590889\"."
+            },
+            "cb_backendProcessor": {
+                "Name": "cb_backendProcessor",
+                "Type": "STRING",
+                "Description": "Internal settlement platform.",
+                "Examples": "It contains values : \"North\"."
+            },
+            "cb_authNetwork": {
+                "Name": "cb_authNetwork",
+                "Type": "STRING",
+                "Description": "Authorization network of the credit card utilized for the transaction.",
+                "Examples": "It contains values : \"Visa\", \"Debit/Other\", \"Mastercard\", \"Discover\"."
+            },
+            "cb_receivedDate": {
+                "Name": "cb_receivedDate",
+                "Type": "DATETIME",
+                "Description": "Date when the chargeback was initiated.",
+                "Examples": ""
+            },
+            "cb_statusDate": {
+                "Name": "cb_statusDate",
+                "Type": "DATE",
+                "Description": "Date for an expected response to the client.",
+                "Examples": ""
+            },
+            "cb_transactionDate": {
+                "Name": "cb_transactionDate",
+                "Type": "DATE",
+                "Description": "Original date on a transaction that is being disputed and associated with a specific chargeback.",
+                "Examples": ""
+            },
+            "cb_adjDate": {
+                "Name": "cb_adjDate",
+                "Type": "DATE",
+                "Description": "Adjustment date.",
+                "Examples": ""
+            },
+            "cb_status": {
+                "Name": "cb_status",
+                "Type": "STRING",
+                "Description": "Status of chargeback.",
+                "Examples": "It contains values : \"Reversed\", \"Closed\"."
+            },
+            "cb_category": {
+                "Name": "cb_category",
+                "Type": "STRING",
+                "Description": "Categorization of chargeback.",
+                "Examples": "It contains values : \"Reversed\", \"Debited\", \"Pre-Arbitration\", \"Merchant Accepted\", \"Auto Representment\"."
+            },
+            "cb_workType": {
+                "Name": "cb_workType",
+                "Type": "STRING",
+                "Description": "Various stages of chargeback resolution.",
+                "Examples": "It contains values : \"Outgoing Pre-Arbitration\", \"First Chargeback\", \"Incoming Pre-Arbitration\", \"First Chargeback Reversal\"."
+            },
+            "cb_winLoss": {
+                "Name": "cb_winLoss",
+                "Type": "STRING",
+                "Description": "Status of dispute, describing if it has been won, loss or pending.",
+                "Examples": "It contains values : \"Win\", \"Loss\"."
+            },
+            "cb_Reason": {
+                "Name": "cb_Reason",
+                "Type": "STRING",
+                "Description": "Descriptive reason associated with a specific chargeback.",
+                "Examples": ""
+            },
+            "cb_ReasonKey": {
+                "Name": "cb_ReasonKey",
+                "Type": "STRING",
+                "Description": "Descriptive reason associated with a specific chargeback. (Code)",
+                "Examples": ""
+            },
+            "cb_adjustmentAmountSign": {
+                "Name": "cb_adjustmentAmountSign",
+                "Type": "STRING",
+                "Description": "Sign for adjustment amount that is being disputed.",
+                "Examples": "It contains values : \"+\", \"-\"."
+            },
+            "cb_currency": {
+                "Name": "cb_currency",
+                "Type": "STRING",
+                "Description": "Currency code used for the transaction.",
+                "Examples": "It contains values : \"USD\"."
+            },
+            "cb_chargebackAmount": {
+                "Name": "cb_chargebackAmount",
+                "Type": "FLOAT",
+                "Description": "Chargeback amount that is disputed by cardholder.",
+                "Examples": ""
+            },
+            "cb_dueDate": {
+                "Name": "cb_dueDate",
+                "Type": "DATE",
+                "Description": "A Chargeback due date is the deadline that you must respond by, in order to dispute a chargeback.",
+                "Examples": ""
+            },
+            "cb_transactionType": {
+                "Name": "cb_transactionType",
+                "Type": "STRING",
+                "Description": "Transaction type that identifies the transactions as a sale/refund etc.",
+                "Examples": "It contains values : \"Sale\", \"Credit\"."
+            },
+            "cb_dispositionDate": {
+                "Name": "cb_dispositionDate",
+                "Type": "DATE",
+                "Description": "Disposition date.",
+                "Examples": ""
+            },
+            "cb_Disposition": {
+                "Name": "cb_Disposition",
+                "Type": "STRING",
+                "Description": "Describing final settlement of a chargeback.",
+                "Examples": "It contains values : \"Case has been reversed\", \"Status Update to Closed\", \"Your case response has been rejected\", \"Adjustment to Merchant\", \"Close Case\", \"Merchant Accepted Case\"."
+            },
+            "cb_ECIndicator": {
+                "Name": "cb_ECIndicator",
+                "Type": "STRING",
+                "Description": "Electronic Commerce Indicator (ECI) is a value returned by Visa, MasterCard, JCB, and American Express etc. indicating the outcome of authentication attempted on transactions.",
+                "Examples": "It contains values : \"Recurring Transaction\", \"No ECI Provided\", \"Channel Encrypted E-Comm\", \"Secure E-Comm\", \"Single Payment Transaction (MOTO)\"."
+            },
+            "cb_transactionAmount": {
+                "Name": "cb_transactionAmount",
+                "Type": "FLOAT",
+                "Description": "Transaction amount that is being disputed.",
+                "Examples": ""
+            },
+            "cb_adjustmentAmount": {
+                "Name": "cb_adjustmentAmount",
+                "Type": "FLOAT",
+                "Description": "Adjustment amount that is being disputed.",
+                "Examples": ""
+            },
+            "cb_accountNumber": {
+                "Name": "cb_accountNumber",
+                "Type": "STRING",
+                "Description": "Card number used for the transaction.",
+                "Examples": ""
+            },
+            "cb_first6": {
+                "Name": "cb_first6",
+                "Type": "STRING",
+                "Description": "First six digits of card number.",
+                "Examples": ""
+            },
+            "cb_last4": {
+                "Name": "cb_last4",
+                "Type": "STRING",
+                "Description": "Last four digits of card number.",
+                "Examples": ""
+            },
+            "cb_invoiceNumber": {
+                "Name": "cb_invoiceNumber",
+                "Type": "STRING",
+                "Description": "Invoice number associated with the inquiry.",
+                "Examples": ""
+            },
+            "cb_terminalId": {
+                "Name": "cb_terminalId",
+                "Type": "STRING",
+                "Description": "Terminal ID.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_disputeID": {
+                "Name": "cb_disputeID",
+                "Type": "STRING",
+                "Description": "Case number associated with a specific chargeback.",
+                "Examples": ""
+            },
+            "cb_referenceNumber": {
+                "Name": "cb_referenceNumber",
+                "Type": "STRING",
+                "Description": "Reference number associated with the inquiry.",
+                "Examples": ""
+            },
+            "cb_authCode": {
+                "Name": "cb_authCode",
+                "Type": "STRING",
+                "Description": "Authorization code from association(s). Generally, 6/7 alphanumeric code that gets printed on the receipt.",
+                "Examples": ""
+            },
+            "cb_trackingNumber": {
+                "Name": "cb_trackingNumber",
+                "Type": "STRING",
+                "Description": "The tracking number of the disputed transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_svcCd": {
+                "Name": "cb_svcCd",
+                "Type": "STRING",
+                "Description": "Identifies the transaction service code.",
+                "Examples": "It contains values : \"Unknown\"."
+            },
+            "cb_merchantCategory": {
+                "Name": "cb_merchantCategory",
+                "Type": "STRING",
+                "Description": "Identifies the standard merchant category code assigned to the transaction.",
+                "Examples": "It contains values : \"Large Merchant Digital Goods (5818)\", \"Fast Food Restaurants (5814)\"."
+            },
+            "cb_orderNumber": {
+                "Name": "cb_orderNumber",
+                "Type": "STRING",
+                "Description": "Merchant order number.",
+                "Examples": ""
+            },
+            "cb_responseReceived": {
+                "Name": "cb_responseReceived",
+                "Type": "STRING",
+                "Description": "Chargeback response received.",
+                "Examples": "It contains values : \"Y\", \"N\"."
+            },
+            "cb_respondedDate": {
+                "Name": "cb_respondedDate",
+                "Type": "DATE",
+                "Description": "Responded on date.",
+                "Examples": ""
+            },
+            "cb_externalMid": {
+                "Name": "cb_externalMid",
+                "Type": "STRING",
+                "Description": "External MID.",
+                "Examples": "It contains values : \"311200311885\", \"372793590889\"."
+            },
+            "cb_paymentMethod": {
+                "Name": "cb_paymentMethod",
+                "Type": "STRING",
+                "Description": "Identifies the method of payment used on the transaction.",
+                "Examples": "It contains values : \"Mobile & ECommerce\", \"Unknown\"."
+            },
+            "cb_sendMode": {
+                "Name": "cb_sendMode",
+                "Type": "STRING",
+                "Description": "Indicates store and forward mode of the transaction.",
+                "Examples": "It contains values : \"Normal\"."
+            },
+            "cb_recurring": {
+                "Name": "cb_recurring",
+                "Type": "STRING",
+                "Description": "Describes the recurrence type for the transaction.",
+                "Examples": "It contains values : \"Recurring\", \"One Time\"."
+            },
+            "cb_mobileWallet": {
+                "Name": "cb_mobileWallet",
+                "Type": "STRING",
+                "Description": "Identifies wallet type indicator (e.g., Apple Pay, Samsung Pay, Google Pay etc.).",
+                "Examples": "It contains values : \"Non Mobile Wallet\"."
+            },
+            "cb_tokenResponseInd": {
+                "Name": "cb_tokenResponseInd",
+                "Type": "STRING",
+                "Description": "Tokenization response indicator.",
+                "Examples": "It contains values : \"Success\"."
+            },
+            "cb_captureMethod": {
+                "Name": "cb_captureMethod",
+                "Type": "STRING",
+                "Description": "Capture method.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_preDisputeIndicator": {
+                "Name": "cb_preDisputeIndicator",
+                "Type": "STRING",
+                "Description": "Pre dispute indicator.",
+                "Examples": "It contains values : \"N\"."
+            },
+            "cb_paypalTransactionID": {
+                "Name": "cb_paypalTransactionID",
+                "Type": "STRING",
+                "Description": "Unique identifier for PayPal transaction.",
+                "Examples": ""
+            },
+            "cb_mobileIndicator": {
+                "Name": "cb_mobileIndicator",
+                "Type": "STRING",
+                "Description": "Mobile indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_receivedFromIssuer": {
+                "Name": "cb_receivedFromIssuer",
+                "Type": "STRING",
+                "Description": "Received from issuer.",
+                "Examples": "It contains values : \"1\"."
+            },
+            "cb_userData": {
+                "Name": "cb_userData",
+                "Type": "STRING",
+                "Description": "Discretionary data sent on transaction by the merchant.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_requestDate": {
+                "Name": "cb_requestDate",
+                "Type": "DATE",
+                "Description": "Request date.",
+                "Examples": ""
+            },
+            "cb_batchDate": {
+                "Name": "cb_batchDate",
+                "Type": "DATE",
+                "Description": "Date group of transactions was settled.",
+                "Examples": ""
+            },
+            "cb_batchNumber": {
+                "Name": "cb_batchNumber",
+                "Type": "STRING",
+                "Description": "Number assigned to each group of settled transactions.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_airlineTicketNumber": {
+                "Name": "cb_airlineTicketNumber",
+                "Type": "STRING",
+                "Description": "Airline industry only.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_submittedMerchantId": {
+                "Name": "cb_submittedMerchantId",
+                "Type": "STRING",
+                "Description": "Available for PSPs.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_softDescriptor": {
+                "Name": "cb_softDescriptor",
+                "Type": "STRING",
+                "Description": "Available for PFAC (Payment Facilitator Aggregator) only. Name of the Sub Merchant.",
+                "Examples": "It contains values : \"MSBILL.INFO\"."
+            },
+            "cb_submittedTxnCurrencyCode": {
+                "Name": "cb_submittedTxnCurrencyCode",
+                "Type": "STRING",
+                "Description": "ISO 4217 3 digit code representing the currency the transaction was processed in at the POS.",
+                "Examples": "It contains values : \"N/A\", \"USD\"."
+            },
+            "cb_debitNetworkId": {
+                "Name": "cb_debitNetworkId",
+                "Type": "STRING",
+                "Description": "Debit network description.",
+                "Examples": "It contains values : \"Unknown\", \"Star\", \"NYCE\", \"Pulse\"."
+            },
+            "cb_customTracking": {
+                "Name": "cb_customTracking",
+                "Type": "STRING",
+                "Description": "",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_origTranCurrency": {
+                "Name": "cb_origTranCurrency",
+                "Type": "STRING",
+                "Description": "Transaction amount of the original presentment in transaction currency.",
+                "Examples": "It contains values : \"840\"."
+            },
+            "cb_merchantSettleAmount": {
+                "Name": "cb_merchantSettleAmount",
+                "Type": "FLOAT",
+                "Description": "The amount settled with the merchant for the original presentment (that is, the amount posted to the merchant account), before the deduction of any charges.",
+                "Examples": ""
+            },
+            "cb_networkSettleCurrency": {
+                "Name": "cb_networkSettleCurrency",
+                "Type": "STRING",
+                "Description": "Currency settled with the payment network for the presentment before the deduction of any charges.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_networkSettleAmount": {
+                "Name": "cb_networkSettleAmount",
+                "Type": "STRING",
+                "Description": "Amount settled with the payment network for the presentment (that is, the interchange settlement amount), before the deduction of any charges.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_origSlipNumber": {
+                "Name": "cb_origSlipNumber",
+                "Type": "STRING",
+                "Description": "The OmniPay internal slip number of the original presentment.",
+                "Examples": ""
+            },
+            "cb_itemSlipNumber": {
+                "Name": "cb_itemSlipNumber",
+                "Type": "STRING",
+                "Description": "The OmniPay internal slip number of the transaction (that is, of the 1st chargeback, representment, and so on).",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_memberMessageText": {
+                "Name": "cb_memberMessageText",
+                "Type": "STRING",
+                "Description": "Text supplied by the issuer with the incoming first or second chargeback, it can also be the text send with the REP. This is empty for items related to transfers.",
+                "Examples": ""
+            },
+            "cb_documentIndicator": {
+                "Name": "cb_documentIndicator",
+                "Type": "STRING",
+                "Description": "Indicates if a document was provided for the item type. This data is extracted from the original base II or IPM file and only populated for chargebacks items (1st and 2nd).",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_retrievalRequestId": {
+                "Name": "cb_retrievalRequestId",
+                "Type": "STRING",
+                "Description": "Since this feed do not include RRQ this field is always empty.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_chargebackReferenceId": {
+                "Name": "cb_chargebackReferenceId",
+                "Type": "STRING",
+                "Description": "The issuer reference number (Chargeback Control Number/CCN) for the transaction.",
+                "Examples": ""
+            },
+            "cb_centralProcessingDate": {
+                "Name": "cb_centralProcessingDate",
+                "Type": "STRING",
+                "Description": "Central processing date of the latest incoming transaction for the chargeback case.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_partialAmountFlag": {
+                "Name": "cb_partialAmountFlag",
+                "Type": "STRING",
+                "Description": "Flag to indicate if the issuer has identified this chargeback as a partial chargeback.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_vmeAdditionalAuthMethod": {
+                "Name": "cb_vmeAdditionalAuthMethod",
+                "Type": "STRING",
+                "Description": "V.me additional auth method from the original presentment.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_vmeAdditionalAuthReasonCode": {
+                "Name": "cb_vmeAdditionalAuthReasonCode",
+                "Type": "STRING",
+                "Description": "V.me additional auth reason code from the original presentment.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_ppolProgramData": {
+                "Name": "cb_ppolProgramData",
+                "Type": "STRING",
+                "Description": "PPOL program data from the original presentment.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_originalChargebackSlipNumber": {
+                "Name": "cb_originalChargebackSlipNumber",
+                "Type": "STRING",
+                "Description": "If the item type is a 1st or 2nd chargeback this field is equal to the field item_slip, but for presentment and transfer this field will indicate which is the related chargeback.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_omnipayClienNumber": {
+                "Name": "cb_omnipayClienNumber",
+                "Type": "STRING",
+                "Description": "This is the OmniPay client number and is the link to the MP feed.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_merchantFundingCurrency": {
+                "Name": "cb_merchantFundingCurrency",
+                "Type": "STRING",
+                "Description": "Currency in which the original presentment was funded to the merchant.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_merchantFUndingAmount": {
+                "Name": "cb_merchantFUndingAmount",
+                "Type": "STRING",
+                "Description": "Only populated for some item type with the content of the field dependent on the item type.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_authRecordSequence": {
+                "Name": "cb_authRecordSequence",
+                "Type": "STRING",
+                "Description": "This is a link to the AU.REC_ID and may be empty. If filled it is the suggested matching authorization details that matches the original presentment.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_previousTransferToMerchant": {
+                "Name": "cb_previousTransferToMerchant",
+                "Type": "STRING",
+                "Description": "Y (True) if there was a previous transfer to a merchant account when the item type is REP, TWA, TWS. For other item types it will always be N (false).",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_uniqueTransactionId": {
+                "Name": "cb_uniqueTransactionId",
+                "Type": "STRING",
+                "Description": "Unique transaction identifier will be generated at point of sale before the transaction is sent for authorization or offline approval.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_chargebackCycle": {
+                "Name": "cb_chargebackCycle",
+                "Type": "STRING",
+                "Description": "Specific processing cycle of a presentment or a chargeback.",
+                "Examples": "It contains values : \"Pre-Arbitration\", \"Chargeback\", \"Reversal\"."
+            },
+            "cb_uploadID": {
+                "Name": "cb_uploadID",
+                "Type": "STRING",
+                "Description": "Unique identifier for this document.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_nonFinancial": {
+                "Name": "cb_nonFinancial",
+                "Type": "STRING",
+                "Description": "Financial category.",
+                "Examples": "It contains values : \"Financial\", \"Non-Financial\"."
+            },
+            "cb_experienceProvider": {
+                "Name": "cb_experienceProvider",
+                "Type": "STRING",
+                "Description": "Experience Provider.",
+                "Examples": "It contains values : \"\"."
+            },
+            "cb_tokenRequesterID": {
+                "Name": "cb_tokenRequesterID",
+                "Type": "STRING",
+                "Description": "Token Requester ID.",
+                "Examples": "It contains values : \"00000000000\", \"40010033267\", \"50170613205\"."
+            },
+            "cb_CAVVResponseCode": {
+                "Name": "cb_CAVVResponseCode",
+                "Type": "STRING",
+                "Description": "Identifies name verification result response from the authorizer.",
+                "Examples": "It contains values : \"Not Validated\", \"Not Validated - Erroneous Data\", \"Issuer Does Not Participate\", \"Failed Validation - Attempt\"."
+            }
+        }
+    },
+    "funding_search": {
+        "Name": "funding_search",
+        "Description": "Funding Search Table",
+        "Columns": {
+            "fd_siteID": {
+                "Name": "fd_siteID",
+                "Type": "STRING",
+                "Description": "An unique identifier assigned to the merchant. Also known as a MID.",
+                "Examples": "It contains values : \"311200311885\", \"226003032993\", \"226003169993\", \"372793590889\"."
+            },
+            "fd_batchDate": {
+                "Name": "fd_batchDate",
+                "Type": "DATETIME",
+                "Description": "Batch Date.",
+                "Examples": ""
+            },
+            "fd_fundedDate": {
+                "Name": "fd_fundedDate",
+                "Type": "DATETIME",
+                "Description": "Date when the funding to/from the merchant associated with this transaction.",
+                "Examples": ""
+            },
+            "fd_batchNo": {
+                "Name": "fd_batchNo",
+                "Type": "STRING",
+                "Description": "Batch number (batch that pulled this settlement transaction to initiate thee funding) for the transaction.",
+                "Examples": ""
+            },
+            "fd_majorCategory": {
+                "Name": "fd_majorCategory",
+                "Type": "STRING",
+                "Description": "Identifies the major category for the merchant.",
+                "Examples": "It contains values : \"Chargebacks\", \"Chargeback Reversals\", \"Deposits\", \"Financial Adjustments\", \"Interchange Charges\", \"Service Charges\", \"Fee\"."
+            },
+            "fd_minorCategory": {
+                "Name": "fd_minorCategory",
+                "Type": "STRING",
+                "Description": "Identifies the minor category for the merchant.",
+                "Examples": ""
+            },
+            "fd_productCode": {
+                "Name": "fd_productCode",
+                "Type": "STRING",
+                "Description": "Name of the authorizing network associated with the transaction.",
+                "Examples": "It contains values : \"MASTERCARD\", \"VISA\", \"DEBIT CARD\", \"MISCELLANEOUS\", \"AMEX\", \"DISCOVER\", \"ELECTRONIC BENEFITS TRANSFER\"."
+            },
+            "fd_creditAmount": {
+                "Name": "fd_creditAmount",
+                "Type": "FLOAT",
+                "Description": "Indicates the credit amount on the transaction.",
+                "Examples": ""
+            },
+            "fd_debitAmount": {
+                "Name": "fd_debitAmount",
+                "Type": "FLOAT",
+                "Description": "Indicates the debit amount on the transaction.",
+                "Examples": ""
+            },
+            "fd_currency": {
+                "Name": "fd_currency",
+                "Type": "STRING",
+                "Description": "Currency code used for the transaction.",
+                "Examples": "It contains values : \"USD\"."
+            },
+            "fd_dda": {
+                "Name": "fd_dda",
+                "Type": "STRING",
+                "Description": "DDA associated with the merchant.",
+                "Examples": "It contains values : \"XXXX1507\", \"XXXXXX8210\", \"XXXXXX6816\", \"XXXXXX4301\"."
+            },
+            "fd_processor": {
+                "Name": "fd_processor",
+                "Type": "STRING",
+                "Description": "Identifies the funding platform.",
+                "Examples": "It contains values : \"North\"."
+            },
+            "fd_accountNetAmount": {
+                "Name": "fd_accountNetAmount",
+                "Type": "FLOAT",
+                "Description": "Funding amount after fees.",
+                "Examples": ""
+            },
+            "fd_interchangeCD": {
+                "Name": "fd_interchangeCD",
+                "Type": "STRING",
+                "Description": "Interchange CD.",
+                "Examples": ""
+            },
+            "fd_accountCurrency": {
+                "Name": "fd_accountCurrency",
+                "Type": "STRING",
+                "Description": "Account currency.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_referenceNo": {
+                "Name": "fd_referenceNo",
+                "Type": "STRING",
+                "Description": "Reference number.",
+                "Examples": ""
+            },
+            "fd_referenceNumber": {
+                "Name": "fd_referenceNumber",
+                "Type": "STRING",
+                "Description": "Acquirer reference number. This is only available for the transaction Type: chargeback.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_airLineTicketNumber": {
+                "Name": "fd_airLineTicketNumber",
+                "Type": "STRING",
+                "Description": "Airline ticket number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_ddaLast4": {
+                "Name": "fd_ddaLast4",
+                "Type": "STRING",
+                "Description": "Last four digits of DDA number.",
+                "Examples": "It contains values : \"1507\", \"8210\", \"6816\", \"4301\"."
+            },
+            "fd_ddaLength": {
+                "Name": "fd_ddaLength",
+                "Type": "STRING",
+                "Description": "DDA length.",
+                "Examples": "It contains values : \"8\", \"10\"."
+            },
+            "fd_recordDate": {
+                "Name": "fd_recordDate",
+                "Type": "DATE",
+                "Description": "This is pipeline date when the data was loaded.",
+                "Examples": ""
+            },
+            "fd_adjustmentsAmt": {
+                "Name": "fd_adjustmentsAmt",
+                "Type": "FLOAT",
+                "Description": "Adjustments amount.",
+                "Examples": ""
+            },
+            "fd_amountPaid": {
+                "Name": "fd_amountPaid",
+                "Type": "FLOAT",
+                "Description": "Amount aid.",
+                "Examples": ""
+            },
+            "fd_chargebackAmt": {
+                "Name": "fd_chargebackAmt",
+                "Type": "FLOAT",
+                "Description": "Charge back amount.",
+                "Examples": ""
+            },
+            "fd_depositAmt": {
+                "Name": "fd_depositAmt",
+                "Type": "FLOAT",
+                "Description": "Deposit amount.",
+                "Examples": ""
+            },
+            "fd_feesAmt": {
+                "Name": "fd_feesAmt",
+                "Type": "FLOAT",
+                "Description": "Fees amount.",
+                "Examples": ""
+            },
+            "fd_icChargesAmt": {
+                "Name": "fd_icChargesAmt",
+                "Type": "FLOAT",
+                "Description": "IC charges amount.",
+                "Examples": ""
+            },
+            "fd_netSalesAmt": {
+                "Name": "fd_netSalesAmt",
+                "Type": "FLOAT",
+                "Description": "Net sales amount.",
+                "Examples": ""
+            },
+            "fd_ServiceChangesAmt": {
+                "Name": "fd_ServiceChangesAmt",
+                "Type": "FLOAT",
+                "Description": "Service charges amount.",
+                "Examples": ""
+            },
+            "fd_paidByOthersAmt": {
+                "Name": "fd_paidByOthersAmt",
+                "Type": "FLOAT",
+                "Description": "Paid by others amount.",
+                "Examples": ""
+            },
+            "fd_tranAmount": {
+                "Name": "fd_tranAmount",
+                "Type": "FLOAT",
+                "Description": "Amount requested for the authorization transaction.",
+                "Examples": ""
+            },
+            "fd_itemCount": {
+                "Name": "fd_itemCount",
+                "Type": "STRING",
+                "Description": "Indicates the item count on the transaction.",
+                "Examples": "It contains values : \"1\", \"28\", \"13\", \"14\", \"26\", \"4\", \"20\", \"2\", \"29\", \"27\"."
+            },
+            "fd_depositTypeCd": {
+                "Name": "fd_depositTypeCd",
+                "Type": "STRING",
+                "Description": "Deposit type.",
+                "Examples": "It contains values : \"Chargebacks Reversals\", \"Net Sales\", \"Adjustments\", \"I/C Charges\", \"Paid by Others\", \"Service Charges\", \"Fees\"."
+            },
+            "fd_bankReferenceNo": {
+                "Name": "fd_bankReferenceNo",
+                "Type": "STRING",
+                "Description": "Unique number in merchant's bank deposit for funding.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_tranTypeCode": {
+                "Name": "fd_tranTypeCode",
+                "Type": "STRING",
+                "Description": "This is the transaction type code associated to the acquirer commission charge.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_reversalIndicator": {
+                "Name": "fd_reversalIndicator",
+                "Type": "STRING",
+                "Description": "Reversal indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_addendumARN": {
+                "Name": "fd_addendumARN",
+                "Type": "STRING",
+                "Description": "ARN created by transferring a transaction or by Misc. batch input.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_feeSeqCode": {
+                "Name": "fd_feeSeqCode",
+                "Type": "STRING",
+                "Description": "Fee sequence code for a transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_feeSeqDesc": {
+                "Name": "fd_feeSeqDesc",
+                "Type": "STRING",
+                "Description": "Fee sequence description per fee sequence code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_valDate": {
+                "Name": "fd_valDate",
+                "Type": "DATE",
+                "Description": "Value date.",
+                "Examples": ""
+            },
+            "fd_tranCategoryCode": {
+                "Name": "fd_tranCategoryCode",
+                "Type": "STRING",
+                "Description": "Transaction category code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_tranCategoryDesc": {
+                "Name": "fd_tranCategoryDesc",
+                "Type": "STRING",
+                "Description": "Description for the transaction category code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_relatedSourceTran": {
+                "Name": "fd_relatedSourceTran",
+                "Type": "STRING",
+                "Description": "Details of related transactions within the FA feed.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_localAmount": {
+                "Name": "fd_localAmount",
+                "Type": "STRING",
+                "Description": "The gross amount posted to the account, in the local currency.",
+                "Examples": ""
+            },
+            "fd_paymentRefNo": {
+                "Name": "fd_paymentRefNo",
+                "Type": "STRING",
+                "Description": "Unique identifier for the payment.",
+                "Examples": ""
+            },
+            "fd_accountCurrentNet": {
+                "Name": "fd_accountCurrentNet",
+                "Type": "STRING",
+                "Description": "The net amount in the account currency.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "fd_accountID": {
+                "Name": "fd_accountID",
+                "Type": "STRING",
+                "Description": "Unique identifier for the merchant account.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_accountType": {
+                "Name": "fd_accountType",
+                "Type": "STRING",
+                "Description": "The type of the account i.e., Payment Account Retail (PAR).",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_paymentStatus": {
+                "Name": "fd_paymentStatus",
+                "Type": "STRING",
+                "Description": "Payment status using funding warehouse functionality.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_accountCurrencyGross": {
+                "Name": "fd_accountCurrencyGross",
+                "Type": "STRING",
+                "Description": "Gross amount posted to the account.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "fd_intraAccountRefNo": {
+                "Name": "fd_intraAccountRefNo",
+                "Type": "STRING",
+                "Description": "Reference number that indicate what transaction are related to intra account settlement.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_destinationAccountType": {
+                "Name": "fd_destinationAccountType",
+                "Type": "STRING",
+                "Description": "Destination account type.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_countLimit": {
+                "Name": "fd_countLimit",
+                "Type": "STRING",
+                "Description": "Indicates the number of times the payment instructions should be executed, zero means indefinite.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_amountLimit": {
+                "Name": "fd_amountLimit",
+                "Type": "STRING",
+                "Description": "Indicates a limit amount to be collected, for example for factoring payment instruction, zero means unlimited.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_startDate": {
+                "Name": "fd_startDate",
+                "Type": "DATE",
+                "Description": "Indicates when the payment instruction will stop being executed.",
+                "Examples": ""
+            },
+            "fd_endDt": {
+                "Name": "fd_endDt",
+                "Type": "STRING",
+                "Description": "Indicates when the payment instruction will start to be executed.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_executionCount": {
+                "Name": "fd_executionCount",
+                "Type": "STRING",
+                "Description": "Indicates the number of times the payment instruction was executed.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_factorAgent": {
+                "Name": "fd_factorAgent",
+                "Type": "STRING",
+                "Description": "Free text, can be used to enter the name of the person that authorized the instruction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_instructionType": {
+                "Name": "fd_instructionType",
+                "Type": "STRING",
+                "Description": "Instruction type.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_lastExecutionDate": {
+                "Name": "fd_lastExecutionDate",
+                "Type": "DATE",
+                "Description": "Indicates the last time the payment instruction was evaluated.",
+                "Examples": ""
+            },
+            "fd_merchantIdShort": {
+                "Name": "fd_merchantIdShort",
+                "Type": "STRING",
+                "Description": "This column contains the internal OmniPay unique client number. This is the unique identifier on this feed.",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_note": {
+                "Name": "fd_note",
+                "Type": "STRING",
+                "Description": "Free text entered by the user when setting up the payment instruction",
+                "Examples": "It contains values : \"\"."
+            },
+            "fd_paymentBaseAmt": {
+                "Name": "fd_paymentBaseAmt",
+                "Type": "STRING",
+                "Description": "Indicate a fixed based amount to be deducted from the account",
+                "Examples": "It contains values : \".00\"."
+            },
+            "fd_paymentMaximumAmt": {
+                "Name": "fd_paymentMaximumAmt",
+                "Type": "STRING",
+                "Description": "Indicates a maximum amount to be collected, if the percentage of the balance is greater than this amount. The amount is expressed in the account currency",
+                "Examples": "It contains values : \".00\"."
+            },
+            "fd_paymentMinimumAmt": {
+                "Name": "fd_paymentMinimumAmt",
+                "Type": "STRING",
+                "Description": "Indicates a minimum amount to be collected, if the percentage of the balance is less than this amount. The amount is expressed in the account currency",
+                "Examples": "It contains values : \".00\"."
+            },
+            "fd_paymentPercent": {
+                "Name": "fd_paymentPercent",
+                "Type": "STRING",
+                "Description": "Indicates the percentage that will be taken from the balance of the account",
+                "Examples": "It contains values : \".00\"."
+            },
+            "fd_period": {
+                "Name": "fd_period",
+                "Type": "STRING",
+                "Description": "Indicates how often the payment instruction is executed.",
+                "Examples": "It contains values : \"\"."
+            }
+        }
+    },
+    "settlement_search": {
+        "Name": "settlement_search",
+        "Description": "Settlement Search Table",
+        "Columns": {
+            "st_siteID": {
+                "Name": "st_siteID",
+                "Type": "STRING",
+                "Description": "An unique identifier assigned to the merchant. Also known as a MID.",
+                "Examples": "It contains values : \"226003169993\"."
+            },
+            "st_externalMID": {
+                "Name": "st_externalMID",
+                "Type": "STRING",
+                "Description": "External MID.",
+                "Examples": "It contains values : \"0004455699\"."
+            },
+            "st_dbaName": {
+                "Name": "st_dbaName",
+                "Type": "STRING",
+                "Description": "Store name.",
+                "Examples": "It contains values : \"LAIKA STORE #1\"."
+            },
+            "st_transactionDate": {
+                "Name": "st_transactionDate",
+                "Type": "DATE",
+                "Description": "Date of the authorization transaction.",
+                "Examples": ""
+            },
+            "st_batchDate": {
+                "Name": "st_batchDate",
+                "Type": "DATE",
+                "Description": "Date group of transactions was settled.",
+                "Examples": ""
+            },
+            "st_recordDate": {
+                "Name": "st_recordDate",
+                "Type": "DATE",
+                "Description": "Date when data was loaded into system.",
+                "Examples": ""
+            },
+            "st_fundedDate": {
+                "Name": "st_fundedDate",
+                "Type": "DATE",
+                "Description": "Date when the funding to/from the merchant associated with this transaction.",
+                "Examples": ""
+            },
+            "st_terminalID": {
+                "Name": "st_terminalID",
+                "Type": "STRING",
+                "Description": "Identifies terminal identifier for the transaction.",
+                "Examples": "It contains values : \"69450\"."
+            },
+            "st_batchNo": {
+                "Name": "st_batchNo",
+                "Type": "STRING",
+                "Description": "Batch number (batch that pulled this settlement transaction to initiate thee funding) for the transaction.",
+                "Examples": "It contains values : \"694501010016\"."
+            },
+            "st_batchSequenceID": {
+                "Name": "st_batchSequenceID",
+                "Type": "STRING",
+                "Description": "Batch sequence ID.",
+                "Examples": "It contains values : \"0001303481\"."
+            },
+            "st_invoiceNo": {
+                "Name": "st_invoiceNo",
+                "Type": "STRING",
+                "Description": "Invoice number for the transaction.",
+                "Examples": "It contains values : \"694501\"."
+            },
+            "st_orderNumber": {
+                "Name": "st_orderNumber",
+                "Type": "STRING",
+                "Description": "Order number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_trckrNbr": {
+                "Name": "st_trckrNbr",
+                "Type": "STRING",
+                "Description": "Uniquely identifies a transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_productCode": {
+                "Name": "st_productCode",
+                "Type": "STRING",
+                "Description": "Name of the card brand associated with the transaction.",
+                "Examples": "It contains values : \"ELECTRONIC BENEFITS TRANSFER\", \"DEBIT CARD\"."
+            },
+            "st_network": {
+                "Name": "st_network",
+                "Type": "STRING",
+                "Description": "Name of the authorizing network associated with the transaction.",
+                "Examples": "It contains values : \"EBT\", \"Interlink\", \"Maestro\", \"Star\", \"NYCE\", \"Accel\"."
+            },
+            "st_accountNumber": {
+                "Name": "st_accountNumber",
+                "Type": "STRING",
+                "Description": "Card number used for authorization transaction.",
+                "Examples": ""
+            },
+            "st_first6": {
+                "Name": "st_first6",
+                "Type": "STRING",
+                "Description": "First six digits of card number.",
+                "Examples": ""
+            },
+            "st_last4": {
+                "Name": "st_last4",
+                "Type": "STRING",
+                "Description": "Last four digits of card number.",
+                "Examples": ""
+            },
+            "st_currency": {
+                "Name": "st_currency",
+                "Type": "STRING",
+                "Description": "Processing currency code used for the transaction.",
+                "Examples": "It contains values : \"USD\"."
+            },
+            "st_processedTransactionAmount": {
+                "Name": "st_processedTransactionAmount",
+                "Type": "FLOAT",
+                "Description": "Settlement amount associated with the transaction.",
+                "Examples": ""
+            },
+            "st_authCurrency": {
+                "Name": "st_authCurrency",
+                "Type": "STRING",
+                "Description": "Currency code used for the transaction.",
+                "Examples": "It contains values : \"USD\"."
+            },
+            "st_submittedTransactionAmount": {
+                "Name": "st_submittedTransactionAmount",
+                "Type": "FLOAT",
+                "Description": "Submitted sales amount.",
+                "Examples": ""
+            },
+            "st_cashBackAmount": {
+                "Name": "st_cashBackAmount",
+                "Type": "FLOAT",
+                "Description": "Cash back amount provided for the transaction.",
+                "Examples": ""
+            },
+            "st_discountAmount": {
+                "Name": "st_discountAmount",
+                "Type": "FLOAT",
+                "Description": "Discount amount.",
+                "Examples": ""
+            },
+            "st_flatRate": {
+                "Name": "st_flatRate",
+                "Type": "FLOAT",
+                "Description": "Flat rate.",
+                "Examples": ""
+            },
+            "st_newAuthFee": {
+                "Name": "st_newAuthFee",
+                "Type": "FLOAT",
+                "Description": "New authorization fee.",
+                "Examples": ""
+            },
+            "st_pcTaxAmount": {
+                "Name": "st_pcTaxAmount",
+                "Type": "FLOAT",
+                "Description": "PC tax amount.",
+                "Examples": ""
+            },
+            "st_tipAmount": {
+                "Name": "st_tipAmount",
+                "Type": "FLOAT",
+                "Description": "Tip amount.",
+                "Examples": ""
+            },
+            "st_type": {
+                "Name": "st_type",
+                "Type": "STRING",
+                "Description": "Transaction type code e.g., sale, refund etc.",
+                "Examples": "It contains values : \"Purchase\", \"Return\"."
+            },
+            "st_transactionStatus": {
+                "Name": "st_transactionStatus",
+                "Type": "STRING",
+                "Description": "Transaction processing status associated with the settle transaction.",
+                "Examples": "It contains values : \"Processed\"."
+            },
+            "st_rejectReason": {
+                "Name": "st_rejectReason",
+                "Type": "STRING",
+                "Description": "Transaction reject reason.",
+                "Examples": "It contains values : \"00\"."
+            },
+            "st_downgradeRejectReasonCD": {
+                "Name": "st_downgradeRejectReasonCD",
+                "Type": "STRING",
+                "Description": "Downgrade Reason Code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_downgradeRejectDesc": {
+                "Name": "st_downgradeRejectDesc",
+                "Type": "STRING",
+                "Description": "Downgrade Reason Code Description.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_paymentMethod": {
+                "Name": "st_paymentMethod",
+                "Type": "STRING",
+                "Description": "Identifies the method of payment used on the transaction.",
+                "Examples": "It contains values : \"Magnetic Stripe\", \"EMV\", \"Contactless Chip\", \"Fallback to Mag Stripe\"."
+            },
+            "st_entryModeSource": {
+                "Name": "st_entryModeSource",
+                "Type": "STRING",
+                "Description": "The last byte from POS_ENTRY_MODE which tells us the PIN capability.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_authCode": {
+                "Name": "st_authCode",
+                "Type": "STRING",
+                "Description": "Authorization code from association(s). Generally, 6/7 alphanumeric code that gets printed on the receipt.",
+                "Examples": ""
+            },
+            "st_originalPlanCode": {
+                "Name": "st_originalPlanCode",
+                "Type": "STRING",
+                "Description": "Original plan code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_origPlanCodeDesc": {
+                "Name": "st_origPlanCodeDesc",
+                "Type": "STRING",
+                "Description": "Original interchange rate / plan code description.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_planCode": {
+                "Name": "st_planCode",
+                "Type": "STRING",
+                "Description": "Interchange rate / plan code.",
+                "Examples": ""
+            },
+            "st_planCodeDesc": {
+                "Name": "st_planCodeDesc",
+                "Type": "STRING",
+                "Description": "Interchange rate / plan code description.",
+                "Examples": ""
+            },
+            "st_integrityClass": {
+                "Name": "st_integrityClass",
+                "Type": "STRING",
+                "Description": "Transaction integrity class.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_mobileIndicator": {
+                "Name": "st_mobileIndicator",
+                "Type": "STRING",
+                "Description": "Mobile indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_mobileWallet": {
+                "Name": "st_mobileWallet",
+                "Type": "STRING",
+                "Description": "Identifies wallet type indicator (e.g., Apple Pay, Samsung Pay, Google Pay etc.).",
+                "Examples": "It contains values : \"Non Mobile Wallet\"."
+            },
+            "st_subMerchantID": {
+                "Name": "st_subMerchantID",
+                "Type": "STRING",
+                "Description": "Sub merchant ID.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_subMerchantName": {
+                "Name": "st_subMerchantName",
+                "Type": "STRING",
+                "Description": "Sub merchant name.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_convenienceFee": {
+                "Name": "st_convenienceFee",
+                "Type": "STRING",
+                "Description": "Convinience Fee",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_tokenType": {
+                "Name": "st_tokenType",
+                "Type": "STRING",
+                "Description": "Token type code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_acquirerRefNo": {
+                "Name": "st_acquirerRefNo",
+                "Type": "STRING",
+                "Description": "Acquirer reference #: An ARN in credit card transactions is the Acquirer reference number, a unique no that tags a credit card txn when it goes from the merchant's bank (acquiring bank) through the card network to the cardholders bank (the issuer).",
+                "Examples": "It contains values : \"00000000\"."
+            },
+            "st_surChargeAmount": {
+                "Name": "st_surChargeAmount",
+                "Type": "STRING",
+                "Description": "Surcharge amount.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_surChargeInd": {
+                "Name": "st_surChargeInd",
+                "Type": "STRING",
+                "Description": "Surcharge indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_visaPrdtId": {
+                "Name": "st_visaPrdtId",
+                "Type": "STRING",
+                "Description": "A value returned by Visa, to designate the type of card product used to process the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_mcPrdtId": {
+                "Name": "st_mcPrdtId",
+                "Type": "STRING",
+                "Description": "A value returned by MasterCard, to designate the type of card product used to process the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_tranId": {
+                "Name": "st_tranId",
+                "Type": "STRING",
+                "Description": "Tran ID.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_merchantCategory": {
+                "Name": "st_merchantCategory",
+                "Type": "STRING",
+                "Description": "Identifies the standard merchant category code assigned to the transaction.",
+                "Examples": "It contains values : \"Grocery Stores & Supermarkets (5411)\"."
+            },
+            "st_ECIIndicator": {
+                "Name": "st_ECIIndicator",
+                "Type": "STRING",
+                "Description": "Indicates the electronic commerce indicator used for the transaction.",
+                "Examples": "It contains values : \"No ECI Provided\"."
+            },
+            "st_processor": {
+                "Name": "st_processor",
+                "Type": "STRING",
+                "Description": "Identifies the settlement platform.",
+                "Examples": "It contains values : \"North\"."
+            },
+            "st_settleSpendQualifiedIndicator": {
+                "Name": "st_settleSpendQualifiedIndicator",
+                "Type": "STRING",
+                "Description": "The BASE II clearing interchange formats, TC 01 to TC 48.)",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_transactionMode": {
+                "Name": "st_transactionMode",
+                "Type": "STRING",
+                "Description": "Transaction mode associated with the transaction. Also known as capture method.",
+                "Examples": "It contains values : \"Swiped\", \"Electronic\"."
+            },
+            "st_transactionSource": {
+                "Name": "st_transactionSource",
+                "Type": "STRING",
+                "Description": "How the transaction was sent to us for processing.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_cardholderNumber": {
+                "Name": "st_cardholderNumber",
+                "Type": "STRING",
+                "Description": "Cardholder ID.",
+                "Examples": "It contains values : \"2\"."
+            },
+            "st_markerID": {
+                "Name": "st_markerID",
+                "Type": "STRING",
+                "Description": "Marker ID.",
+                "Examples": "It contains values : \"601\"."
+            },
+            "st_platformID": {
+                "Name": "st_platformID",
+                "Type": "STRING",
+                "Description": "Platform name",
+                "Examples": "It contains values : \"1\"."
+            },
+            "st_visaTranId": {
+                "Name": "st_visaTranId",
+                "Type": "STRING",
+                "Description": "Visa (association) generated ID.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_adminFeeAmount": {
+                "Name": "st_adminFeeAmount",
+                "Type": "FLOAT",
+                "Description": "Admin fee amount",
+                "Examples": ""
+            },
+            "st_adminFeePerTranAmount": {
+                "Name": "st_adminFeePerTranAmount",
+                "Type": "FLOAT",
+                "Description": "Admin fee amount per transaction.",
+                "Examples": ""
+            },
+            "st_adminFeePerTranRate": {
+                "Name": "st_adminFeePerTranRate",
+                "Type": "FLOAT",
+                "Description": "Admin fee rate per transaction.",
+                "Examples": ""
+            },
+            "st_adminFeeCapInd": {
+                "Name": "st_adminFeeCapInd",
+                "Type": "STRING",
+                "Description": "Admin fee cap indicator.",
+                "Examples": "It contains values : \"U\"."
+            },
+            "st_acquirerFeeAmount": {
+                "Name": "st_acquirerFeeAmount",
+                "Type": "FLOAT",
+                "Description": "Acquirer fee amount.",
+                "Examples": ""
+            },
+            "st_acquirerFeePerTranAmount": {
+                "Name": "st_acquirerFeePerTranAmount",
+                "Type": "FLOAT",
+                "Description": "Acquirer fee amount per transaction.",
+                "Examples": ""
+            },
+            "st_acquirerFeePerTranRate": {
+                "Name": "st_acquirerFeePerTranRate",
+                "Type": "FLOAT",
+                "Description": "Acquirer fee rate per transaction.",
+                "Examples": ""
+            },
+            "st_acquirerFeeCapInd": {
+                "Name": "st_acquirerFeeCapInd",
+                "Type": "STRING",
+                "Description": "Acquirer fee cap indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_cbaFeeAmount": {
+                "Name": "st_cbaFeeAmount",
+                "Type": "FLOAT",
+                "Description": "Cross border acquirer fee amount.",
+                "Examples": ""
+            },
+            "st_cbaFeePerTranAmount": {
+                "Name": "st_cbaFeePerTranAmount",
+                "Type": "FLOAT",
+                "Description": "Cross border acquirer fee amount per transaction.",
+                "Examples": ""
+            },
+            "st_cbaFeePerTranRate": {
+                "Name": "st_cbaFeePerTranRate",
+                "Type": "FLOAT",
+                "Description": "Cross border acquirer fee rate per transaction.",
+                "Examples": ""
+            },
+            "st_cbaFeeCapInd": {
+                "Name": "st_cbaFeeCapInd",
+                "Type": "STRING",
+                "Description": "Cross border acquirer fee cap indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_icFeeAmount": {
+                "Name": "st_icFeeAmount",
+                "Type": "FLOAT",
+                "Description": "Interchange charge fee amount.",
+                "Examples": ""
+            },
+            "st_icFeePerTranAmount": {
+                "Name": "st_icFeePerTranAmount",
+                "Type": "FLOAT",
+                "Description": "Interchange charge fee amount per transaction.",
+                "Examples": ""
+            },
+            "st_iCFeePerTranRate": {
+                "Name": "st_iCFeePerTranRate",
+                "Type": "FLOAT",
+                "Description": "Interchange charge fee rate per transaction.",
+                "Examples": ""
+            },
+            "st_icFeeCapInd": {
+                "Name": "st_icFeeCapInd",
+                "Type": "STRING",
+                "Description": "IC fee cap indicator.",
+                "Examples": "It contains values : \"C\", \"U\"."
+            },
+            "st_ifFeeAmount": {
+                "Name": "st_ifFeeAmount",
+                "Type": "FLOAT",
+                "Description": "Infrastructure fee amount.",
+                "Examples": ""
+            },
+            "st_infrastructureFeePerTranAmount": {
+                "Name": "st_infrastructureFeePerTranAmount",
+                "Type": "FLOAT",
+                "Description": "Infrastructure fee amount per transaction.",
+                "Examples": ""
+            },
+            "st_infrastructureFeePerTranRate": {
+                "Name": "st_infrastructureFeePerTranRate",
+                "Type": "FLOAT",
+                "Description": "Infrastructure fee rate per transaction.",
+                "Examples": ""
+            },
+            "st_infrastructureFeeCapInd": {
+                "Name": "st_infrastructureFeeCapInd",
+                "Type": "STRING",
+                "Description": "Infrastructure fee cap indicator.",
+                "Examples": "It contains values : \"U\"."
+            },
+            "st_isaFeeAmount": {
+                "Name": "st_isaFeeAmount",
+                "Type": "FLOAT",
+                "Description": "ISA Fee amount",
+                "Examples": ""
+            },
+            "st_isaFeePerTranAmount": {
+                "Name": "st_isaFeePerTranAmount",
+                "Type": "FLOAT",
+                "Description": "ISA fee amount per transaction.",
+                "Examples": ""
+            },
+            "st_isaFeePerTranRate": {
+                "Name": "st_isaFeePerTranRate",
+                "Type": "FLOAT",
+                "Description": "ISA fee rate per transaction.",
+                "Examples": ""
+            },
+            "st_isaFeeCapInd": {
+                "Name": "st_isaFeeCapInd",
+                "Type": "STRING",
+                "Description": "ISA fee cap indicator.",
+                "Examples": "It contains values : \"U\"."
+            },
+            "st_networkSecurityFeeAmount": {
+                "Name": "st_networkSecurityFeeAmount",
+                "Type": "FLOAT",
+                "Description": "Network security fee amount.",
+                "Examples": ""
+            },
+            "st_networkSecurityFeePerTranAmount": {
+                "Name": "st_networkSecurityFeePerTranAmount",
+                "Type": "FLOAT",
+                "Description": "Network security fee amount per transaction.",
+                "Examples": ""
+            },
+            "st_networkSecurityFeePerTranRate": {
+                "Name": "st_networkSecurityFeePerTranRate",
+                "Type": "FLOAT",
+                "Description": "Network security fee rate per transaction.",
+                "Examples": ""
+            },
+            "st_networkSecurityFeeCapInd": {
+                "Name": "st_networkSecurityFeeCapInd",
+                "Type": "STRING",
+                "Description": "Network security fee cap indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_switchFeeAmount": {
+                "Name": "st_switchFeeAmount",
+                "Type": "FLOAT",
+                "Description": "Switch fee amount.",
+                "Examples": ""
+            },
+            "st_switchFeePerTranAmount": {
+                "Name": "st_switchFeePerTranAmount",
+                "Type": "FLOAT",
+                "Description": "Switch fee amount per transaction.",
+                "Examples": ""
+            },
+            "st_switchFeePerTranRate": {
+                "Name": "st_switchFeePerTranRate",
+                "Type": "FLOAT",
+                "Description": "Switch fee rate per transaction.",
+                "Examples": ""
+            },
+            "st_switchFeeCapInd": {
+                "Name": "st_switchFeeCapInd",
+                "Type": "STRING",
+                "Description": "Switch fee cap indicator.",
+                "Examples": "It contains values : \"C\", \"U\"."
+            },
+            "st_retailerFeeAmount": {
+                "Name": "st_retailerFeeAmount",
+                "Type": "FLOAT",
+                "Description": "Retailer fee amount.",
+                "Examples": ""
+            },
+            "st_retailerFeePerTranAmount": {
+                "Name": "st_retailerFeePerTranAmount",
+                "Type": "FLOAT",
+                "Description": "Retailer fee per tran amount.",
+                "Examples": ""
+            },
+            "st_retailerFeePerTranRate": {
+                "Name": "st_retailerFeePerTranRate",
+                "Type": "FLOAT",
+                "Description": "Retailer fee per tran rate.",
+                "Examples": ""
+            },
+            "st_retailerFeeCapInd": {
+                "Name": "st_retailerFeeCapInd",
+                "Type": "STRING",
+                "Description": "Retailer fee cap indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_tranUID": {
+                "Name": "st_tranUID",
+                "Type": "STRING",
+                "Description": "Transaction unique ID.",
+                "Examples": ""
+            },
+            "st_batchUID": {
+                "Name": "st_batchUID",
+                "Type": "STRING",
+                "Description": "Batch unique ID.",
+                "Examples": "It contains values : \"DBWB22213X2191220801002200000000023\"."
+            },
+            "st_authorizationType": {
+                "Name": "st_authorizationType",
+                "Type": "STRING",
+                "Description": "Authorization transaction type.",
+                "Examples": "It contains values : \"EBT Food Stamp \u00d0 Purchase\", \"EBT Food Stamp \u00d0 Merchandise Refund\", \"Pre-paid Approval\", \"Retail Purchase\", \"Debit Refund\", \"Business Debit\"."
+            },
+            "st_reclassCd": {
+                "Name": "st_reclassCd",
+                "Type": "STRING",
+                "Description": "Re-class indicator used to identify the reclassification record.",
+                "Examples": "It contains values : \"Regular\"."
+            },
+            "st_serviceCode": {
+                "Name": "st_serviceCode",
+                "Type": "STRING",
+                "Description": "Transaction service code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_purchaseIdentifier": {
+                "Name": "st_purchaseIdentifier",
+                "Type": "STRING",
+                "Description": "The purchase identifier information.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_chipConditionCode": {
+                "Name": "st_chipConditionCode",
+                "Type": "STRING",
+                "Description": "Code provides information about magnetic stripe-read transactions of VSDC cards at VSDC ATMs.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_userData": {
+                "Name": "st_userData",
+                "Type": "STRING",
+                "Description": "Discretionary data sent on transaction by the merchant.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_afdCompletionCode": {
+                "Name": "st_afdCompletionCode",
+                "Type": "STRING",
+                "Description": "Automated fuel dispenser code. Will only apply to petroleum clients.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_authSource": {
+                "Name": "st_authSource",
+                "Type": "STRING",
+                "Description": "How the transaction was sent for authorization.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_authorizationAmount": {
+                "Name": "st_authorizationAmount",
+                "Type": "STRING",
+                "Description": "Amount verified as available on a card for a transaction to occur.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_authorizationDate": {
+                "Name": "st_authorizationDate",
+                "Type": "DATE",
+                "Description": "Date the verification occurred on a card for a transaction.",
+                "Examples": ""
+            },
+            "st_authorizationResponseCode": {
+                "Name": "st_authorizationResponseCode",
+                "Type": "STRING",
+                "Description": "Code that indicates the response on an attempted transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_avsFlag": {
+                "Name": "st_avsFlag",
+                "Type": "STRING",
+                "Description": "Code indicating the level of address verification",
+                "Examples": "It contains values : \"0\"."
+            },
+            "st_bankReferenceNumber": {
+                "Name": "st_bankReferenceNumber",
+                "Type": "STRING",
+                "Description": "Unique number in merchant's bank deposit for funding.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_batchDescription": {
+                "Name": "st_batchDescription",
+                "Type": "STRING",
+                "Description": "Batch description.",
+                "Examples": "It contains values : \"5\", \"6\"."
+            },
+            "st_batchSlipNumber": {
+                "Name": "st_batchSlipNumber",
+                "Type": "STRING",
+                "Description": "Batch slip number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_billBackReason": {
+                "Name": "st_billBackReason",
+                "Type": "STRING",
+                "Description": "Billback reason.",
+                "Examples": "It contains values : \"00\"."
+            },
+            "st_captureMethod": {
+                "Name": "st_captureMethod",
+                "Type": "STRING",
+                "Description": "Capture method.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_cardExpirationDate": {
+                "Name": "st_cardExpirationDate",
+                "Type": "STRING",
+                "Description": "2 digit month & 2 digit year when a card becomes invalid.",
+                "Examples": ""
+            },
+            "st_cardPresenceIndicator": {
+                "Name": "st_cardPresenceIndicator",
+                "Type": "STRING",
+                "Description": "Card presence indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_cardScheme": {
+                "Name": "st_cardScheme",
+                "Type": "STRING",
+                "Description": "The card scheme for the incoming reject.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_cardSchemeDescription": {
+                "Name": "st_cardSchemeDescription",
+                "Type": "STRING",
+                "Description": "Card scheme name.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_cardholderIDMethod": {
+                "Name": "st_cardholderIDMethod",
+                "Type": "STRING",
+                "Description": "Indicates how the cardholder was identified by the merchant. This field is only required for Visa transactions.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_catLevel": {
+                "Name": "st_catLevel",
+                "Type": "STRING",
+                "Description": "Indicator if it is a card holder activated terminal.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_airLineTicketNumber": {
+                "Name": "st_airLineTicketNumber",
+                "Type": "STRING",
+                "Description": "Airline ticket number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_clientNumber": {
+                "Name": "st_clientNumber",
+                "Type": "STRING",
+                "Description": "The internal client number associated with the original transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_customTracking": {
+                "Name": "st_customTracking",
+                "Type": "STRING",
+                "Description": "The customer tracking number associated with the original transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_cvc2Result": {
+                "Name": "st_cvc2Result",
+                "Type": "STRING",
+                "Description": "Indicator if card verification code is present for Visa transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_cvv2Result": {
+                "Name": "st_cvv2Result",
+                "Type": "STRING",
+                "Description": "Indicator if card verification Value is present for MasterCard transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_debitTerminalDate": {
+                "Name": "st_debitTerminalDate",
+                "Type": "DATE",
+                "Description": "Date the terminal processed the debit transaction.",
+                "Examples": ""
+            },
+            "st_debitTerminalTime": {
+                "Name": "st_debitTerminalTime",
+                "Type": "STRING",
+                "Description": "Hour, minute and second the terminal processed the debit transaction.",
+                "Examples": ""
+            },
+            "st_marketSpecificIndicator": {
+                "Name": "st_marketSpecificIndicator",
+                "Type": "STRING",
+                "Description": "Indicates the industry for which market-specific authorization data was included in the transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_mcCardholderAuthentication": {
+                "Name": "st_mcCardholderAuthentication",
+                "Type": "STRING",
+                "Description": "Indicates the type of cardholder authentication used in the authorization process in support of UCAF.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_mcSecurityProtocol": {
+                "Name": "st_mcSecurityProtocol",
+                "Type": "STRING",
+                "Description": "Indicates the presence and type of security protocol present in the authorization process in support of UCAF.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_merchantReferenceNumber": {
+                "Name": "st_merchantReferenceNumber",
+                "Type": "STRING",
+                "Description": "Discretionary field sent by merchant.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_pcTerminalCapability": {
+                "Name": "st_pcTerminalCapability",
+                "Type": "STRING",
+                "Description": "Code indicating if the card was present or not present.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_posEntryMode": {
+                "Name": "st_posEntryMode",
+                "Type": "STRING",
+                "Description": "POS entry mode.",
+                "Examples": "It contains values : \"02\", \"05\", \"07\", \"80\"."
+            },
+            "st_receiptNumber": {
+                "Name": "st_receiptNumber",
+                "Type": "STRING",
+                "Description": "Receipt number.",
+                "Examples": ""
+            },
+            "st_salesTaxAmount": {
+                "Name": "st_salesTaxAmount",
+                "Type": "STRING",
+                "Description": "Sales tax amount on a petroleum transaction.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_storeNumber": {
+                "Name": "st_storeNumber",
+                "Type": "STRING",
+                "Description": "Discretionary number setup on the merchant master.",
+                "Examples": "It contains values : \"6945\"."
+            },
+            "st_totalAuthAmount": {
+                "Name": "st_totalAuthAmount",
+                "Type": "STRING",
+                "Description": "Total amount authorized for a transaction.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_transactionTime": {
+                "Name": "st_transactionTime",
+                "Type": "STRING",
+                "Description": "The hour, minute and second when the transaction was performed.",
+                "Examples": "It contains values : \"0000000000\"."
+            },
+            "st_visaServiceDevelop": {
+                "Name": "st_visaServiceDevelop",
+                "Type": "STRING",
+                "Description": "Indicates type of commerce.",
+                "Examples": "It contains values : \"1\"."
+            },
+            "st_postingChargeDesc1": {
+                "Name": "st_postingChargeDesc1",
+                "Type": "STRING",
+                "Description": "Used for special pricing mechanisms For e.g., interchange pass through.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_postingChargeDesc2": {
+                "Name": "st_postingChargeDesc2",
+                "Type": "STRING",
+                "Description": "Used for special pricing mechanisms - 2 .",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_postingChargeDesc3": {
+                "Name": "st_postingChargeDesc3",
+                "Type": "STRING",
+                "Description": "Used for special pricing mechanisms - 3.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_postingChargeDesc4": {
+                "Name": "st_postingChargeDesc4",
+                "Type": "STRING",
+                "Description": "Used for special pricing mechanisms - 4.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_postingChargeDesc5": {
+                "Name": "st_postingChargeDesc5",
+                "Type": "STRING",
+                "Description": "Used for special pricing mechanisms - 5.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_chargeType1": {
+                "Name": "st_chargeType1",
+                "Type": "STRING",
+                "Description": "The type of charge being generated e.g., per tran fee, assessment fee, commission, etc.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_chargeType2": {
+                "Name": "st_chargeType2",
+                "Type": "STRING",
+                "Description": "The type of charge being generated - 2.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_chargeType3": {
+                "Name": "st_chargeType3",
+                "Type": "STRING",
+                "Description": "The type of charge being generated - 3.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_chargeType4": {
+                "Name": "st_chargeType4",
+                "Type": "STRING",
+                "Description": "The type of charge being generated - 4.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_chargeType5": {
+                "Name": "st_chargeType5",
+                "Type": "STRING",
+                "Description": "The type of charge being generated - 5.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_tranType1": {
+                "Name": "st_tranType1",
+                "Type": "STRING",
+                "Description": "Transaction type for the related charge posted to account, For e.g., per tran fee, cross border fee, on a net pricing model it can be merchant purchase deposit or merchant debit.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_tranType2": {
+                "Name": "st_tranType2",
+                "Type": "STRING",
+                "Description": "Transaction type for the related charge posted to account - 2.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_tranType3": {
+                "Name": "st_tranType3",
+                "Type": "STRING",
+                "Description": "Transaction type for the related charge posted to account - 3.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_tranType4": {
+                "Name": "st_tranType4",
+                "Type": "STRING",
+                "Description": "Transaction type for the related charge posted to account - 4.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_tranType5": {
+                "Name": "st_tranType5",
+                "Type": "STRING",
+                "Description": "Transaction type for the related charge posted to account - 5.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_serviceID1": {
+                "Name": "st_serviceID1",
+                "Type": "STRING",
+                "Description": "The service id code related to the presentment transaction - 1.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_serviceID2": {
+                "Name": "st_serviceID2",
+                "Type": "STRING",
+                "Description": "The service id code related to the presentment transaction - 2.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_serviceID3": {
+                "Name": "st_serviceID3",
+                "Type": "STRING",
+                "Description": "The service id code related to the presentment transaction - 3.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_serviceID4": {
+                "Name": "st_serviceID4",
+                "Type": "STRING",
+                "Description": "The service id code related to the presentment transaction - 4.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_serviceID5": {
+                "Name": "st_serviceID5",
+                "Type": "STRING",
+                "Description": "The service id code related to the presentment transaction - 5.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_feeCategory1": {
+                "Name": "st_feeCategory1",
+                "Type": "STRING",
+                "Description": "The pricing mechanism to be used e.g., interchange plus, pricing plus fees. If the text has either interchange or intchng, it means the pricing is based on the assessed scheme interchange.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_feeCategory2": {
+                "Name": "st_feeCategory2",
+                "Type": "STRING",
+                "Description": "The pricing mechanism to be used - 2.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_feeCategory3": {
+                "Name": "st_feeCategory3",
+                "Type": "STRING",
+                "Description": "The pricing mechanism to be used - 3.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_feeCategory4": {
+                "Name": "st_feeCategory4",
+                "Type": "STRING",
+                "Description": "The pricing mechanism to be used - 4.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_feeCategory5": {
+                "Name": "st_feeCategory5",
+                "Type": "STRING",
+                "Description": "The pricing mechanism to be used - 5.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_chargeAmount1": {
+                "Name": "st_chargeAmount1",
+                "Type": "STRING",
+                "Description": "Fee amount - 1.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_chargeAmount2": {
+                "Name": "st_chargeAmount2",
+                "Type": "STRING",
+                "Description": "Fee amount - 2.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_chargeAmount3": {
+                "Name": "st_chargeAmount3",
+                "Type": "STRING",
+                "Description": "Fee amount - 3.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_chargeAmount4": {
+                "Name": "st_chargeAmount4",
+                "Type": "STRING",
+                "Description": "Fee amount - 4.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_chargeAmount5": {
+                "Name": "st_chargeAmount5",
+                "Type": "STRING",
+                "Description": "Fee amount - 5.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_areaOfEvent": {
+                "Name": "st_areaOfEvent",
+                "Type": "STRING",
+                "Description": "Area of event.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_feeBase": {
+                "Name": "st_feeBase",
+                "Type": "STRING",
+                "Description": "Fee base.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_cardServiceType": {
+                "Name": "st_cardServiceType",
+                "Type": "STRING",
+                "Description": "Card service type.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_serviceId": {
+                "Name": "st_serviceId",
+                "Type": "STRING",
+                "Description": "Service code ID.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_defCharge": {
+                "Name": "st_defCharge",
+                "Type": "STRING",
+                "Description": "Default charges.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_effectiveDate": {
+                "Name": "st_effectiveDate",
+                "Type": "DATE",
+                "Description": "Effective date.",
+                "Examples": ""
+            },
+            "st_expiryDate": {
+                "Name": "st_expiryDate",
+                "Type": "DATE",
+                "Description": "Expiry date.",
+                "Examples": ""
+            },
+            "st_maximum": {
+                "Name": "st_maximum",
+                "Type": "STRING",
+                "Description": "Maximum charge.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_minimum": {
+                "Name": "st_minimum",
+                "Type": "STRING",
+                "Description": "Minimum charge.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_chrgTierLevel": {
+                "Name": "st_chrgTierLevel",
+                "Type": "STRING",
+                "Description": "Charge tier level.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_recordID": {
+                "Name": "st_recordID",
+                "Type": "STRING",
+                "Description": "Record ID.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_primaryStopReason": {
+                "Name": "st_primaryStopReason",
+                "Type": "STRING",
+                "Description": "Primary stop reason.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_catureMethodHB": {
+                "Name": "st_catureMethodHB",
+                "Type": "STRING",
+                "Description": "Batch source.",
+                "Examples": "It contains values : \"BATCH\"."
+            },
+            "st_refSeqID": {
+                "Name": "st_refSeqID",
+                "Type": "STRING",
+                "Description": "Reference seq ID.",
+                "Examples": ""
+            },
+            "st_postingMethod": {
+                "Name": "st_postingMethod",
+                "Type": "STRING",
+                "Description": "Indicates whether the charge will be gross or net of the transaction itself.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_merchantService": {
+                "Name": "st_merchantService",
+                "Type": "STRING",
+                "Description": "The acquiring service against which the charge will apply.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_rejectIndicator": {
+                "Name": "st_rejectIndicator",
+                "Type": "STRING",
+                "Description": "1 digit code indicating if the transaction was rejected (Y) or accepted (N).",
+                "Examples": "It contains values : \"N\"."
+            },
+            "st_transactionCharges": {
+                "Name": "st_transactionCharges",
+                "Type": "STRING",
+                "Description": "Transaction charges.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_transactionCountry": {
+                "Name": "st_transactionCountry",
+                "Type": "STRING",
+                "Description": "Transaction country.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_visaPurchaseIdentifierFormat": {
+                "Name": "st_visaPurchaseIdentifierFormat",
+                "Type": "STRING",
+                "Description": "Specifies the format/type of additional identifying information for purchases.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_cardUsage": {
+                "Name": "st_cardUsage",
+                "Type": "STRING",
+                "Description": "Card usage.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_terminalTransactionDt": {
+                "Name": "st_terminalTransactionDt",
+                "Type": "STRING",
+                "Description": "Identifies the local date of the authorized transaction.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_panSequenceNumber": {
+                "Name": "st_panSequenceNumber",
+                "Type": "STRING",
+                "Description": "Identifies the card sequence number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_readTerminalCapacity": {
+                "Name": "st_readTerminalCapacity",
+                "Type": "STRING",
+                "Description": "Identifies the terminal reading capacity.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_icCardConditionCode": {
+                "Name": "st_icCardConditionCode",
+                "Type": "STRING",
+                "Description": "",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_lodgingPhoneNumber": {
+                "Name": "st_lodgingPhoneNumber",
+                "Type": "STRING",
+                "Description": "Lodging phone number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_lodgingPhoneCallCharge": {
+                "Name": "st_lodgingPhoneCallCharge",
+                "Type": "STRING",
+                "Description": "Lodging phone call charge.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_lodgingRestaurentRoomServCharge": {
+                "Name": "st_lodgingRestaurentRoomServCharge",
+                "Type": "STRING",
+                "Description": "Lodging restaurant/room service charge.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_lodgingBarChargeAmt": {
+                "Name": "st_lodgingBarChargeAmt",
+                "Type": "STRING",
+                "Description": "Lodging bar charge amount.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_lodgingGiftshopChargeAmt": {
+                "Name": "st_lodgingGiftshopChargeAmt",
+                "Type": "STRING",
+                "Description": "Lodging gift shop charge amount.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_lodgingLaundryChargeAmt": {
+                "Name": "st_lodgingLaundryChargeAmt",
+                "Type": "STRING",
+                "Description": "Lodging laundry charge amount.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_lodgingOtherServicesChargeAmt": {
+                "Name": "st_lodgingOtherServicesChargeAmt",
+                "Type": "STRING",
+                "Description": "Lodging other services charge amount.",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_lodgingOtherServicesCode": {
+                "Name": "st_lodgingOtherServicesCode",
+                "Type": "STRING",
+                "Description": "Lodging other services code.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_rentalCountry": {
+                "Name": "st_rentalCountry",
+                "Type": "STRING",
+                "Description": "The country where the rented car was picked up from.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_rentalRatePerMileKm": {
+                "Name": "st_rentalRatePerMileKm",
+                "Type": "STRING",
+                "Description": "Rate charged per mile/km for the car rental.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_rentalMaxFreeMileKm": {
+                "Name": "st_rentalMaxFreeMileKm",
+                "Type": "STRING",
+                "Description": "The free miles or km allowed to a customer for the duration of the car rental.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_rentalMileKmInd": {
+                "Name": "st_rentalMileKmInd",
+                "Type": "STRING",
+                "Description": "Rental mile km indicator.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_owdChargeAmt": {
+                "Name": "st_owdChargeAmt",
+                "Type": "STRING",
+                "Description": "One way drop charge (Diners).",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_weeklyRentalRate": {
+                "Name": "st_weeklyRentalRate",
+                "Type": "STRING",
+                "Description": "Weekly rental rate (Diners).",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_percent": {
+                "Name": "st_percent",
+                "Type": "STRING",
+                "Description": "The interchange fee percentage rate rounded to 4 decimal places",
+                "Examples": "It contains values : \".00\"."
+            },
+            "st_fpi": {
+                "Name": "st_fpi",
+                "Type": "STRING",
+                "Description": "Card network Fee Program Indicator.",
+                "Examples": ""
+            },
+            "st_fileTypeIn": {
+                "Name": "st_fileTypeIn",
+                "Type": "STRING",
+                "Description": "To understand the file type through which the transaction came to ClientLine.",
+                "Examples": "It contains values : \"REGULAR\"."
+            },
+            "st_trmnBtchClosDt": {
+                "Name": "st_trmnBtchClosDt",
+                "Type": "STRING",
+                "Description": "Date when terminal batch is closed",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_trmnBtchClosTm": {
+                "Name": "st_trmnBtchClosTm",
+                "Type": "STRING",
+                "Description": "Hour, minute and second the terminal batch is closed.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_mcBnkNetRefNbr": {
+                "Name": "st_mcBnkNetRefNbr",
+                "Type": "STRING",
+                "Description": "Master Card (association) generated reference number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_expnTrmnId": {
+                "Name": "st_expnTrmnId",
+                "Type": "STRING",
+                "Description": "Expanded Terminal ID.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_trmnBtchNr": {
+                "Name": "st_trmnBtchNr",
+                "Type": "STRING",
+                "Description": "Terminal Batch Number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_dda": {
+                "Name": "st_dda",
+                "Type": "STRING",
+                "Description": "DDA associated with the merchant.",
+                "Examples": "It contains values : \"     4944916816\"."
+            },
+            "st_ddaLast4": {
+                "Name": "st_ddaLast4",
+                "Type": "STRING",
+                "Description": "Last four digits of DDA number.",
+                "Examples": "It contains values : \"\"."
+            },
+            "st_pinlessFlag": {
+                "Name": "st_pinlessFlag",
+                "Type": "STRING",
+                "Description": "Pinless POS Debit Flag.",
+                "Examples": "It contains values : \"N\"."
+            },
+            "st_pinlessIndicator": {
+                "Name": "st_pinlessIndicator",
+                "Type": "STRING",
+                "Description": "Pinless POS Debit Indicator.",
+                "Examples": "It contains values : \"\"."
+            }
+        }
+    }
+}

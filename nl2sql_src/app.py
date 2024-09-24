@@ -34,7 +34,7 @@ from nl2sql_query_embeddings import Nl2Sql_embed
 
 PROJECT_ID = 'sl-test-project-363109'
 LOCATION = 'us-central1'
-DATASET_ID = 'zoominfo'
+DATASET_ID = 'nl2sql_spider'
 
 load_dotenv()
 
@@ -43,7 +43,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 
-dataset_name = 'zoominfo'
+dataset_name = 'nl2sql_spider'
 
 
 @app.route("/")
@@ -69,14 +69,17 @@ def nl2sql_lite_generate():
     try:
         logger.info("Reading the configuration file")
         curdir = os.getcwd()
-        data_file_name = get_project_config()["config"]["metadata_file"]
+        proj_conf = get_project_config()["config"]
+        print(proj_conf)
+        data_file_name = proj_conf["metadata_file"]
+
         logger.info(f"Using the metadata file : {data_file_name}")
 
         metadata_json_path = f"{curdir}/utils/{data_file_name}"
         logger.info(f"path  {metadata_json_path}")
 
-        nl2sqlbq_client_base = Nl2sqlBq(project_id=PROJECT_ID,
-                                        dataset_id=DATASET_ID,
+        nl2sqlbq_client_base = Nl2sqlBq(project_id=proj_conf["proj_name"],
+                                        dataset_id=proj_conf["dataset"],
                                         metadata_json_path=metadata_json_path,
                                         model_name="text-bison@002",
                                         tuned_model=False)
@@ -117,8 +120,10 @@ def nl2sql_lite_generate():
                     "sql_result": sql_result,
                     "error_msg": "Error - NL2SQL Studio Lite Query Generation",
                 }
-    except Exception:
-        logger.error(f"NL2SQL Lite SQL Generation uncussessful: [{question}]")
+    except Exception as e:
+        logger.error(
+            f"NL2SQL Lite SQL Generation unsuccessful: [{question}] {e}"
+            )
         response_string = {
             "result_id": 0,
             "generated_query": "",
