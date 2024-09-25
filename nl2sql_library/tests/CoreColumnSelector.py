@@ -26,12 +26,16 @@ print("\n----------------------\nCTS 1\n----------------------\n")
 ccs1 = CoreColumnSelector(llm=llm)
 result1 = ccs1(db=db, question=question)
 print(result1.intermediate_steps[0]["prepared_prompt"])
-print(result1.intermediate_steps[0]["llm_response"]["generations"][0][0]["text"])
+print(
+    result1.intermediate_steps[0]["llm_response"]["generations"][0][0]["text"]
+    )
 
 print("\n----------------------\nCTS 2\n----------------------\n")
 ccs2 = CoreColumnSelector(llm=llm, prompt=prompts.CURATED_FEW_SHOT_COT_PROMPT)
 result2 = ccs2(db=db, question=question)
 print(result2.intermediate_steps[0]["prepared_prompt"])
-print(result2.intermediate_steps[0]["llm_response"]["generations"][0][0]["text"])
+print(
+    result2.intermediate_steps[0]["llm_response"]["generations"][0][0]["text"]
+    )
 
 print("done")

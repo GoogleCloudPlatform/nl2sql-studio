@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # URL = "http://127.0.0.1:8000/"
-URL = "https://nl2sql-lib-executors-p2r-dot-sl-test-project-363109.uc.r.appspot.com/"
+URL = "https://nl2sql-lib-executors-p2r-dot-sl-test-project-363109\
+    .uc.r.appspot.com/"
 
 
 def linear_exec(question, execute_sql):
@@ -95,7 +96,8 @@ def getapi():
 
 
 if __name__ == "__main__":
-    QUESTION = "What are the top 10 industries having revenue greater than 1 million?"
+    QUESTION = "What are the top 10 industries having \
+        revenue greater than 1 million?"
     print("*" * 20, " Testing NL2SQL Executors APIs ", "*" * 20)
     print("*" * 20, " Default API ", "*" * 20)
     getapi()
