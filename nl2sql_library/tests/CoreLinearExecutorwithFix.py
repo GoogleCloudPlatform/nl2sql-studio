@@ -21,7 +21,7 @@ ds = fetch_dataset("spider.test")
 db_name = "pets_1"
 question = "Find the average weight for each pet type."
 eval_fix_task = CoreEvalFix(llm=text_bison_32k(), num_retries=10)
-print("\n----------------------\CLE 1\n----------------------\n")
+print("\n----------------------\n CLE 1\n----------------------\n")
 cle = CoreLinearExecutor(dataset=ds, core_eval_fix=eval_fix_task)
 result = cle(db_name, question)
 for step in result.intermediate_steps:

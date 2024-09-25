@@ -1,7 +1,7 @@
 """
     Rag Executor test file
 """
-import json
+# import json
 from nl2sql.llms.vertexai import text_bison_32k
 from nl2sql.executors.linear_executor.core import CoreLinearExecutor
 from nl2sql.tasks.sql_generation.rag import RagSqlGenerator
@@ -9,7 +9,8 @@ from nl2sql.tasks.sql_generation.rag import RagSqlGenerator
 llm = text_bison_32k()
 
 # dataset_name = "HHS_Program_Counts"
-# bigquery_connection_string = "bigquery://cdii-poc/HHS_Program_Counts_nl2sql_views"
+# bigquery_connection_string = \
+# "bigquery://cdii-poc/HHS_Program_Counts_nl2sql_views"
 
 dataset_name = "sl-test-project-363109.zoominfo"
 bigquery_connection_string = "bigquery://sl-test-project-363109/zoominfo"

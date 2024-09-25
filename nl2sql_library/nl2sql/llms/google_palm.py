@@ -57,7 +57,8 @@ def get_secretmanager_authed_palm(
         **kwargs,
         google_api_key=secretmanager.SecretManagerServiceClient()
         .access_secret_version(
-            name=f"projects/{project_id}/secrets/{secret_id}/versions/{secret_version_id}"
+            name=f"projects/{project_id}/secrets/{secret_id}\
+                /versions/{secret_version_id}"
         )
         .payload.data.decode("UTF-8"),
     )

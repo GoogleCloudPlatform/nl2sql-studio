@@ -26,18 +26,24 @@ print("\n----------------------\nCTS 1\n----------------------\n")
 csg1 = CoreSqlGenerator(llm=llm)
 result1 = csg1(db=db, question=question)
 print(result1.intermediate_steps[0]["prepared_prompt"])
-print(result1.intermediate_steps[0]["llm_response"]["generations"][0][0]["text"])
+print(
+    result1.intermediate_steps[0]["llm_response"]["generations"][0][0]["text"]
+    )
 
 print("\n----------------------\nCTS 2\n----------------------\n")
 csg2 = CoreSqlGenerator(llm=llm, prompt=prompts.CURATED_FEW_SHOT_COT_PROMPT)
 result2 = csg2(db=db, question=question)
 print(result2.intermediate_steps[0]["prepared_prompt"])
-print(result2.intermediate_steps[0]["llm_response"]["generations"][0][0]["text"])
+print(
+    result2.intermediate_steps[0]["llm_response"]["generations"][0][0]["text"]
+    )
 
 print("\n----------------------\nCTS 3\n----------------------\n")
 csg3 = CoreSqlGenerator(llm=llm, prompt=prompts.CURATED_ZERO_SHOT_PROMPT)
 result3 = csg3(db=db, question=question)
 print(result3.intermediate_steps[0]["prepared_prompt"])
-print(result3.intermediate_steps[0]["llm_response"]["generations"][0][0]["text"])
+print(
+    result3.intermediate_steps[0]["llm_response"]["generations"][0][0]["text"]
+    )
 
 print("done")

@@ -36,7 +36,8 @@ rag_sql_generator = RagSqlGenerator(
 
 
 executor = CoreLinearExecutor.from_connection_string_map(
-    {dataset_name: bigquery_connection_string},  # Unpack the inner dictionary here
+    {dataset_name: bigquery_connection_string},
+    # Unpack the inner dictionary here
     core_table_selector=None,
     core_column_selector=None,
     core_sql_generator=rag_sql_generator,

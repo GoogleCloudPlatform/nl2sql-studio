@@ -1070,7 +1070,7 @@ if __name__ == '__main__':
         model_name="text-bison"
         # model_name="code-bison"
         )
-    
+
     question = "What is the average, minimum, and maximum age \
                 of all singers from France?"
 

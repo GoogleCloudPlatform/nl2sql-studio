@@ -16,7 +16,8 @@ from vertexai.language_models import TextGenerationModel
 import vertexai
 
 load_dotenv()
-# bigquery_connection_string = "bigquery://sl-test-project-363109/nl2sql_spider"
+# bigquery_connection_string =
+# "bigquery://sl-test-project-363109/nl2sql_spider"
 PROJ_CONFIG_FILE = "utils/proj_config.json"
 SQL_LOG_FILE = "utils/sqlgen_log.json"
 

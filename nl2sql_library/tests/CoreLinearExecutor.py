@@ -20,7 +20,7 @@ ds = fetch_dataset("spider.test")
 db_name = "pets_1"
 question = "Find the average weight for each pet type."
 
-print("\n----------------------\CLE 1\n----------------------\n")
+print("\n----------------------\nCLE 1\n----------------------\n")
 cle = CoreLinearExecutor(dataset=ds)
 result = cle(db_name, question)
 print("Done")
