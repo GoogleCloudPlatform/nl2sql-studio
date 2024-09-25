@@ -102,14 +102,21 @@ AllowedDSN = typing.Annotated[
     Url,
     UrlConstraints(
         host_required=False,
-        allowed_schemes=["postgres", "postgresql", "mysql", "bigquery", "sqlite"],
+        allowed_schemes=[
+            "postgres",
+            "postgresql",
+            "mysql",
+            "bigquery",
+            "sqlite"
+            ],
     ),
 ]
 
 
 class EntitySet(BaseModel):
     """
-    Expects a list of  identifiers in the form of databasename.tablename.columnname
+    Expects a list of  identifiers in the form of
+    databasename.tablename.columnname
     """
 
     ids: list[str]
@@ -126,7 +133,12 @@ class EntitySet(BaseModel):
             assert (
                 len(id_parts := curr_id.split(".")) == 3
             ), f"Malformed Entity ID {curr_id}"
-            for id_part, part_type in zip(id_parts, ["database", "table", "column"]):
+            for id_part, part_type in zip(
+                id_parts,
+                ["database",
+                 "table",
+                 "column"]
+                 ):
                 assert id_part == "*" or re.match(
                     "^[a-zA-Z0-9_-]+$", id_part
                 ), f"Malformed {part_type} '{id_part}' in {curr_id}"
@@ -186,7 +198,8 @@ class EntitySet(BaseModel):
             if tabname not in schema[dbname]:
                 schema[dbname][tabname] = {}
             if colname not in schema[dbname][tabname]:
-                schema[dbname][tabname][colname] = self.dataset_schema[dbname][tabname][
+                schema[dbname][tabname][colname] =\
+                    self.dataset_schema[dbname][tabname][
                     colname
                 ]
         return schema
@@ -199,7 +212,8 @@ class EntitySet(BaseModel):
             database, table, column = curr_id.split(".")
             if database == "*":
                 stack.extend(
-                    [f"{db}.{table}.{column}" for db in self.dataset_schema.keys()]
+                    [f"{db}.{table}.{column}"
+                     for db in self.dataset_schema.keys()]
                 )
             elif table == "*":
                 stack.extend(
@@ -224,13 +238,16 @@ class EntitySet(BaseModel):
             ):
                 resolved_ids.append(curr_id)
             else:
-                logger.debug(f"Invalid Filter Expression Found: {curr_id}. Skipping.")
+                logger.debug(
+                    f"Invalid Filter Expression Found: {curr_id}. Skipping."
+                    )
         self.ids = resolved_ids
 
 
 class Database(BaseModel):
     """
-    Implements the core Database class which provides various utilities for a DB
+    Implements the core Database class which provides various
+    utilities for a DB
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -242,15 +259,18 @@ class Database(BaseModel):
     descriptor: TableDescriptor = {}
     exclude_entities: EntitySet = EntitySet(ids=[], dataset_schema={})
     data_dictionary: DatabaseDataDictionary | None = None
-    table_desc_template: SkipValidation[
-        PromptTemplate
-    ] = ZeroShotPrompts.TABLE_DESCRIPTION_V3
+    table_desc_template: SkipValidation[PromptTemplate] = (
+        ZeroShotPrompts.TABLE_DESCRIPTION_V3
+    )
     # TODO @madhups - find and remove all uses of SkipValidation across all
     # modules after Langchain has been ported to use Pydantic V2:
     # https://github.com/langchain-ai/langchain/discussions/9337
 
     @field_serializer("table_desc_template")
-    def serialize_prompt_template(self, table_desc_template: PromptTemplate, _info):
+    def serialize_prompt_template(self,
+                                  table_desc_template: PromptTemplate,
+                                  _info
+                                  ):
         """
         Langchain Serializer
         """
@@ -324,7 +344,10 @@ class Database(BaseModel):
             not isinstance(kwargs["exclude_entities"], EntitySet)
         ):
             kwargs["exclude_entities"] = [
-                EntitySet(ids=list(kwargs["exclude_entities"]), dataset_schema=schema)
+                EntitySet(ids=list(
+                    kwargs["exclude_entities"]),
+                    dataset_schema=schema
+                    )
             ]
 
         db = SQLDatabase(
@@ -341,12 +364,14 @@ class Database(BaseModel):
         )
 
     def filter(
-        self, filters: list[str], filter_type: typing.Literal["only", "exclude"]
+        self,
+        filters: list[str], filter_type: typing.Literal["only", "exclude"]
     ) -> "Database":
         """
         Returns a new database object after applying the provided filters
         """
-        entities = EntitySet(ids=filters, dataset_schema={self.name: self.dbschema})
+        entities = EntitySet(ids=filters,
+                             dataset_schema={self.name: self.dbschema})
         if filter_type == "only":
             entities = entities.invert()
         return Database(
@@ -378,7 +403,8 @@ class Database(BaseModel):
         all_exclusions = set(self.exclude_entities.ids)
         for tablename, tableinfo in self.dbschema.items():
             if {
-                f"{self.name}.{tablename}.{column}" for column in tableinfo.keys()
+                f"{self.name}.{tablename}.{column}"
+                for column in tableinfo.keys()
             }.issubset(all_exclusions):
                 table_exclusions.append(tablename)
         if table_exclusions:
@@ -402,36 +428,37 @@ class Database(BaseModel):
         for table in temp_db._metadata.sorted_tables:
             if table.name in table_exclusions:
                 continue
-            table_descriptor[table.name] = {
-                "table_name": table.name,
-                "table_creation_statement": str(
-                    CreateTable(table).compile(engine)
-                ).rstrip(),
-                "table_sample_rows": temp_db._get_sample_rows(table),
-                "col_descriptor": {},
-            }
             constraints = {
                 col.name
                 for con in table.constraints
                 for col in con.columns  # type: ignore
             }
+            col_descriptor: dict[str, BaseColDescriptor] = {}
             col_enums = []
             for col in table._columns:  # type: ignore
                 if (col.name not in constraints) and (
                     f"{self.name}.{table.name}.{col.name}" in all_exclusions
                 ):
                     logger.info(
-                        f"[{self.name}.{table.name}] : Removing column {col.name}"
+                        f"[{self.name}.{table.name}] :\
+                            Removing column {col.name}"
                     )
                     table._columns.remove(col)  # type: ignore
                 else:
                     if (table.name not in self.descriptor) or (
-                        col.name not in self.descriptor[table.name]["col_descriptor"]
+                        col.name
+                        not in self.descriptor[table.name]["col_descriptor"]
                     ):
-                        if (self.enum_limit > 0) and (col.type.python_type == str):
+                        if (
+                            self.enum_limit > 0
+                            ) and (
+                                col.type.python_type == str
+                                ):
                             col_enums.append(
                                 sqe.select(
-                                    sqe.literal(col.name, VARCHAR).label("COLNAME"),
+                                    sqe.literal(col.name, VARCHAR).label(
+                                        "COLNAME"
+                                        ),
                                     sqe.case(
                                         (
                                             sqe.select(
@@ -444,7 +471,7 @@ class Database(BaseModel):
                                 ).distinct()
                             )
 
-                        col_descriptor: BaseColDescriptor = {
+                        col_descriptor_map: BaseColDescriptor = {
                             "col_type": str(col.type),
                             "col_nullable": col.nullable,
                             "col_pk": col.primary_key,
@@ -459,10 +486,16 @@ class Database(BaseModel):
                                 )
                                 if (
                                     (self.data_dictionary)
-                                    and (table.name in self.data_dictionary["tables"])
+                                    and (
+                                        table.name in self.data_dictionary[
+                                            "tables"
+                                            ]
+                                        )
                                     and (
                                         col.name
-                                        in self.data_dictionary["tables"][table.name][
+                                        in self.data_dictionary[
+                                            "tables"
+                                            ][table.name][
                                             "columns"
                                         ]
                                     )
@@ -471,12 +504,10 @@ class Database(BaseModel):
                             ),
                         }
                     else:
-                        col_descriptor = self.descriptor[table.name]["col_descriptor"][
-                            col.name
-                        ]
-                    table_descriptor[table.name]["col_descriptor"][
-                        col.name
-                    ] = col_descriptor
+                        col_descriptor_map = self.descriptor[table.name][
+                            "col_descriptor"
+                        ][col.name]
+                    col_descriptor[col.name] = col_descriptor_map
 
             for colname, colvals in (
                 (
@@ -490,9 +521,21 @@ class Database(BaseModel):
                 if col_enums
                 else {}
             ).items():
-                table_descriptor[table.name]["col_descriptor"][colname][
-                    "col_enum_vals"
-                ] = colvals
+                col_descriptor[colname]["col_enum_vals"] = colvals
+
+            table_descriptor[table.name] = {
+                "table_name": table.name,
+                "table_creation_statement": str(
+                    CreateTable(table).compile(engine)
+                ).rstrip(),
+                "table_sample_rows": temp_db._get_sample_rows(table),
+                "col_descriptor": col_descriptor,
+            }
+
+            logger.trace(
+                f"[{self.name}] : Table descriptor created for {table.name}"
+                + f"\n{table_descriptor[table.name]}"
+            )
             table_descriptions[table.name] = self.table_desc_template.format(
                 **{
                     key: value
@@ -523,9 +566,9 @@ class Dataset(BaseModel):
     exclude_entities: EntitySet = EntitySet(ids=[], dataset_schema={})
     data_dictionary: DatasetDataDictionary = {}
     enum_limit: int = 10
-    table_desc_template: SkipValidation[
-        PromptTemplate
-    ] = ZeroShotPrompts.TABLE_DESCRIPTION_V3
+    table_desc_template: SkipValidation[PromptTemplate] = (
+        ZeroShotPrompts.TABLE_DESCRIPTION_V3
+    )
     # TODO @madhups - remove SkipValidation after Pydantic V2 support is added
     # to Langchain: https://github.com/langchain-ai/langchain/discussions/9337
 
@@ -545,7 +588,10 @@ class Dataset(BaseModel):
         Applies a filter to this dtaset and provides a new instance.
         """
         databases = {
-            k: v.filter(filters, filter_type) for k, v in self.databases.items()
+            k: v.filter(
+                filters,
+                filter_type
+                ) for k, v in self.databases.items()
         }
         if prune:
             databases = {k: v for k, v in databases if v.db.table_info}
@@ -566,7 +612,10 @@ class Dataset(BaseModel):
         return list(self.databases.keys())
 
     @field_serializer("table_desc_template")
-    def serialize_prompt_template(self, table_desc_template: PromptTemplate, _info):
+    def serialize_prompt_template(self,
+                                  table_desc_template: PromptTemplate,
+                                  _info
+                                  ):
         """
         Langchain Serializer
         """
@@ -586,7 +635,8 @@ class Dataset(BaseModel):
         Utility function to create a dataset from a name -> conn_str mapping.
         """
         dataset_schema = {
-            db_name: Database.fetch_schema(db_name, AllowedDSN(db_connstr))[db_name]
+            db_name: Database.fetch_schema(db_name,
+                                           AllowedDSN(db_connstr))[db_name]
             for db_name, db_connstr in name_connstr_map.items()
         }
         parsed_exclude_entities = EntitySet(

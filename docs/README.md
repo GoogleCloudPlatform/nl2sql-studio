@@ -24,13 +24,16 @@ NL2SQL Studio is a comprehensive, open-source toolkit designed to empower develo
 
 
 3. **Deployment Order**
+
 | Sl. No | Module | Why |
 |---|---|---|
 | 1 | NL2SQL Studio Core | URL of the APIs exposed by this module/service is required to be mentioned in the .env file while deploying the UI |
 | 2 | NL2SQL Studio Lite | URL of the APIs exposed by this module/service is required to be mentioned in the .env file while deploying the UI |
 | 3 | User Interface | Config.ini and .env files need to be updated with the API endpoints and Google Client IDs & secrets |
 
-## Executing the NL2SQL Studio Core - Backend
+**Note- Prefrably run this with python3.10, the deploy guide is tested using python3.10.**
+
+## NL2SQL Studio Core - Backend
 
 
 **Prerequisite files**
@@ -230,7 +233,7 @@ Execute the file to validate the deployment of the library on backend.
 Note the App Engine endpoint for this service as this is required to be updated in the .env file for CORE_EXECUTORS of UI module
 
 
-## Executing the NL2SQL Studio Lite - Backend
+## NL2SQL Studio Lite - Backend
 
 **Prerequisite files**
 
@@ -253,7 +256,7 @@ source ./myenv/bin/activate
 **Let’s install the dependencies**
 
 ```
-pip install -m requirments.txt
+pip install -r requirments.txt
 ```
 
 
@@ -265,7 +268,7 @@ pip install -m requirments.txt
     * Type the below command
 
     ```
-    gunicorn --workers 1 --threads 8 --timeout 0 app:app
+    gunicorn --workers 1 --threads 8 --timeout 0 -b 127.0.0.1:8003 app:app
     ``` 
 
     This will start the local service and starts listening to API requests in the http url given as output. Sample output below

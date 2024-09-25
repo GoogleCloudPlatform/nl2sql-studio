@@ -34,11 +34,13 @@ class ExtendedVertexAI(VertexAI):
         return (
             aiplatform_v1beta1.PredictionServiceClient(
                 client_options={
-                    "api_endpoint": f"{self.location}-aiplatform.googleapis.com"
+                    "api_endpoint":
+                    f"{self.location}-aiplatform.googleapis.com"
                 }
             )
             .count_tokens(
-                endpoint=self.client._endpoint_name,  # pylint: disable = protected-access
+                endpoint=self.client._endpoint_name,
+                # pylint: disable = protected-access
                 instances=[struct_pb2.Value(struct_value=token_struct)],
             )
             .total_tokens
@@ -54,7 +56,11 @@ class ExtendedVertexAI(VertexAI):
 
 
 def text_bison_latest(
-    max_output_tokens=1024, temperature=0.1, top_p=0.8, top_k=40, candidate_count=3
+    max_output_tokens=1024,
+    temperature=0.1,
+    top_p=0.8,
+    top_k=40,
+    candidate_count=3
 ) -> ExtendedVertexAI:
     """
     Returns an Instance of Vertex AI LLM

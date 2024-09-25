@@ -18,8 +18,11 @@ FEW_SHOT_GENERATION = "Few Shot"
 GEN_BY_CORE = "CORE_EXECUTORS"
 GEN_BY_LITE = "LITE_EXECUTORS"
 
-os.environ[GEN_BY_LITE] = "https://nl2sqlstudio-lite-prod-dot-sl-test-project-363109.uc.r.appspot.com"
-os.environ[GEN_BY_CORE] = "https://nl2sqlexecutors-prod-dot-sl-test-project-363109.uc.r.appspot.com"
+os.environ[GEN_BY_LITE] =\
+    "https://nl2sqlstudio-lite-prod-dot-sl-test-project-363109\
+        .uc.r.appspot.com"
+os.environ[GEN_BY_CORE] =\
+    "https://nl2sqlexecutors-prod-dot-sl-test-project-363109.uc.r.appspot.com"
 
 ENDPOINTS = {
     "Few Shot": "/api/lite/generate",
@@ -34,25 +37,33 @@ params = dict(
     access_token=""
 )
 
-# llm = VertexAI(temperature=0, model_name="gemini-1.5-pro-001", max_output_tokens=1024)
+# llm = VertexAI(temperature=0,
+#               model_name="gemini-1.5-pro-001",
+#               max_output_tokens=1024)
 
 # def auto_verify(nl_description, ground_truth, llm_amswer):
 #     """
-#     This function verifies the accuracy of SQL query based on a natural language description
-#     and a ground truth query, using text-bison model.
+#     This function verifies the accuracy of SQL query based on a
+#     natural language description and a ground truth query, using
+#     text-bison model.
 
 #     Parameters:
-#     - nl_description (str): The natural language description of the SQL query.
+#     - nl_description (str): The natural language description of the SQL
+#                             query.
 #     - ground_truth (str): The ground truth SQL query.
 #     - llm_amswer (str): The student's generated SQL query for validation.
 #     Returns:
-#     str: "Yes" if the student's answer matches the ground truth and fits the NL description correctly,
+#     str: "Yes" if the student's answer matches the ground truth and fits
+#           the NL description correctly,
 #          "No" otherwise.
 #     """
-#     prompt = f'''You are an expert at validating SQL queries. Given the Natrual language description
-#       and the SQL query corresponding to that description, please check if the students answer is correct.
-#       There can be different ways to achieve the same result by forming the query differently.
-#       If the students SQL query matches the ground truth and fits the NL description correctly, then return yes
+#     prompt = f'''
+#       You are an expert at validating SQL queries. Given the Natrual
+#       language description and the SQL query corresponding to that
+#       description, please check if the students answer is correct.
+#       There can be different ways to achieve the same result by forming
+#       the query differently. If the students SQL query matches the ground
+#       truth and fits the NL description correctly, then return yes
 #       else return no.
 #       Natural language description: {nl_description}
 #       Ground truth: {ground_truth}
@@ -64,7 +75,8 @@ params = dict(
 def execute_sql_query(query, client, job_config):
     """Execute given SQL query to fetch result"""
     try:
-        cleaned_query = query.replace("\\n", " ").replace("\n", " ").replace("\\", "")
+        cleaned_query = query.replace("\\n", " ").replace("\n", " ")
+        cleaned_query = cleaned_query.replace("\\", "")
         query_job = client.query(cleaned_query, job_config=job_config)
         response = query_job.result().to_dataframe()
     except Exception as e:  # pylint: disable=broad-except
@@ -189,8 +201,14 @@ def bq_evaluator(
                 generated_query, _ = call_generate_sql_api(
                     question=question, endpoint=ENDPOINTS[method])
 
-        generated_query_result = execute_sql_query(generated_query, client, job_config)
-        actual_query_result = execute_sql_query(ground_truth_sql, client, job_config)
+        generated_query_result = execute_sql_query(generated_query,
+                                                   client,
+                                                   job_config
+                                                   )
+        actual_query_result = execute_sql_query(ground_truth_sql,
+                                                client,
+                                                job_config
+                                                )
 
         # llm_rating = auto_verify(question, ground_truth_sql, generated_query)
         llm_rating = 'No'
@@ -212,15 +230,23 @@ def bq_evaluator(
         out_df = pd.DataFrame(
             out,
             columns=[
-                'question', 'ground_truth_sql', 'actual_query_result',
-                'generated_query', 'generated_query_result', 'query_eval', 'result_eval'
+                'question',
+                'ground_truth_sql',
+                'actual_query_result',
+                'generated_query',
+                'generated_query_result',
+                'query_eval',
+                'result_eval'
                 ])
-        out_df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv', index=False, mode='a')
+        out_df.to_csv(f'evaluation/eval_output/eval_result_{ts}.csv',
+                      index=False,
+                      mode='a'
+                      )
 
         if pb:
             pb.progress(
                 (idx+1)/len(df),
-                text=f"Evaluation in progress. Please wait... {idx+1}/{len(df)}"
+                text=f"Evaluation in progress. Please wait...{idx+1}/{len(df)}"
                 )
         if render_result:
             if idx == 0:
@@ -234,7 +260,10 @@ def bq_evaluator(
         all_results,
         columns=[
             'question', 'ground_truth_sql', 'actual_query_result',
-            'generated_query', 'generated_query_result', 'query_eval', 'result_eval'
+            'generated_query',
+            'generated_query_result',
+            'query_eval',
+            'result_eval'
             ])
     print(f'Accuracy: {accuracy}')
     return {
@@ -250,4 +279,9 @@ if __name__ == '__main__':
     METADATA_PATH = "./nl2sql_src/cache_metadata/fiserv.json"
     METHOD = "lite"
 
-    bq_evaluator(BQ_PROJECT_ID, BQ_DATASET_ID, GROUND_TRUTH_PATH, METHOD, METADATA_PATH)
+    bq_evaluator(BQ_PROJECT_ID,
+                 BQ_DATASET_ID,
+                 GROUND_TRUTH_PATH,
+                 METHOD,
+                 METADATA_PATH
+                 )

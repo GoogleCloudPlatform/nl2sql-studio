@@ -13,14 +13,14 @@ llm = text_bison_32k()
 dataset_name = "sl-test-project-363109.zoominfo"
 bigquery_connection_string = "bigquery://sl-test-project-363109/zoominfo"
 
-PGPROJ = "sl-test-project-363109"
-PGLOCATION = "us-central1"
-PGINSTANCE = "nl2sql-test"
-PGDB = "test-db"
-PGUSER = "postgres"
-PGPWD = "nl2sql-test"
-project_id = "sl-test-project-363109"
-dataset_id = "sl-test-project-363109.zoominfo"
+PGPROJ = ""
+PGLOCATION = ""
+PGINSTANCE = ""
+PGDB = ""
+PGUSER = ""
+PGPWD = ""
+project_id = ""
+dataset_id = ""
 
 rag_sql_generator = RagSqlGenerator(
     llm=llm,
@@ -36,7 +36,8 @@ rag_sql_generator = RagSqlGenerator(
 
 
 executor = CoreLinearExecutor.from_connection_string_map(
-    {dataset_name: bigquery_connection_string},  # Unpack the inner dictionary here
+    {dataset_name: bigquery_connection_string},
+    # Unpack the inner dictionary here
     core_table_selector=None,
     core_column_selector=None,
     core_sql_generator=rag_sql_generator,

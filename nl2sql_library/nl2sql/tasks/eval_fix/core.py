@@ -37,7 +37,6 @@ class _CoreEvalFixPrompt(BaseModel):
     """
     A Wrapper around Eval & Fix Prompts
     """
-
     prompt_id: str
     dialect_prompt_template_map: dict[str, SkipValidation[BasePromptTemplate]]
     parser: SkipValidation[StructuredOutputParser] | None = None
@@ -51,28 +50,28 @@ class _EvalFixPrompts:
     """
 
     default_parser: StructuredOutputParser = (
-        StructuredOutputParser.from_response_schemas(
-            [
-                ResponseSchema(
-                    name="thoughts",
-                    description=(
-                        "A short analysis of the question and available "
-                        "tables and columns, demonstrating the thought "
-                        "process behind how the query should be fixed."
+            StructuredOutputParser.from_response_schemas(
+                [
+                    ResponseSchema(
+                        name="thoughts",
+                        description=(
+                            "A short analysis of the question and available "
+                            "tables and columns, demonstrating the thought "
+                            "process behind how the query should be fixed."
+                        ),
                     ),
-                ),
-                ResponseSchema(
-                    name="query",
-                    description=(
-                        "The syntactically correct and grounded SQL Query "
-                        "to answer the asked question. This query should "
-                        "only contain information from above and not "
-                        "use any external information."
+                    ResponseSchema(
+                        name="query",
+                        description=(
+                            "The syntactically correct and grounded SQL Query "
+                            "to answer the asked question. This query should "
+                            "only contain information from above and not "
+                            "use any external information."
+                        ),
                     ),
-                ),
-            ]
+                ]
+            )
         )
-    )
 
     @property
     def CURATED_ZERO_SHOT_PROMPT(self) -> _CoreEvalFixPrompt:
@@ -120,13 +119,14 @@ class _EvalFixPrompts:
 
 prompts = _EvalFixPrompts()
 
-
 class CoreEvalFixResult(BaseEvalFixResult):
     """
     Implements Core SQL Generation Results
     """
 
-    resulttype: Literal["Result.EvalFix.CoreEvalFix"] = "Result.EvalFix.CoreEvalFix"
+    resulttype: Literal[
+        "Result.EvalFix.CoreEvalFix"
+    ] = "Result.EvalFix.CoreEvalFix"
 
 
 class CoreEvalFix(BaseEvalFixTask):
@@ -134,13 +134,19 @@ class CoreEvalFix(BaseEvalFixTask):
     Implements Core Eval Fix Task.
     """
 
-    tasktype: Literal["Task.EvalFix.CoreEvalFix"] = "Task.EvalFix.CoreEvalFix"
+    tasktype: Literal[
+        "Task.EvalFix.CoreEvalFix"
+    ] = "Task.EvalFix.CoreEvalFix"
 
     llm: SkipValidation[BaseLLM]
     prompt: SkipValidation[_CoreEvalFixPrompt] = prompts.CURATED_ZERO_SHOT_PROMPT
     num_retries: int = 10
 
-    def __call__(self, db: Database, question: str, query: str) -> CoreEvalFixResult:
+    def __call__(self,
+                 db: Database,
+                 question: str,
+                 query: str
+                ) -> CoreEvalFixResult:
         """
         Runs the Core Eval and Fix Pipeline
 
@@ -156,20 +162,23 @@ class CoreEvalFix(BaseEvalFixTask):
         original_query = query
         modified_query = query
         intermediate_steps = []
-        trials: List[str] = []
+        trials: List[str]= []
         trials.append(modified_query)
 
-        @retry(stop=stop_after_attempt(self.num_retries))
+        @retry(
+                stop=stop_after_attempt(self.num_retries)
+        )
         def evaluate():
             trial_id = len(trials)
             sql = trials[-1]
             logger.info(f"Trial Id: {trial_id}")
             logger.info(f"Evaluating Generated Query: {sql}")
             try:
-                _ = db.execute(sql)  # type: ignore
+                _ = db.execute(sql) # type: ignore
             except DatabaseError as db_error:
                 error_message = db_error.args[0].splitlines()[0]
-                logger.warning(f"Evaluation Failed: " f"{error_message}")
+                logger.warning(f"Evaluation Failed: "
+                             f"{error_message}")
                 logger.debug("Trying to fix the query ...")
                 prompt_params = {
                     "question": question,
@@ -188,9 +197,9 @@ class CoreEvalFix(BaseEvalFixTask):
                 }
 
                 prompt_template = self.prompt.dialect_prompt_template_map.get(
-                    db.db.dialect,
-                    self.prompt.dialect_prompt_template_map.get("default"),
-                )
+                        db.db.dialect,
+                        self.prompt.dialect_prompt_template_map.get("default"),
+                    )
                 if prompt_template is None:
                     raise ValueError(
                         f"No suitable / default prompt template found for {db.db.dialect}"
@@ -223,13 +232,13 @@ class CoreEvalFix(BaseEvalFixTask):
                 intermediate_steps.append(
                     {
                         f"trial_{trial_id}": {
-                            "tasktype": self.tasktype,
-                            "prepared_prompt": prepared_prompt,
-                            "llm_response": llm_response.dict(),
-                            "raw_response": raw_response,
-                            "parsed_response": parsed_response,
-                            "processed_response": processed_response,
-                        }
+                                    "tasktype": self.tasktype,
+                                    "prepared_prompt": prepared_prompt,
+                                    "llm_response": llm_response.dict(),
+                                    "raw_response": raw_response,
+                                    "parsed_response": parsed_response,
+                                    "processed_response": processed_response,
+                                }
                     }
                 )
                 logger.info(f"New generated query: {processed_response}")
@@ -242,7 +251,7 @@ class CoreEvalFix(BaseEvalFixTask):
 
         # Eval and Fix
         try:
-            output = evaluate()
+            output =  evaluate()
             logger.success("EvalFix Successful.")
         except Exception as exc:
             logger.error(f"EvalFix Failed: {exc}")
@@ -253,7 +262,9 @@ class CoreEvalFix(BaseEvalFixTask):
             question=question,
             original_query=original_query,
             modified_query=output,
-            intermediate_steps=intermediate_steps,
+            intermediate_steps=intermediate_steps
         )
-        logger.debug(f"[{evalfixresult.resulttype}] : Final Query: {output}")
+        logger.debug(
+                    f"[{evalfixresult.resulttype}] : Final Query: {output}"
+                )
         return evalfixresult

@@ -1,0 +1,106 @@
+{
+    "concert": {
+        "description": "The 'concert' table contains information about concerts held at various venues. Each row represents a concert event. The table includes the following columns:\n\n- concert_id: Unique identifier for each concert event.\n\n- venue_id: Identifier for the venue where the concert is held.\n\n- concert_date: Date on which the concert is held.\n\n- concert_time: Time at which the concert starts.\n\n- artist_id: Identifier for the artist or band performing at the concert.\n\n- genre: Genre of music performed at the concert.\n\n- ticket_price: Price of each ticket.",
+        "columns": {
+            "concert_ID": {
+                "description": "Unique identifier for each concert.  This column is also a foriegn key reference in 'singer_in_concert' table ",
+                "type": "INTEGER"
+            },
+            "concert_name": {
+                "description": "Name of the concert",
+                "type": "STRING"
+            },
+            "Theme": {
+                "description": "Theme of the concert",
+                "type": "STRING"
+            },
+            "Stadium_ID": {
+                "description": "ID of the stadium where the concert is held.  This is one of the primary key in the 'stadium' field",
+                "type": "INTEGER"
+            },
+            "Year": {
+                "description": "Year in which the concert is held",
+                "type": "STRING"
+            }
+        }
+    },
+    "singer": {
+        "description": "The 'singer' table contains information about singers. Each row represents a singer and includes the following columns:\n\n- SingerId: Unique identifier for each singer.\n- Name: Name of the singer.\n- Genre: Genre of music the singer is associated with.\n- Age: Age of the singer.\n- Gender: Gender of the singer.\n- RecordLabel: Record label the singer is signed to.\n- Awards: Number of awards the singer has won.\n- NetWorth: Estimated net worth of the singer.",
+        "columns": {
+            "Singer_ID": {
+                "description": "Unique identifier for each singer.",
+                "type": "INTEGER"
+            },
+            "Name": {
+                "description": "Name of the singer.",
+                "type": "STRING"
+            },
+            "Country": {
+                "description": "Country of origin for the singer.",
+                "type": "STRING"
+            },
+            "Song_Name": {
+                "description": "Name of the song sung by the singer.",
+                "type": "STRING"
+            },
+            "Song_release_year": {
+                "description": "Year in which the song was released.",
+                "type": "STRING"
+            },
+            "Age": {
+                "description": "Age of the singer.",
+                "type": "INTEGER"
+            },
+            "Is_male": {
+                "description": "Boolean value indicating the gender of the singer (True for male, False for female).",
+                "type": "BOOLEAN"
+            }
+        }
+    },
+    "singer_in_concert": {
+        "description": "The 'singer_in_concert' table contains information about singers and their concerts. Each row represents a unique concert event. The table includes the following columns:\n\n- concert_id: Unique identifier for each concert event.\n- singer_id: Unique identifier for each singer.",
+        "columns": {
+            "concert_ID": {
+                "description": "Unique identifier for each concert. This is primary key of 'concert' table",
+                "type": "INTEGER"
+            },
+            "Singer_ID": {
+                "description": "Unique identifier for each singer. This is primary key of 'singer' table",
+                "type": "INTEGER"
+            }
+        }
+    },
+    "stadium": {
+        "description": "The 'stadium' table contains information about various stadiums around the world. Each row in the table represents a single stadium. The table includes the following columns:\n\n- StadiumID: A unique identifier for each stadium.\n- StadiumName: The name of the stadium.\n- City: The city where the stadium is located.\n- Country: The country where the stadium is located.\n- Capacity: The maximum number of people that the stadium can hold.\n- Highest: The highest recorded attendance at the stadium\n- Lowest: The lowest recorded attendance at the stadium.\n- Average: Average attendance recorded at the stadium.",
+        "columns": {
+            "Stadium_ID": {
+                "description": "Unique identifier for each stadium",
+                "type": "INTEGER"
+            },
+            "Location": {
+                "description": "City and state where the stadium is located",
+                "type": "STRING"
+            },
+            "Name": {
+                "description": "Official name of the stadium",
+                "type": "STRING"
+            },
+            "Capacity": {
+                "description": "Total number of spectators the stadium can accommodate",
+                "type": "INTEGER"
+            },
+            "Highest": {
+                "description": "Highest attendance recorded at the stadium",
+                "type": "INTEGER"
+            },
+            "Lowest": {
+                "description": "Lowest attendance recorded at the stadium",
+                "type": "INTEGER"
+            },
+            "Average": {
+                "description": "Average attendance for all the matches played at the stadium",
+                "type": "INTEGER"
+            }
+        }
+    }
+}

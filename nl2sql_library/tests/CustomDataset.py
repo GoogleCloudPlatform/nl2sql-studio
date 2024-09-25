@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from isort import file
+# from isort import file
 
-from nl2sql.datasets import fetch_dataset
+# from nl2sql.datasets import fetch_dataset
 from nl2sql.executors.linear_executor.core import CoreLinearExecutor
 from nl2sql.llms.vertexai import text_bison_32k
 from nl2sql.tasks.column_selection.core import CoreColumnSelector

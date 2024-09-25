@@ -51,10 +51,16 @@ class BaseExecutor(BaseModel, ABC):
         )
 
     @classmethod
-    def from_excel(cls, filepath: str, dataset_name: str, project_id: str, **kwargs):
+    def from_excel(cls,
+                   filepath: str,
+                   dataset_name: str,
+                   project_id: str,
+                   **kwargs):
         return cls(
             dataset=CustomDataset.from_excel(
-                project_id=project_id, filepath=filepath, dataset_name=dataset_name
+                project_id=project_id,
+                filepath=filepath,
+                dataset_name=dataset_name
             ),
             **kwargs
         )

@@ -23,6 +23,7 @@ from typing import List
 from langchain.prompts.few_shot import FewShotPromptTemplate
 from langchain.prompts.prompt import PromptTemplate
 from loguru import logger
+from pydantic.v1 import BaseModel
 
 from nl2sql.assets.examples import FewShot as FewShotExamples
 
@@ -89,17 +90,11 @@ class _ZeroShot:
 
     @property
     def PROMPTING_STRAT_TABLE_FILTER_GEN_V1(self) -> PromptTemplate:
-        return self._create_template(
-            "prompting_\
-                                     strat_table_filter_gen_v1.json"
-        )
+        return self._create_template("prompting_strat_table_filter_gen_v1.json")
 
     @property
     def PROMPTING_STRAT_COLUMN_FILTER_GEN_V1(self) -> PromptTemplate:
-        return self._create_template(
-            "prompting_\
-                                     strat_column_filter_gen_v1.json"
-        )
+        return self._create_template("prompting_strat_column_filter_gen_v1.json")
 
     @property
     def TASK_TABLE_SELECTION_CORE_V1(self) -> PromptTemplate:
@@ -116,7 +111,7 @@ class _ZeroShot:
     @property
     def TASK_SQL_GENERATION_CORE_V1(self) -> PromptTemplate:
         return self._create_template("task_sql_generation_core_v1.json")
-
+    
     @property
     def TASK_EVAL_FIX_CORE_V1(self) -> PromptTemplate:
         return self._create_template("task_eval_fix_core_v1.json")
@@ -148,15 +143,14 @@ class _FewShot:
         examples: List[dict],
         num_examples: int,
     ) -> FewShotPromptTemplate:
-        from nl2sql.datasets import (  # pylint: disable=import-outside-toplevel \
+        from nl2sql.datasets import (  # pylint: disable=import-outside-toplevel
             fetch_dataset,
         )
 
         # Importing this globally would make the entire prompt module dependent
         # on Datasets, while Datasets already depends on prompts, resulting in
         # a cyclic import error. Importing this here makes only _FewShotPrompts
-        # dependednt on Datasets,
-        # while dataset does not depend on _FewShotPrompts
+        # dependednt on Datasets, while dataset does not depend on _FewShotPrompts
 
         dataset_map = {j: fetch_dataset(j) for j in {i["dataset"] for i in examples}}
         extended_examples = []
@@ -203,10 +197,7 @@ class _FewShot:
 
     @property
     def PROMPTING_STRAT_FEW_SHOT_TABLE_FILTER_GEN_V1(self) -> FewShotPromptTemplate:
-        logger.info(
-            "Instantiating \
-                    PROMPTING_STRAT_FEW_SHOT_TABLE_FILTER_GEN_V1"
-        )
+        logger.info("Instantiating PROMPTING_STRAT_FEW_SHOT_TABLE_FILTER_GEN_V1")
         return self._create_template_v1(
             ZeroShot.PROMPTING_STRAT_TABLE_FILTER_GEN_V1,
             input_variables=["context", "question", "thoughts"],
@@ -216,10 +207,7 @@ class _FewShot:
 
     @property
     def PROMPTING_STRAT_FEW_SHOT_COLUMN_FILTER_GEN_V1(self) -> FewShotPromptTemplate:
-        logger.info(
-            "Instantiating \
-                    PROMPTING_STRAT_FEW_SHOT_COLUMN_FILTER_GEN_V1"
-        )
+        logger.info("Instantiating PROMPTING_STRAT_FEW_SHOT_COLUMN_FILTER_GEN_V1")
         return self._create_template_v1(
             ZeroShot.PROMPTING_STRAT_COLUMN_FILTER_GEN_V1,
             input_variables=["context", "question", "thoughts", "answer"],

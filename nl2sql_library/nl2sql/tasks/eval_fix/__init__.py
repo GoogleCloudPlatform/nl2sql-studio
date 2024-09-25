@@ -27,7 +27,6 @@ class BaseEvalFixResult(BaseResult, ABC):
     """
     The core class for all Eval Fix Task Results
     """
-
     resulttype: str = "Result.EvalFix"
     db_name: str
     question: str
@@ -40,9 +39,11 @@ class BaseEvalFixTask(BaseTask, ABC):
     """
     The core class for all Eval & Fix Tasks
     """
-
     tasktype: str = "Task.EvalFix"
     max_rows_limit: int = 1000
 
-    def __call__(self, db: Database, question: str, query: str) -> BaseEvalFixResult:
+    def __call__(self,
+                 db: Database,
+                 question: str,
+                 query: str) -> BaseEvalFixResult:
         raise NotImplementedError

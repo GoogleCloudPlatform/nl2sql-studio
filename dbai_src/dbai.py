@@ -45,7 +45,10 @@ class Response:
 
 
 class DBAI:
-    """The base class for DBAI agent which is the multi-turn chat and can plot graphs. """
+    """
+    The base class for DBAI agent which is the multi-turn chat
+    and can plot graphs.
+    """
     def __init__(
             self,
             proj_id="proj-kous",
@@ -74,10 +77,11 @@ class DBAI:
                                      )
 
         self.bq_client = bigquery.Client(project=self.proj_id)
-        self.system_prompt = """ You are a fluent person who efficiently communicates with the user
- over different Database queries. Please always call the functions at your disposal
- whenever you need to know something, and do not reply unless you feel you have all
- information to answer the question satisfactorily.
+        self.system_prompt = """
+        You are a fluent person who efficiently communicates with the user over
+ different Database queries. Please always call the functions at your disposal
+ whenever you need to know something, and do not reply unless you feel you have
+ all information to answer the question satisfactorily.
  Only use information that you learn from BigQuery, do not make up information.
  Always use date or time functions instead of hard-coded values in SQL
  to reflect true current value.
@@ -87,22 +91,32 @@ class DBAI:
         vertexai.init(project=self.proj_id)
 
     def load_metadata(self):
-        """Load the metadata cache file from the defined path if exists else creates."""
+        """
+        Load the metadata cache file from the defined path if exists
+        else creates.
+        """
         metdata_cache_path = f"./metadata_cache_{self.dataset_id}.json"
         if not os.path.exists(metdata_cache_path):
             self.metadata = self.create_metadata_cache()
-            with open(metdata_cache_path, 'w') as f:  # pylint: disable=unspecified-encoding
+            with open(metdata_cache_path, 'w') as f:
+                # pylint: disable=unspecified-encoding
                 f.write(json.dumps(self.metadata))
         else:
-            with open(metdata_cache_path, 'r') as f:  # pylint: disable=unspecified-encoding
+            with open(metdata_cache_path, 'r') as f:
+                # pylint: disable=unspecified-encoding
                 self.metadata = json.load(f)
 
     def create_metadata_cache(self):
-        """create the metadata cache file for the specified Tables in DB for all columns. """
-        gen_description_prompt = """Based on the columns information of this table.
-Generate a very brief description for this table.
-TABLE: {table_id}
-columns_info: {columns_info}"""
+        """
+        create the metadata cache file for the specified Tables in DB
+        for all columns.
+        """
+        gen_description_prompt = """
+        Based on the columns information of this table.
+        Generate a very brief description for this table.
+        TABLE: {table_id}
+        columns_info: {columns_info}
+        """
 
         if self.tables_list in [[], [''], '']:
             api_response = self.bq_client.list_tables(self.dataset_id)
@@ -120,8 +134,13 @@ columns_info: {columns_info}"""
             metadata[table_id] = {}
             metadata[table_id]["table_name"] = table_id
             metadata[table_id]["columns_info"] = columns_info
-            prompt = gen_description_prompt.format(table_id=table_id, columns_info=columns_info)
-            metadata[table_id]["table_description"] = gemini.generate_content(prompt).text
+            prompt = gen_description_prompt.format(
+                table_id=table_id,
+                columns_info=columns_info
+                )
+            metadata[table_id]["table_description"] = gemini.generate_content(
+                prompt
+                ).text
 
         return metadata
 
@@ -140,19 +159,25 @@ columns_info: {columns_info}"""
         try:
             table_metadata = str(self.metadata[table_id])
         except Exception:  # pylint: disable=broad-except
-            # if table_id is in form of dataset_id.table_id then remove dataset_id
+            # if table_id is in form of dataset_id.table_id
+            # then remove dataset_id
             table_metadata = str(self.metadata[table_id.split('.')[-1]])
         return table_metadata
 
     def execute_sql_query(self, query):
         """Gemini Tool to execute given SQL and return execution result. """
         job_config = bigquery.QueryJobConfig(
-            maximum_bytes_billed=100000000,
             default_dataset=f'{self.proj_id}.{self.dataset_id}'
             )
         try:
-            cleaned_query = query.replace("\\n", " ").replace("\n", "").replace("\\", "")
-            query_job = self.bq_client.query(cleaned_query, job_config=job_config)
+            # cleaned_query = query.replace(
+            #     "\\n", " ").replace("\n", "").replace("\\", "")
+            cleaned_query = query.replace("\\n", " ").replace("\n", "")
+            cleaned_query = cleaned_query.replace.replace("\\", "")
+            query_job = self.bq_client.query(
+                cleaned_query,
+                job_config=job_config
+                )
             api_response = query_job.result()
             api_response = str([dict(row) for row in api_response])
             api_response = api_response.replace("\\", "").replace("\n", "")
@@ -205,7 +230,9 @@ columns_info: {columns_info}"""
 
     def ask(self, question, chat):
         """main interface for interacting in multi-turn chat mode. """
-        prompt = question + f"\n The dataset_id is {self.dataset_id}" + self.system_prompt
+        prompt = question + \
+            f"\n The dataset_id is {self.dataset_id}" + \
+            self.system_prompt
 
         response = chat.send_message(prompt)
         response = response.candidates[0].content.parts[0]
@@ -223,7 +250,9 @@ columns_info: {columns_info}"""
                     api_response = self.api_list_tables()
 
                 if function_name == "get_table_metadata":
-                    api_response = self.api_get_table_metadata(params["table_id"])
+                    api_response = self.api_get_table_metadata(
+                        params["table_id"]
+                        )
 
                 if function_name == "sql_query":
                     api_response = self.execute_sql_query(params["query"])
@@ -246,7 +275,8 @@ columns_info: {columns_info}"""
                     fig = local_namespace['fig']
 
                     st.plotly_chart(fig)  # use_container_width=True)
-                    api_response = "here is the plot of the data shown below in separate tab."
+                    api_response = "here is the plot of the data shown below \
+                        in separate tab."
 
                 response = chat.send_message(
                     Part.from_function_response(
@@ -284,7 +314,10 @@ class NL2SQLResp:
 
 
 class DBAI_nl2sql(DBAI):  # pylint: disable=invalid-name
-    """DBAI child class for generating NL2SQL response, instead of multi-turn chat-agent. """
+    """
+    DBAI child class for generating NL2SQL response, instead of
+    multi-turn chat-agent.
+    """
     def __init__(
             self,
             proj_id="proj-kous",
@@ -308,9 +341,13 @@ class DBAI_nl2sql(DBAI):  # pylint: disable=invalid-name
                                      )
 
     def get_sql(self, question):
-        """For given question, returns the genrated SQL, result and description"""
+        """
+        For given question, returns the genrated SQL, result and description
+        """
         chat = self.agent.start_chat()
-        prompt = question + f"\n The dataset_id is {self.dataset_id}" + self.system_prompt
+        prompt = question + \
+            f"\n The dataset_id is {self.dataset_id}" + \
+            self.system_prompt
 
         response = chat.send_message(prompt)
         response = response.candidates[0].content.parts[0]
@@ -328,7 +365,9 @@ class DBAI_nl2sql(DBAI):  # pylint: disable=invalid-name
                     api_response = self.api_list_tables()
 
                 if function_name == "get_table_metadata":
-                    api_response = self.api_get_table_metadata(params["table_id"])
+                    api_response = self.api_get_table_metadata(
+                        params["table_id"]
+                        )
 
                 if function_name == "sql_query":
                     api_response = self.execute_sql_query(params["query"])

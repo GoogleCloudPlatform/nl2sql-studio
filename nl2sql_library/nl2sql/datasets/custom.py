@@ -32,7 +32,10 @@ from nl2sql.datasets.base import Dataset
 
 
 @np.vectorize
-def generate_pk_query(dataset_id: str, tablename: str, primary_key_column: str) -> str:
+def generate_pk_query(dataset_id: str,
+                      tablename: str,
+                      primary_key_column: str
+                      ) -> str:
     """
     Generate DDL queries to add associated primary key columns to respective
     tables.
@@ -83,7 +86,11 @@ class CustomDataset:
     Instantiates a local database
     """
 
-    def __init__(self, filepath: str, project_id: str | None, dataset_name: str):
+    def __init__(self,
+                 filepath: str,
+                 project_id: str | None,
+                 dataset_name: str
+                 ):
         """
         Custom Dataset
 
@@ -225,7 +232,9 @@ class CustomDataset:
                 dataset_id, pkey["Table"], pkey["Primary Key"]
             )
             fkey["Query"] = generate_fk_query(
-                dataset_id, fkey["Table"], fkey["Foreign Key"], fkey["References"]
+                dataset_id, fkey["Table"],
+                fkey["Foreign Key"],
+                fkey["References"]
             )
 
             for pk_query in pkey["Query"].tolist():

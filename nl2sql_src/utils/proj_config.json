@@ -1,12 +1,12 @@
 {
     "default": {
         "proj_name": "sl-test-project-363109",
-        "dataset": "zoominfo",
-        "metadata_file": "metadata_cache.json"
+        "dataset": "nl2sql_spider",
+        "metadata_file": "spider_md_cache.json"
     },
     "config": {
         "proj_name": "sl-test-project-363109",
-        "dataset": "zoominfo",
-        "metadata_file": "zoominfo_tables.json"
+        "dataset": "nl2sql_spider",
+        "metadata_file": "spider_md_cache.json"
     }
 }

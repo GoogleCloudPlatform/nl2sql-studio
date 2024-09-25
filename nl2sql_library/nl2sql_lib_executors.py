@@ -18,13 +18,13 @@ from nl2sql.tasks.column_selection.core import (
 )
 from nl2sql.tasks.sql_generation.core import CoreSqlGenerator
 from nl2sql.tasks.sql_generation.core import prompts as csg_prompts
-from sample_executors.rag_executor import RAG_Executor
+# from sample_executors.rag_executor import RAG_Executor
 
 vertexai.init(
     project=get_project_config()["config"]["proj_name"], location="us-central1"
 )
 
-dataset_name = get_project_config()["config"]["dataset"]  # "zoominfo"
+dataset_name = get_project_config()["config"]["dataset"]  # "nl2sql_spider"
 bigquery_connection_string = initialize_db(
     get_project_config()["config"]["proj_name"],
     get_project_config()["config"]["dataset"],
@@ -34,7 +34,8 @@ logger.info(
     f"Data = {bigquery_connection_string}, {dataset_name}, {data_file_name}"
     )
 
-question_to_gen = "What is the revenue for construction industry?"
+question_to_gen = "What is the average, minimum, and maximum age\
+                  of all singers from France ?"
 
 
 class NL2SQL_Executors:
@@ -62,8 +63,9 @@ class NL2SQL_Executors:
         )
         logger.info("Linear Executor Executing for ", question)
         result = executor_linear(db_name=dataset_name, question=question)
+        df = executor_linear.fetch_result(result)
         logger.info(f"Linear executor output: [{result.generated_query}]")
-        return result.result_id, result.generated_query
+        return result.result_id, result.generated_query, df
 
     def cot_executor(
         self,
@@ -97,46 +99,45 @@ class NL2SQL_Executors:
         )
         logger.info("Chain of Thought Executor executing for ", question)
         result = executor_cot(db_name=dataset_name, question=question)
+        df = executor_cot.fetch_result(result)
         logger.info(f"Chain of Thought output: [{result.generated_query}]")
-        return result.result_id, result.generated_query
+        return result.result_id, result.generated_query, df
 
-    def rag_executor(self, question=question_to_gen):
-        """
-        SQL Generation using RAG Executor
-        """
-        ragexec = RAG_Executor()
-        res_id, sql = ragexec.generate_sql(question)
+    # def rag_executor(self, question=question_to_gen):
+    #     """
+    #     SQL Generation using RAG Executor
+    #     """
+    #     ragexec = RAG_Executor()
+    #     res_id, sql = ragexec.generate_sql(question)
 
-        return res_id, sql
+    #     return res_id, sql
 
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 2:
         print("Usage : python nl2sql_lib_executors.py <executor name>")
-        print("For ex: python nl2sql_lib_executors.py rag ")
-        print("Types of Executors : linear, cot, rag")
+        print("Types of Executors : linear, cot")
         print("Default is Linear executor")
         executor = "linear"
     elif sys.argv[1] == "linear":
         executor = "linear"
     elif sys.argv[1] == "cot":
         executor = "cot"
-    elif sys.argv[1] == "rag":
-        executor = "rag"
     else:
         print("Invalid executor type")
         print("Defaulting to Linear exeutor")
         executor = "linear"
 
     f = open(f"utils/{data_file_name}", encoding="utf-8")
-    zi = json.load(f)
+    spider_data = json.load(f)
     data_dictionary_read = {
-        "zoominfo": {
-            "description": "This dataset contains information of Zoominfo Data\
-                        with details on headquarters, marketing professionaals\
-                            and providng tuition services.",
-            "tables": zi,
+        "nl2sql_spider": {
+            "description": "This dataset contains information about the \
+                           concerts singers, country they belong to, \
+                           stadiums where the  \
+                           concerts happened",
+            "tables": spider_data,
         },
     }
 
@@ -149,8 +150,5 @@ if __name__ == "__main__":
     elif executor == "cot":
         result_id, gen_sql = nle.cot_executor(data_dict=data_dictionary_read)
         print("cot")
-    elif executor == "rag":
-        result_id, gen_sql = nle.rag_executor(question=question_to_gen)
-        print("rag")
 
     print("Generated SQL = ", gen_sql)

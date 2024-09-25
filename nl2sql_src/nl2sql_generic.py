@@ -1070,36 +1070,10 @@ if __name__ == '__main__':
         model_name="text-bison"
         # model_name="code-bison"
         )
-    questions = ["How have these race and ethnicity trends changed over time?",
-                 "What about three or more additional programs?",
-                 "Which five counties have the lowest number of WIC\
-                     authorized vendors compared to WIC participants?",
-                 "How do infant mortality rates, low birthweight rates,\
-                     and preterm and very preterm rates \
-                     compare to WIC enrollment rates by county?",
-                 "How many Black individuals are served across\
-                     CalHHS programs?",
-                 "What is the breakdown by program?",
-                 "Has this changed over time?",
-                 "What is the ratio of non-suspended doctors \
-                     to Medi-Cal members by County?",
-                 ]
-    question = questions[0]
-    table_identified = nl2sqlbq_client.table_filter(question)
 
-    PGPROJ = os.environ['PROJECT_ID']  # "sl-test-project-363109"
-    PGLOCATION = os.environ['REGION']  # 'us-central1'
-    PGINSTANCE = os.environ['PG_INSTANCE']  # "nl2sql-test"
-    PGDB = os.environ['PG_DB']  # "test-db"
-    PGUSER = os.environ['PG_USER']  # "postgres"
-    PGPWD = os.environ['PG_PWD']  # "nl2sql-test"
+    question = "What is the average, minimum, and maximum age \
+                of all singers from France?"
 
-    nl2sqlbq_client.init_pgdb(PGPROJ,
-                              PGLOCATION,
-                              PGINSTANCE,
-                              PGDB,
-                              PGUSER,
-                              PGPWD)
     sql_query, _ = nl2sqlbq_client.text_to_sql_execute_few_shot(
         question,
         'medi-cal-and-calfresh-enrollment'

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Allows importing and Spider Dataset
+Allows importing and using Standard Datasets
 """
 import json
 import os
@@ -21,9 +21,6 @@ import typing
 from abc import ABC
 from tempfile import gettempdir
 from zipfile import ZipFile
-
-import datasets as hf_dataset
-from datasets import config as hf_config
 from google.cloud import storage  # type: ignore[attr-defined]
 from typing_extensions import TypedDict
 
@@ -83,6 +80,10 @@ SpiderCoreSpec = TypedDict(
 
 
 class Spider(StandardDataset):
+    """
+    Allows downloading and interacting with the Spider Dataset
+    """
+
     dataset_id: str = "Spider"
     dataset_splits: list[str] = ["test", "train"]
     bucket_name: str = "nl2sql-internal-v2"
@@ -107,7 +108,7 @@ class Spider(StandardDataset):
             "music_1",
             "loan_1",
             "hospital_1",
-            "tracking_grants_for_research",  # Special Characters in column name
+            "tracking_grants_for_research",  # Special Characters in col name
             "aircraft",  # Special Characters in column name
             "perpetrator",  # Special Characters in column name
             "orchestra",  # Special Characters in column name
@@ -145,7 +146,11 @@ class Spider(StandardDataset):
         """
         if not (
             os.path.exists(
-                os.path.join(self.temp_extracted_loc, "spider", "train_spider.json")
+                os.path.join(
+                    self.temp_extracted_loc,
+                    "spider",
+                    "train_spider.json"
+                    )
             )
             or os.path.exists(
                 os.path.join(self.temp_extracted_loc, "spider", "dev.json")
@@ -181,11 +186,13 @@ class Spider(StandardDataset):
                     SpiderCoreSpec,
                     {
                         **i,
-                        "conn_str": f"sqlite:///{database_loc}/{i['db_id']}/{i['db_id']}.sqlite",
+                        "conn_str": f"sqlite:///{database_loc}/{i['db_id']}/\
+                            {i['db_id']}.sqlite",
                     },
                 )
                 for i in json.load(split_file)
-                if (i["db_id"] not in self.promblematic_databases.get("errors", []))
+                if (i["db_id"]
+                    not in self.promblematic_databases.get("errors", []))
                 and (
                     (not strict)
                     or (
@@ -198,14 +205,16 @@ class Spider(StandardDataset):
 
     def dataset(self, **kwargs) -> Dataset:
         """
-        Creates and returns a Dataset object based on the specified Spider split
+        Creates and returns a Dataset object based on the specified
+        Spider split
         """
         return Dataset.from_connection_strings(
             name_connstr_map=dict(
                 {
                     (i["db_id"], i["conn_str"])
                     for i in self.fetch_raw_data(
-                        split=kwargs["split"], strict=kwargs.get("strict", False)
+                        split=kwargs["split"],
+                        strict=kwargs.get("strict", False)
                     )
                 }
             ),
