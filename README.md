@@ -21,9 +21,7 @@ NL2SQL Studio is a comprehensive, open-source toolkit designed to empower develo
 
 ## Getting Started
 
-1. **Installation:**  (Instructions for pip install or cloning the repo)
-2. **Running the UI:** (Instructions to launch the app)
-3. **Exploring the Examples:** (Guidance on using the included datasets and sample code)
+ Check out the details [here](https://googlecloudplatform.github.io/nl2sql-studio/)
 
 ## Contributing
 
