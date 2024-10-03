@@ -256,7 +256,7 @@ source ./myenv/bin/activate
 **Let’s install the dependencies**
 
 ```
-pip install -r requirments.txt
+pip install -r requirements.txt
 ```
 
 

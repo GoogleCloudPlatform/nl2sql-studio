@@ -2,7 +2,11 @@
 
 NL2SQL Studio is a comprehensive, open-source toolkit designed to empower developers, data scientists, and analysts in exploring Natural Language to SQL (NL2SQL) and creating production grade NL2SQL pipelines.  Whether you're a seasoned practitioner or just starting out, NL2SQL Studio provides an intuitive interface and a robust set of features to streamline your NL2SQL development workflow.
 
+![Vision](/vision.png)
+
 ## Key Features and Components
+
+![Features](/features.png)
 
 * **Diverse NL2SQL Library Integration:** Seamlessly integrate with popular NL2SQL libraries and frameworks. Compare performance, experiment, and find the best fit for your needs.
 * **Intuitive UI:** A user-friendly web-based interface makes it easy to input schemas, formulate questions, execute translations, and visualize results.
