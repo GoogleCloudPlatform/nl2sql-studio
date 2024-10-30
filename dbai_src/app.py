@@ -136,20 +136,21 @@ def dbai_chat_api():
                 dataset_id=DATASET_ID,
                 tables_list=TABLES_LIST
             )
-    
-        if len(eval(chat_history)) < 1:
-            model = dbai.agent.start_chat()
+        
+        history = eval(chat_history) # convert string to list
+        if len(history) < 1:
+            session = dbai.agent.start_chat()
         else:
-            model = dbai.agent.start_chat(history=chat_history)
+            session = dbai.agent.start_chat(history=history)
 
-        response = dbai.ask(question, model)
+        response = dbai.ask(question, session)
         res_id = str(uuid.uuid4())
 
         response_string = {
             "result_id": res_id,
             "response_text": response.text,
             "interim_steps": response.interim_steps,
-            "chat_history": model.history,
+            "chat_history": session.history,
             "error_msg": ""
         }
     except Exception as e:  # pylint: disable=broad-except
