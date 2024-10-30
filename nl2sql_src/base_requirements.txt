@@ -2,7 +2,7 @@ SQLAlchemy==1.4.52
 sqlalchemy-bigquery==1.8.0
 sqlglot==23.0.3
 langchain==0.1.12
-langchain-community==0.0.28
+langchain-community==0.3.0
 langchain-core==0.1.32
 langchain-google-vertexai==0.1.1
 langchain-text-splitters==0.0.1
