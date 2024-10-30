@@ -22,7 +22,7 @@ from flask import Flask, request
 from loguru import logger
 
 
-from dbai import DBAI_nl2sql
+from dbai import DBAI_nl2sql, DBAI
 
 
 PROJECT_ID = 'sl-test-project-363109'
@@ -44,12 +44,26 @@ def spec():
 
 
 @app.route("/", methods=["POST"])
-def nl2sql_lite_generate():
+def dbai_nl2sql_api():
     """
     Invokes the DBAI SQL Generator
+
+    sample request_body: 
+    {
+        "question": "what is the average rate of concerts over the years?",
+    }
+
+    response from the API:
+    {
+        "result_id": unique_id,
+        "generated_query": sql as a string,
+        "sql_exec_output": results from SQL execution,
+        "sql_result": Natural Language description of the SQL result,
+        "error_msg": error details if any
+    }
     """
     question = request.json["question"]
-    logger.info(f"DBAI engine for question : [{question}]")
+    logger.info(f"DBAI nl2sql for question : [{question}]")
 
     try:
         dbai_nl2sql = DBAI_nl2sql(
@@ -86,6 +100,73 @@ def nl2sql_lite_generate():
         }
 
     return json.dumps(response_string)
+
+@app.route("/chat", methods=["POST"])
+def dbai_chat_api():
+    """
+    sample request_body to start a new chat: 
+    {
+        "question": ,
+        "chat_history": []
+    }
+
+    response from the API:
+    {
+        "result_id": unique_id,
+        "response_text": model response in text,
+        "interim_steps": intermediate_steps as a list,
+        "chat_history": chat_history as a list,
+        "error_msg": ""
+    }
+
+    Use the returned chat_history in subsequent questions for multi-turn chat:
+    request_body for subsequent chat:
+    {
+        "question": ,
+        "chat_history": chat_history from before API response.
+    }
+    """
+    question = request.json["question"]
+    chat_history = request.json["chat_history"]
+    logger.info(f"DBAI chat for question : [{question}]")
+
+    try:
+        dbai = DBAI(
+                proj_id=PROJECT_ID,
+                dataset_id=DATASET_ID,
+                tables_list=TABLES_LIST
+            )
+    
+        if len(eval(chat_history)) < 1:
+            model = dbai.agent.start_chat()
+        else:
+            model = dbai.agent.start_chat(history=chat_history)
+
+        response = dbai.ask(question, model)
+        res_id = str(uuid.uuid4())
+
+        response_string = {
+            "result_id": res_id,
+            "response_text": response.text,
+            "interim_steps": response.interim_steps,
+            "chat_history": model.history,
+            "error_msg": ""
+        }
+    except Exception as e:  # pylint: disable=broad-except
+        logger.error(
+            f"DBAI chat unsuccessful: [{question}] {e}"
+        )
+        response_string = {
+            "result_id": 0,
+            "response_text": "",
+            "interim_steps": "",
+            "chat_history": chat_history,
+            "error_msg": str(e)
+        }
+
+        
+    return json.dumps(response_string)
+
 
 
 if __name__ == "__main__":
