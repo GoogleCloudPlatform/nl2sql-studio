@@ -20,7 +20,7 @@ import uuid
 from flask_cors import CORS
 from flask import Flask, request
 from loguru import logger
-
+from vertexai.generative_models import Content
 
 from dbai import DBAI_nl2sql, DBAI
 
@@ -107,7 +107,7 @@ def dbai_chat_api():
     sample request_body to start a new chat: 
     {
         "question": ,
-        "chat_history": []
+        "chat_history": "[]"
     }
 
     response from the API:
@@ -115,7 +115,7 @@ def dbai_chat_api():
         "result_id": unique_id,
         "response_text": model response in text,
         "interim_steps": intermediate_steps as a list,
-        "chat_history": chat_history as a list,
+        "chat_history": chat_history as a string of list of dicts,
         "error_msg": ""
     }
 
@@ -123,8 +123,15 @@ def dbai_chat_api():
     request_body for subsequent chat:
     {
         "question": ,
-        "chat_history": chat_history from before API response.
+        "chat_history": chat_history as string of list from API response before.
     }
+
+    sample Curl command to test the API:
+    >>> curl -i -X POST \
+    -H 'Content-Type: application/json' \
+    -d '{"question": "what can you do?", "chat_history": "[]" }' \ 
+    http://127.0.0.1:8000/chat
+
     """
     question = request.json["question"]
     chat_history = request.json["chat_history"]
@@ -141,6 +148,7 @@ def dbai_chat_api():
         if len(history) < 1:
             session = dbai.agent.start_chat()
         else:
+            history = [Content.from_dict(i) for i in history]
             session = dbai.agent.start_chat(history=history)
 
         response = dbai.ask(question, session)
@@ -149,10 +157,11 @@ def dbai_chat_api():
         response_string = {
             "result_id": res_id,
             "response_text": response.text,
-            "interim_steps": response.interim_steps,
-            "chat_history": session.history,
+            "interim_steps": str(response.interim_steps),
+            "chat_history": str([i.to_dict() for i in session.history]),
             "error_msg": ""
         }
+
     except Exception as e:  # pylint: disable=broad-except
         logger.error(
             f"DBAI chat unsuccessful: [{question}] {e}"
@@ -161,7 +170,7 @@ def dbai_chat_api():
             "result_id": 0,
             "response_text": "",
             "interim_steps": "",
-            "chat_history": chat_history,
+            "chat_history": str([i.to_dict() for i in chat_history]),
             "error_msg": str(e)
         }
 

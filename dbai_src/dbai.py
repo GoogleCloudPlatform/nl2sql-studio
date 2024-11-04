@@ -31,7 +31,7 @@ safety_settings = {
 }
 
 gemini = GenerativeModel(
-    "gemini-1.5-pro-001",
+    "gemini-1.5-pro-002",
     generation_config={"temperature": 0.05},
     safety_settings=safety_settings,
     )
