@@ -176,7 +176,7 @@ platformdirs==4.2.2
 posthog==3.5.0
 prompt-toolkit==3.0.43
 proto-plus==1.23.0
-protobuf==4.25.3
+protobuf==4.25.8
 psutil==5.9.8
 psycopg2-binary==2.9.9
 ptyprocess==0.7.0
