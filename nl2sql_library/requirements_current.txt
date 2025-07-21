@@ -226,7 +226,7 @@ SQLAlchemy-Utils==0.41.2
 sqlalchemy2-stubs==0.0.2a38
 sqlglot==19.9.0
 stack-data==0.6.3
-starlette==0.37.2
+starlette==0.47.2
 sympy==1.12
 tenacity==8.3.0
 tensorstore==0.1.59
