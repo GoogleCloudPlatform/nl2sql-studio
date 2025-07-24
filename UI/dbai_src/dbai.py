@@ -31,7 +31,7 @@ safety_settings = {
 }
 
 gemini = GenerativeModel(
-    "gemini-1.5-pro-001",
+    "gemini-1.5-pro-002",
     generation_config={"temperature": 0.05},
     safety_settings=safety_settings,
     )
@@ -70,7 +70,7 @@ class DBAI:
             ],
         )
 
-        self.agent = GenerativeModel("gemini-1.5-pro-001",
+        self.agent = GenerativeModel("gemini-1.5-pro-002",
                                      generation_config={"temperature": 0.05},
                                      safety_settings=safety_settings,
                                      tools=[self.sql_query_tool],
@@ -332,7 +332,7 @@ class DBAI_nl2sql(DBAI):  # pylint: disable=invalid-name
             ],
         )
 
-        self.agent = GenerativeModel("gemini-1.5-pro-001",
+        self.agent = GenerativeModel("gemini-1.5-pro-002",
                                      generation_config={"temperature": 0.05},
                                      safety_settings=safety_settings,
                                      tools=[self.nl2sql_tool],
