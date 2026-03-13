@@ -1,0 +1,219 @@
+{
+  "db_metadata": {
+    "distribution_centers": {
+      "table_name": "distribution_centers",
+      "columns_info": {
+        "fields": [
+          { "name": "id", "type": "INTEGER" },
+          { "name": "name", "type": "STRING" },
+          { "name": "latitude", "type": "FLOAT" },
+          { "name": "longitude", "type": "FLOAT" }
+        ]
+      },
+      "table_description": "The `distribution_centers` table stores information about distribution centers, including their ID, name, latitude, and longitude."
+    },
+    "events": {
+      "table_name": "events",
+      "columns_info": {
+        "fields": [
+          { "name": "id", "type": "INTEGER" },
+          { "name": "user_id", "type": "INTEGER" },
+          { "name": "sequence_number", "type": "INTEGER" },
+          { "name": "session_id", "type": "STRING" },
+          { "name": "created_at", "type": "TIMESTAMP" },
+          { "name": "ip_address", "type": "STRING" },
+          { "name": "city", "type": "STRING" },
+          { "name": "state", "type": "STRING" },
+          { "name": "postal_code", "type": "STRING" },
+          { "name": "browser", "type": "STRING" },
+          { "name": "traffic_source", "type": "STRING" },
+          { "name": "uri", "type": "STRING" },
+          { "name": "event_type", "type": "STRING" }
+        ]
+      },
+      "table_description": "The `events` table stores information about user activities, including timestamps, locations, browser details, traffic sources, and event types."
+    },
+    "inventory_items": {
+      "table_name": "inventory_items",
+      "columns_info": {
+        "fields": [
+          { "name": "id", "type": "INTEGER" },
+          { "name": "product_id", "type": "INTEGER" },
+          { "name": "created_at", "type": "TIMESTAMP" },
+          { "name": "sold_at", "type": "TIMESTAMP" },
+          { "name": "cost", "type": "FLOAT" },
+          { "name": "product_category", "type": "STRING" },
+          { "name": "product_name", "type": "STRING" },
+          { "name": "product_brand", "type": "STRING" },
+          { "name": "product_retail_price", "type": "FLOAT" },
+          { "name": "product_department", "type": "STRING" },
+          { "name": "product_sku", "type": "STRING" },
+          { "name": "product_distribution_center_id", "type": "INTEGER" }
+        ]
+      },
+      "table_description": "The `inventory_items` table tracks individual inventory items, including their product details, cost, timestamps for creation and sale, and distribution center information."
+    },
+    "order_items": {
+      "table_name": "order_items",
+      "columns_info": {
+        "fields": [
+          { "name": "id", "type": "INTEGER" },
+          { "name": "order_id", "type": "INTEGER" },
+          { "name": "user_id", "type": "INTEGER" },
+          { "name": "product_id", "type": "INTEGER" },
+          { "name": "inventory_item_id", "type": "INTEGER" },
+          { "name": "status", "type": "STRING" },
+          { "name": "created_at", "type": "TIMESTAMP" },
+          { "name": "shipped_at", "type": "TIMESTAMP" },
+          { "name": "delivered_at", "type": "TIMESTAMP" },
+          { "name": "returned_at", "type": "TIMESTAMP" },
+          { "name": "sale_price", "type": "FLOAT" }
+        ]
+      },
+      "table_description": "The `order_items` table tracks individual items within orders, including details like product, inventory, status, timestamps for shipping/delivery/returns, and sale price, associated with a specific order and user."
+    },
+    "orders": {
+      "table_name": "orders",
+      "columns_info": {
+        "fields": [
+          { "name": "order_id", "type": "INTEGER" },
+          { "name": "user_id", "type": "INTEGER" },
+          { "name": "status", "type": "STRING" },
+          { "name": "gender", "type": "STRING" },
+          { "name": "created_at", "type": "TIMESTAMP" },
+          { "name": "returned_at", "type": "TIMESTAMP" },
+          { "name": "shipped_at", "type": "TIMESTAMP" },
+          { "name": "delivered_at", "type": "TIMESTAMP" },
+          { "name": "num_of_item", "type": "INTEGER" }
+        ]
+      },
+      "table_description": "The `orders` table stores information about customer orders, including order ID, user ID, status, gender, creation timestamp, return timestamp, shipping timestamp, delivery timestamp, and the number of items in the order."
+    },
+    "products": {
+      "table_name": "products",
+      "columns_info": {
+        "fields": [
+          { "name": "id", "type": "INTEGER" },
+          { "name": "cost", "type": "FLOAT" },
+          { "name": "category", "type": "STRING" },
+          { "name": "name", "type": "STRING" },
+          { "name": "brand", "type": "STRING" },
+          { "name": "retail_price", "type": "FLOAT" },
+          { "name": "department", "type": "STRING" },
+          { "name": "sku", "type": "STRING" },
+          { "name": "distribution_center_id", "type": "INTEGER" }
+        ]
+      },
+      "table_description": "The `products` table stores information about various products, including their cost, category, name, brand, retail price, department, SKU, and distribution center ID."
+    },
+    "users": {
+      "table_name": "users",
+      "columns_info": {
+        "fields": [
+          { "name": "id", "type": "INTEGER" },
+          { "name": "first_name", "type": "STRING" },
+          { "name": "last_name", "type": "STRING" },
+          { "name": "email", "type": "STRING" },
+          { "name": "age", "type": "INTEGER" },
+          { "name": "gender", "type": "STRING" },
+          { "name": "state", "type": "STRING" },
+          { "name": "street_address", "type": "STRING" },
+          { "name": "postal_code", "type": "STRING" },
+          { "name": "city", "type": "STRING" },
+          { "name": "country", "type": "STRING" },
+          { "name": "latitude", "type": "FLOAT" },
+          { "name": "longitude", "type": "FLOAT" },
+          { "name": "traffic_source", "type": "STRING" },
+          { "name": "created_at", "type": "TIMESTAMP" }
+        ]
+      },
+      "table_description": "The `users` table stores information about users, including their personal details, location, contact information, and traffic source."
+    }
+  },
+  "test_cases": [
+    {
+      "nl_query": "What are the top 5 product categories by total sales for female users from California?",
+      "queries": [
+        {
+          "name": "Correct Query",
+          "sql": "SELECT p.category, SUM(oi.sale_price) AS total_sales FROM users AS u JOIN order_items AS oi ON u.id = oi.user_id JOIN products AS p ON oi.product_id = p.id WHERE u.gender = 'F' AND u.state = 'California' GROUP BY p.category ORDER BY total_sales DESC LIMIT 5"
+        },
+        {
+          "name": "Incorrect Join Condition",
+          "sql": "SELECT p.category, SUM(oi.sale_price) AS total_sales FROM users AS u JOIN orders AS o ON u.id = o.user_id JOIN order_items AS oi ON o.order_id = oi.order_id JOIN products AS p ON oi.inventory_item_id = p.id WHERE u.gender = 'F' AND u.state = 'California' GROUP BY p.category ORDER BY total_sales DESC LIMIT 5"
+        },
+        {
+          "name": "Missing Filter Condition",
+          "sql": "SELECT p.category, SUM(oi.sale_price) AS total_sales FROM users AS u JOIN orders AS o ON u.id = o.user_id JOIN order_items AS oi ON o.order_id = oi.order_id JOIN products AS p ON oi.product_id = p.id WHERE u.gender = 'F' GROUP BY p.category ORDER BY total_sales DESC LIMIT 5"
+        },
+        {
+          "name": "Wrong Aggregation",
+          "sql": "SELECT p.category, COUNT(oi.sale_price) AS total_sales FROM users AS u JOIN orders AS o ON u.id = o.user_id JOIN order_items AS oi ON o.order_id = oi.order_id JOIN products AS p ON oi.product_id = p.id WHERE u.gender = 'F' AND u.state = 'California' GROUP BY p.category ORDER BY total_sales DESC LIMIT 5"
+        }
+      ]
+    },
+    {
+      "nl_query": "How many users from China have placed more than 2 orders?",
+      "queries": [
+        {
+          "name": "Correct Query",
+          "sql": "SELECT COUNT(DISTINCT user_id) FROM orders WHERE user_id IN (SELECT id FROM users WHERE country = 'China') GROUP BY user_id HAVING COUNT(order_id) > 2"
+        },
+        {
+          "name": "Incorrect Count",
+          "sql": "SELECT COUNT(T1.id) FROM users AS T1 JOIN (SELECT user_id, COUNT(order_id) AS order_count FROM orders GROUP BY user_id) AS T2 ON T1.id = T2.user_id WHERE T1.country = 'China' AND T2.order_count >= 2"
+        },
+        {
+          "name": "Wrong Join Logic",
+          "sql": "SELECT COUNT(u.id) FROM users AS u WHERE u.country = 'China' AND (SELECT COUNT(o.order_id) FROM orders AS o WHERE o.user_id = u.id) > 2"
+        },
+        {
+          "name": "Missing Group By",
+          "sql": "SELECT COUNT(T1.id) FROM users AS T1 JOIN orders AS T2 ON T1.id = T2.user_id WHERE T1.country = 'China' HAVING COUNT(T2.order_id) > 2"
+        }
+      ]
+    },
+    {
+      "nl_query": "What is the total profit from products in the 'Jeans' category sold in '2023'?",
+      "queries": [
+        {
+          "name": "Correct Query",
+          "sql": "SELECT SUM(oi.sale_price - p.cost) AS total_profit FROM order_items AS oi JOIN products AS p ON oi.product_id = p.id WHERE p.category = 'Jeans' AND STRFTIME('%Y', oi.created_at) = '2023'"
+        },
+        {
+          "name": "Wrong Profit Calculation",
+          "sql": "SELECT SUM(oi.sale_price) FROM order_items AS oi JOIN products AS p ON oi.product_id = p.id WHERE p.category = 'Jeans' AND STRFTIME('%Y', oi.created_at) = '2023'"
+        },
+        {
+          "name": "Incorrect Date Filter",
+          "sql": "SELECT SUM(oi.sale_price - p.cost) AS total_profit FROM order_items AS oi JOIN products AS p ON oi.product_id = p.id WHERE p.category = 'Jeans' AND oi.created_at = '2023'"
+        },
+        {
+          "name": "Missing Join",
+          "sql": "SELECT SUM(sale_price) FROM order_items WHERE product_id IN (SELECT id FROM products WHERE category = 'Jeans') AND STRFTIME('%Y', created_at) = '2023'"
+        }
+      ]
+    },
+    {
+      "nl_query": "List the top 3 distribution centers by the number of returned items.",
+      "queries": [
+        {
+          "name": "Correct Query",
+          "sql": "SELECT dc.name, COUNT(oi.id) AS returned_items_count FROM distribution_centers AS dc JOIN inventory_items AS ii ON dc.id = ii.product_distribution_center_id JOIN order_items AS oi ON ii.id = oi.inventory_item_id WHERE oi.status = 'Returned' GROUP BY dc.name ORDER BY returned_items_count DESC LIMIT 3"
+        },
+        {
+          "name": "Wrong Status",
+          "sql": "SELECT dc.name, COUNT(oi.id) AS returned_items_count FROM distribution_centers AS dc JOIN inventory_items AS ii ON dc.id = ii.product_distribution_center_id JOIN order_items AS oi ON ii.id = oi.inventory_item_id WHERE oi.status = 'Shipped' GROUP BY dc.name ORDER BY returned_items_count DESC LIMIT 3"
+        },
+        {
+          "name": "Incorrect Aggregation",
+          "sql": "SELECT dc.name, SUM(oi.id) AS returned_items_count FROM distribution_centers AS dc JOIN inventory_items AS ii ON dc.id = ii.product_distribution_center_id JOIN order_items AS oi ON ii.id = oi.inventory_item_id WHERE oi.status = 'Returned' GROUP BY dc.name ORDER BY returned_items_count DESC LIMIT 3"
+        },
+        {
+          "name": "Missing Limit",
+          "sql": "SELECT dc.name, COUNT(oi.id) AS returned_items_count FROM distribution_centers AS dc JOIN inventory_items AS ii ON dc.id = ii.product_distribution_center_id JOIN order_items AS oi ON ii.id = oi.inventory_item_id WHERE oi.status = 'Returned' GROUP BY dc.name ORDER BY returned_items_count DESC"
+        }
+      ]
+    }
+  ]
+}
