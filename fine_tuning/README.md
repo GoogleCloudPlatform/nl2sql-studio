@@ -1,4 +1,4 @@
-# nl2sql_sql_fitness
+# nl2sql_fitness
 NL2SQL multi-agent solution with automated SQL fitness score
 
 
