@@ -1,0 +1,43 @@
+--- Evaluation Dataset Ready (28 samples) ---
+Evaluating Phase 2 outputs using LLM as a judge...
+/Users/roopayk/Documents/NL2SQL_asset/.venv/lib/python3.13/site-packages/google/auth/_default.py:114: UserWarning: Your application has authenticated using end user credentials from Google Cloud SDK without a quota project. You might receive a "quota exceeded" or "API not enabled" error. See the following page for troubleshooting: https://cloud.google.com/docs/authentication/adc-troubleshooting/user-creds. 
+  warnings.warn(_CLOUD_SDK_CREDENTIALS_WARNING)
+Associating projects/862253555914/locations/us-central1/metadataStores/default/contexts/sql-to-nl-eval-run-e9ad7f43-d924-40f5-ab2c-81dcaae8cfb9 to Experiment: sql-to-nl-eval-run
+Computing metrics with a total of 28 Vertex Gen AI Evaluation Service API requests.
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 28/28 [00:37<00:00,  1.34s/it]
+All 28 metric requests are successfully computed.
+Evaluation Took:37.64168087500002 seconds
+
+--- Evaluation Summary Metrics ---
+{'row_count': 28, 'custom_qa_quality/mean': np.float64(4.357142857142857), 'custom_qa_quality/std': np.float64(0.9893613995077729)}
+
+--- Detailed Evaluation Table ---
+                                               prompt  ... custom_qa_quality/score
+0   \n        You are an expert natural language g...  ...                     5.0
+1   \n        You are an expert natural language g...  ...                     4.0
+2   \n        You are an expert natural language g...  ...                     4.0
+3   \n        You are an expert natural language g...  ...                     3.0
+4   \n        You are an expert natural language g...  ...                     5.0
+5   \n        You are an expert natural language g...  ...                     5.0
+6   \n        You are an expert natural language g...  ...                     5.0
+7   \n        You are an expert natural language g...  ...                     4.0
+8   \n        You are an expert natural language g...  ...                     5.0
+9   \n        You are an expert natural language g...  ...                     5.0
+10  \n        You are an expert natural language g...  ...                     2.0
+11  \n        You are an expert natural language g...  ...                     5.0
+12  \n        You are an expert natural language g...  ...                     4.0
+13  \n        You are an expert natural language g...  ...                     4.0
+14  \n        You are an expert natural language g...  ...                     2.0
+15  \n        You are an expert natural language g...  ...                     5.0
+16  \n        You are an expert natural language g...  ...                     5.0
+17  \n        You are an expert natural language g...  ...                     5.0
+18  \n        You are an expert natural language g...  ...                     2.0
+19  \n        You are an expert natural language g...  ...                     5.0
+20  \n        You are an expert natural language g...  ...                     4.0
+21  \n        You are an expert natural language g...  ...                     5.0
+22  \n        You are an expert natural language g...  ...                     4.0
+23  \n        You are an expert natural language g...  ...                     5.0
+24  \n        You are an expert natural language g...  ...                     5.0
+25  \n        You are an expert natural language g...  ...                     5.0
+26  \n        You are an expert natural language g...  ...                     5.0
+27  \n        You are an expert natural language g...  ...                     5.0
