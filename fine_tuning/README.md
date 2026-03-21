@@ -1,5 +1,5 @@
-# nl2sql_fitness
-NL2SQL multi-agent solution with automated SQL fitness score
+# NL2SQL Evaluation 
+NL2SQL multi-agent solution with automated SQL Eval score
 
 
 # spider eval
