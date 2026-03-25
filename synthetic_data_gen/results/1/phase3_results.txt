@@ -41,3 +41,32 @@ Evaluation Took:37.64168087500002 seconds
 25  \n        You are an expert natural language g...  ...                     5.0
 26  \n        You are an expert natural language g...  ...                     5.0
 27  \n        You are an expert natural language g...  ...                     5.0
+
+
+(.venv) roopayk-mac:synthetic_data_gen roopayk$ python stage3.py 
+
+Average Schema Coverage: 49.06%
+              db_id  tables_used  total_tables  columns_used  total_columns  schema_coverage
+0          academic            3            15             4             18         0.212121
+1      body_builder            2             2             5             10         0.583333
+2         college_2            5            11             7             25         0.333333
+3  department_store            8            14            12             41         0.363636
+4    flight_company            3             3             6             17         0.450000
+5            icfp_1            3             4             6              9         0.692308
+6       perpetrator            2             2             4             12         0.428571
+7      pilot_record            3             3             6             17         0.450000
+8        race_track            2             2             5              8         0.700000
+9      storm_record            3             3             6             10         0.692308
+
+Average SQL Uniqueness Rate: 93.33%
+              db_id  total_queries  unique_queries  sur_masked
+0          academic              1               1    1.000000
+1      body_builder              3               2    0.666667
+2         college_2              3               3    1.000000
+3  department_store              3               3    1.000000
+4    flight_company              3               3    1.000000
+5            icfp_1              3               3    1.000000
+6       perpetrator              3               2    0.666667
+7      pilot_record              3               3    1.000000
+8        race_track              3               3    1.000000
+9      storm_record              3               3    1.000000
