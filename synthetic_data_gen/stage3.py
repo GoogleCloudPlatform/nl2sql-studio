@@ -156,8 +156,58 @@ def run_stage_3_evaluation(final_golden_data, experiment_name="sql-to-nl-eval-ru
     print("\n--- Detailed Evaluation Table ---")
     print(result.metrics_table)
 
-    
+
     return result
+
+def calculate_score_among_complexity(results, golden_data):
+    """Calculates average score across each complexity level.
+    
+    Args:
+        results: EvalResult object or pandas DataFrame.
+        golden_data: List of dictionaries containing 'complexity' data.
+    """
+    
+    
+    if hasattr(results, 'metrics_table'):
+        df = results.metrics_table
+    elif isinstance(results, pd.DataFrame):
+        df = results
+    else:
+        print("Error: results must be a DataFrame or an EvalResult object")
+        return None
+
+    golden_df = pd.DataFrame(golden_data)
+
+    if 'complexity' not in golden_df.columns:
+        print("Error: 'complexity' column not found in golden_data")
+        return None
+
+    if len(df) == len(golden_df):
+        merged_df = df.copy()
+        merged_df['complexity'] = golden_df['complexity'].values
+    else:
+        print(f"Error: Length of results ({len(df)}) and golden_data ({len(golden_df)}) do not match.")
+        return None
+
+    score_col = 'custom_qa_quality/score'
+    if score_col not in merged_df.columns:
+         for col in merged_df.columns:
+            if 'score' in col:
+                score_col = col
+                break
+    
+    if score_col not in merged_df.columns:
+        print("Error: Score column not found.")
+        return None
+
+    merged_df[score_col] = pd.to_numeric(merged_df[score_col], errors='coerce')
+
+    avg_scores = merged_df.groupby('complexity')[score_col].mean()
+
+    print("\n--- Average Score by Complexity Level ---")
+    print(avg_scores)
+
+    return avg_scores    
 
 if __name__ == "__main__":
     # Load Stage 2 output for standalone testing
@@ -167,14 +217,16 @@ if __name__ == "__main__":
     with open(INPUT_FILE_PATH, 'r') as f:
         golden_data = json.load(f)
 
-    run_stage_3_evaluation(golden_data)
+    results = run_stage_3_evaluation(golden_data)
+
+    complexity_scores = calculate_score_among_complexity(results, golden_data)
     
     # Calculate Schema Coverage
-    report_df, avg_sc = calculate_schema_coverage(golden_data, TABLES_JSON_PATH)
-    print(f"\nAverage Schema Coverage: {avg_sc:.2%}")
-    print(report_df)
+    # report_df, avg_sc = calculate_schema_coverage(golden_data, TABLES_JSON_PATH)
+    # print(f"\nAverage Schema Coverage: {avg_sc:.2%}")
+    # print(report_df)
 
-    # Calculate SQL Uniqueness Rate
-    report_df, avg_sur = calculate_sur_masked(golden_data)
-    print(f"\nAverage SQL Uniqueness Rate: {avg_sur:.2%}")
-    print(report_df)
+    # # Calculate SQL Uniqueness Rate
+    # report_df, avg_sur = calculate_sur_masked(golden_data)
+    # print(f"\nAverage SQL Uniqueness Rate: {avg_sur:.2%}")
+    # print(report_df)
