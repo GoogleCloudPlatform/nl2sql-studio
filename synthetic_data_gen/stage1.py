@@ -5,6 +5,10 @@ import os
 import sqlite3
 import json
 import time
+from pydantic import BaseModel, Field
+from typing import List
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 
 class SmartSampler:
     def __init__(self, tables_json_path, base_db_path):
@@ -293,20 +297,180 @@ def run_batch_generation(sampler, spider_db_dir, num_dbs=10, max_retries=3):
 
     return master_dataset
 
+
+class BatchArchitectAgent:
+    def __init__(self):
+        # We enforce JSON output using generation_config if supported, 
+        # but prompt engineering is still the safest cross-compatible way.
+        # self.model = genai.GenerativeModel('gemini-1.5-pro')
+        pass
+    
+    def generate_batch_sql(self, schema_with_samples_text):
+        """Prompts Gemini to generate 10 distinct queries in a single JSON payload."""
+        
+        prompt = f"""
+        You are an expert SQL Architect building a diverse synthetic dataset. 
+        Your task is to generate exactly 10 highly accurate, valid SQL queries based on the provided schema and sample data.
+
+        DISTRIBUTION REQUIREMENT:
+        - Exactly 13 "Complex" queries
+        - Exactly 7 "Medium" queries
+        - Exactly 5 "Simple" queries
+
+        CRITICAL RULES FOR DIVERSITY AND COVERAGE:
+        1. NO OVERLAP: Every query MUST test a completely different scenario. Do not repeat the same JOIN paths or logic.
+        2. MAXIMIZE FOOTPRINT: For your "Simple" and "Medium" queries, explicitly target different tables and columns to ensure 100% of the schema is covered across the batch.
+        3. DATA-AWARE: Only filter (WHERE/HAVING) using exact values explicitly shown in the "Sample Rows". 
+        4. STRUCTURAL COMPLEXITY: Build "Complex" queries using deep JOINs, subqueries, and set operations, NOT by making hyper-specific WHERE clauses that will return 0 rows.
+
+        OUTPUT FORMAT:
+        You MUST output ONLY a valid JSON array of objects. Do not wrap it in markdown blockquotes.
+        Format Example:
+        [
+            {{"complexity": "Simple", "sql": "SELECT ... FROM ..."}},
+            {{"complexity": "Medium", "sql": "SELECT ... FROM ... JOIN ..."}},
+            ...
+        ]
+
+        ---
+        TARGET SCHEMA & SAMPLE DATA:
+        {schema_with_samples_text}
+        """
+
+        client = genai.Client(
+            vertexai=True,
+            project="mystic-bank-352905",
+            location="us-central1")
+        contents = [
+            types.Content(
+                role="user",
+                parts=[
+                    types.Part.from_text(text=prompt)
+                ]
+            ),
+        ]
+        response = client.models.generate_content(
+            model = "gemini-2.5-pro",
+            contents = contents
+        )
+        
+        # response = self.model.generate_content(prompt)
+        
+        # Clean the response to ensure it's parseable JSON
+        raw_text = response.text.strip()
+        if raw_text.startswith("```json"):
+            raw_text = raw_text[7:-3].strip()
+        elif raw_text.startswith("```"):
+            raw_text = raw_text[3:-3].strip()
+            
+        try:
+            return json.loads(raw_text)
+        except json.JSONDecodeError as e:
+            print(f"❌ Failed to parse JSON from LLM: {e}")
+            return []
+
+def process_single_database(db_id, spider_tables_path, spider_db_dir):
+    """Handles the complete Phase 1 flow for a single database."""
+    # Note: In a real multithreaded environment, you'd initialize these once 
+    # outside the thread to save memory, but this works for demonstration.
+    sampler = SmartSampler(spider_tables_path, spider_db_dir)
+    architect = BatchArchitectAgent()
+    executor = DatabaseExecutor(spider_db_dir)
+    summarizer = ResultSummarizer()
+    
+    verified_batch = []
+    
+    schema_text = sampler.get_formatted_schema_with_samples(db_id)
+    if "Error" in schema_text or "Database not found" in schema_text:
+        return verified_batch
+
+    # 1. Generate 10 queries in one API call
+    generated_queries = architect.generate_batch_sql(schema_text)
+    
+    # 2. Process each query in the generated batch
+    for item in generated_queries:
+        sql = item.get("sql")
+        complexity = item.get("complexity")
+        
+        if not sql:
+            continue
+            
+        # Execute against the local SQLite DB
+        is_valid, msg, results, columns = executor.execute_query(db_id, sql)
+        
+        if is_valid:
+            # Generate the natural language summary of the output shape
+            summary = summarizer.summarize_shape(sql, columns, results)
+            verified_batch.append({
+                "db_id": db_id,
+                "complexity": complexity,
+                "sql": sql,
+                "result_summary": summary
+            })
+            
+    return verified_batch
+
+
+def run_multithreaded_pipeline(spider_tables_path, spider_db_dir, db_ids, max_workers=5):
+    """
+    Runs the Generation Engine across multiple databases concurrently.
+    """
+    print(f"🚀 Starting Multithreaded Run on {len(db_ids)} DBs with {max_workers} workers...")
+    start_time = time.time()
+    
+    master_dataset = []
+    
+    # Create a thread pool
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # Submit all tasks to the pool
+        future_to_db = {
+            executor.submit(process_single_database, db_id, spider_tables_path, spider_db_dir): db_id 
+            for db_id in db_ids
+        }
+        
+        # As each thread completes, gather the results
+        for future in as_completed(future_to_db):
+            db_id = future_to_db[future]
+            try:
+                # Get the verified list of queries from that specific thread
+                verified_queries = future.result() 
+                master_dataset.extend(verified_queries)
+                print(f"✅ DB '{db_id}' completed. Yielded {len(verified_queries)} valid queries.")
+            except Exception as exc:
+                print(f"❌ DB '{db_id}' generated an exception: {exc}")
+
+    end_time = time.time()
+    print("\n" + "="*50)
+    print(f"🎉 Run Complete in {round(end_time - start_time, 2)} seconds!")
+    print(f"📊 Total Valid Queries Generated: {len(master_dataset)}")
+    
+    return master_dataset
+
+# ==========================================
+# EXECUTION of 1000 queries
+# ==========================================
 if __name__ == "__main__":
-    TABLES_JSON_PATH = "./tables.json"
-    DATABASE_DIR_PATH = "./database/"   
+    TABLES_JSON_PATH = "tables-all.json"
+    DATABASE_DIR_PATH = "database/"     
     
-    sampler = SmartSampler(TABLES_JSON_PATH, DATABASE_DIR_PATH)
-    final_batch_data = run_batch_generation(
-        sampler=sampler, 
+    # Assuming you have an instance of SmartSampler already to get the DB list
+    temp_sampler = SmartSampler(TABLES_JSON_PATH, DATABASE_DIR_PATH)
+    
+    # Grab the first 2 databases to process concurrently
+    target_dbs = [db['db_id'] for db in temp_sampler.schemas][10:41]
+    
+    # Run the multithreaded job (Watch out for Gemini API Rate Limits!)
+    final_dataset = run_multithreaded_pipeline(
+        spider_tables_path=TABLES_JSON_PATH, 
         spider_db_dir=DATABASE_DIR_PATH,
-        num_dbs=10
+        db_ids=target_dbs,
+        max_workers=5 # Keep this conservative initially (5-10) to avoid rate limiting
     )
-    
-    output_filename = "synthetic_data_batch.json"
+
+    # Save the output to a JSON file so Phase 2 can pick it up
+    output_filename = "/home/jupyter/nl2sql/outputs/synthetic_data_batch_concurrent_31_25.json"
     with open(output_filename, "w") as f:
-        json.dump(final_batch_data, f, indent=4)
+        json.dump(final_dataset, f, indent=4)
         
     print("\n" + "="*50)
-    print(f"🎉 Batch Complete! Saved {len(final_batch_data)} verified queries to '{output_filename}'.")
+    print(f"🎉 Batch Complete! Saved {len(final_dataset)} verified queries to '{output_filename}'.")
