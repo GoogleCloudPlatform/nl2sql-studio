@@ -329,6 +329,11 @@ if __name__ == "__main__":
     try:
         with open(INPUT_FILE_PATH, 'r') as f:
             stage_1_data = json.load(f)
+        
+        # Filter for successful items
+        original_count = len(stage_1_data)
+        stage_1_data = [item for item in stage_1_data if item.get('success') is True]
+        print(f"📋 Loaded {original_count} items from Stage 1. Kept {len(stage_1_data)} successful items for translation.")
     except FileNotFoundError:
         print("Error: Could not find ./results/merged_synthetic_dataset.json")
         sys.exit(1)
