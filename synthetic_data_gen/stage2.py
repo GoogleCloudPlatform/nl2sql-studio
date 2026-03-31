@@ -39,13 +39,28 @@ PERSONAS = [
 
 class SmartSampler:
     def __init__(self, tables_json_path, base_db_path):
-        """Loads the Spider dataset schemas."""
+        """
+        Initializes the SmartSampler with schema and database paths.
+
+        Args:
+            tables_json_path (str): Path to the JSON file containing Spider dataset schemas.
+            base_db_path (str): Directory containing the actual SQLite databases.
+        """
         with open(tables_json_path, 'r') as f:
             self.schemas = json.load(f)
         self.base_db_path = base_db_path
 
     def get_formatted_schema_with_samples(self, db_id):
-        """Formats tables, columns, and 3 actual rows of data into a prompt-ready string."""
+        """
+        Fetches schema details and sample data rows for a specific database.
+
+        Args:
+            db_id (str): The identifier for the database.
+
+        Returns:
+            str: A formatted block of text containing tables, columns, and sample rows,
+                 suitable for inclusion in an LLM prompt.
+        """
         target_db = next((db for db in self.schemas if db['db_id'] == db_id), None)
         if not target_db:
             return "Database not found."
@@ -83,11 +98,29 @@ class SmartSampler:
 
 class ContextTranslatorAgent:
     def __init__(self, llm_client=None):
+        """
+        Initializes the ContextTranslatorAgent.
+
+        Args:
+            llm_client (genai.Client, optional): The Google GenAI client instance.
+        """
         self.llm_client = llm_client
         self.personas = PERSONAS
 
     def generate_questions(self, sql_items: list, schemas_dict: dict, persona: dict, include_result_summary: bool = True, include_schema: bool = True) -> str:
-        """Stage 2: Context-Aware Translation (Batched by Persona)"""
+        """
+        Generates natural language questions for a batch of SQL queries using the Gemini API.
+
+        Args:
+            sql_items (list): List of dictionaries containing SQL queries and metadata.
+            schemas_dict (dict): Map of db_id to its formatted schema string.
+            persona (dict): The target persona configuration.
+            include_result_summary (bool): Whether to include the expected result summary.
+            include_schema (bool): Whether to include schema definitions.
+
+        Returns:
+            str: JSON string containing the generated questions.
+        """
         db_ids = {item['db_id'] for item in sql_items}
         schemas_context = "\n".join(
             f"--- Schema for Database: {db_id} ---\n{schemas_dict.get(db_id, 'Schema not provided.')}\n" 
@@ -158,7 +191,15 @@ class ContextTranslatorAgent:
 
 
 def clean_json_response(response_text: str) -> str:
-    """Cleans up potential markdown from the LLM JSON response."""
+    """
+    Cleans up potential markdown code block wrappers (e.g., ```json) from the LLM response.
+
+    Args:
+        response_text (str): Raw response text.
+
+    Returns:
+        str: Stripped JSON string.
+    """
     text = response_text.strip()
     if text.startswith("```"):
         text = text.split("\n", 1)[-1]
@@ -168,6 +209,21 @@ def clean_json_response(response_text: str) -> str:
 
 
 def process_batch(batch_items, schemas_dict, persona, translator_agent, batch_num, total_batches, max_retries):
+    """
+    Processes a single batch of queries for translation, with retry logic.
+
+    Args:
+        batch_items (list): Items in this batch.
+        schemas_dict (dict): Database schemas lookup.
+        persona (dict): The target persona.
+        translator_agent (ContextTranslatorAgent): The translation worker.
+        batch_num (int): Current batch index.
+        total_batches (int): Total batches for this persona.
+        max_retries (int): Retry limit.
+
+    Returns:
+        list: Consolidated results for the batch.
+    """
     persona_name = persona['name']
     print(f"\n  📦 [{persona_name}] Processing batch {batch_num}/{total_batches} ({len(batch_items)} items)...")
     
@@ -210,6 +266,19 @@ def process_batch(batch_items, schemas_dict, persona, translator_agent, batch_nu
 
 
 def run_stage_2_pipeline(stage_1_dataset, schemas_dict, llm_client=None, max_retries=3, max_workers=5):
+    """
+    Orchestrates the Stage 2 pipeline across all personas using multi-threading.
+
+    Args:
+        stage_1_dataset (list): Output from Stage 1.
+        schemas_dict (dict): Pre-formatted schemas.
+        llm_client (genai.Client): GenAI Client.
+        max_retries (int): Retry limit for failed batches.
+        max_workers (int): Thread pool size.
+
+    Returns:
+        list: The enriched dataset.
+    """
     print(f"🚀 Starting Stage 2 Pipeline (Multi-Threaded)\n" + "="*50)
     translator_agent = ContextTranslatorAgent(llm_client)
     final_dataset = []

@@ -11,7 +11,15 @@ class CategoryEvaluation(BaseModel):
     details: str = Field(description="Explanation for the score and pass/fail status.")
 
 def get_persona_description(persona_name):
-    """Fetches the description of a given persona by name."""
+    """
+    Fetches the description of a given persona by name.
+
+    Args:
+        persona_name (str): The name of the persona (e.g., 'The Executive').
+
+    Returns:
+        str: The description if found, otherwise 'Persona not found.'.
+    """
     PERSONAS = [
         {
             "name": "The Executive",
@@ -61,8 +69,15 @@ class BatchEvaluationReport(BaseModel):
 
 def evaluate_batch(model: GenerativeModel, batch_records: list) -> BatchEvaluationReport:
     """
-    Evaluates a batch of NL responses against their corresponding SQL contexts.
-    batch_records: list of dicts, each containing 'user_prompt' and 'nl_question'
+    Evaluates a batch of generated questions using the Gemini API.
+
+    Args:
+        model (GenerativeModel): The Vertex AI GenerativeModel instance.
+        batch_records (list): A list of dictionaries containing 'system_prompt' and 'nl_question'.
+
+    Returns:
+        BatchEvaluationReport: A Pydantic model representing the evaluation results for the batch.
+                               Returns None if evaluation fails after all retries.
     """
     try:
         # Construct the batched prompt payload
@@ -181,40 +196,61 @@ def evaluate_batch(model: GenerativeModel, batch_records: list) -> BatchEvaluati
 
 
 def chunk_list(lst, n):
+    """
+    Chunks a list into segments of size n.
+
+    Args:
+        lst (list): The list to chunk.
+        n (int): The chunk size.
+
+    Yields:
+        list: A sub-list of size up to n.
+    """
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 
 
 def generate_system_prompt(row, include_schema: bool, include_results_summary: bool) -> str:
+    """
+    Generates the system prompt for evaluation based on configurable parameters.
+
+    Args:
+        row (dict): The data record (must contain 'persona', 'sql', 'schema', etc.).
+        include_schema (bool): Whether to include schema information in context.
+        include_results_summary (bool): Whether to include the expected result summary.
+
+    Returns:
+        str: The generated prompt text.
+    """
     persona_desc = get_persona_description(row.get('persona', ''))
     
     prompt = f"""You are an expert natural language generation agent.
-Your persona for this task is: {row.get('persona', '')}.
-Persona Description: {persona_desc}
+        Your persona for this task is: {row.get('persona', '')}.
+        Persona Description: {persona_desc}
 
-Your goal is Reverse Translation: Given the inputs below, generate the precise, pure Natural Language question that would have produced each exact SQL query.
-"""
-    
-    if include_results_summary:
-        prompt += "Condition your generation heavily on the ACTUAL result shape to avoid vague or hallucinated intents. (e.g., if the query limits to 5, the question must say 'Which 5...').\n"
-        
-    prompt += "Importantly, craft each question to match your exact persona"
-    if include_schema:
-        prompt += " and refer to the specific Database Schema corresponding to each query.\n"
-    else:
-        prompt += ".\n"
-        
-    if include_schema:
-        prompt += f"""
-[CONTEXT]
-- Schema Used: {row.get('schema', '')}
-"""
-        
-    prompt += f"""
-- Query to Translate:
---- Query ---
-SQL: {row.get('sql', '')}
-"""
+        Your goal is Reverse Translation: Given the inputs below, generate the precise, pure Natural Language question that would have produced each exact SQL query.
+        """
+            
+            if include_results_summary:
+                prompt += "Condition your generation heavily on the ACTUAL result shape to avoid vague or hallucinated intents. (e.g., if the query limits to 5, the question must say 'Which 5...').\n"
+                
+            prompt += "Importantly, craft each question to match your exact persona"
+            if include_schema:
+                prompt += " and refer to the specific Database Schema corresponding to each query.\n"
+            else:
+                prompt += ".\n"
+                
+            if include_schema:
+                prompt += f"""
+        [CONTEXT]
+        - Schema Used: {row.get('schema', '')}
+        """
+                
+            prompt += f"""
+        - Query to Translate:
+        --- Query ---
+        SQL: {row.get('sql', '')}
+        """
     
     if include_results_summary:
         prompt += f"Result Summary: {row.get('result_summary', '')}\n"
