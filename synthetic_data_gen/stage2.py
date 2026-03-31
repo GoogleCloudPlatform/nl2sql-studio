@@ -86,7 +86,7 @@ class ContextTranslatorAgent:
         self.llm_client = llm_client
         self.personas = PERSONAS
 
-    def generate_questions(self, sql_items: list, schemas_dict: dict, persona: dict) -> str:
+    def generate_questions(self, sql_items: list, schemas_dict: dict, persona: dict, include_result_summary: bool = True, include_schema: bool = True) -> str:
         """Stage 2: Context-Aware Translation (Batched by Persona)"""
         db_ids = {item['db_id'] for item in sql_items}
         schemas_context = "\n".join(
@@ -95,9 +95,31 @@ class ContextTranslatorAgent:
         )
 
         queries_context = "\n".join(
-            f"--- Query {idx} ---\nDatabase ID: {item.get('db_id')}\nSQL: {item.get('sql', '')}\nResult Summary: {item.get('result_summary', '')}\n"
+            f"--- Query {idx} ---\n"
+            f"Database ID: {item.get('db_id')}\n"
+            f"SQL: {item.get('sql', '')}\n"
+            + (f"Result Summary: {item.get('result_summary', '')}\n" if include_result_summary else "")
             for idx, item in enumerate(sql_items)
         )
+
+        schema_section = (
+            f"[CONTEXT]\n- Schemas Used:\n{schemas_context}\n" 
+            if include_schema else ""
+        )
+
+        context_references = []
+        if include_schema:
+            context_references.append("the specific Database Schema")
+        if include_result_summary:
+            context_references.append("the expected Result Summary")
+
+        # Join the references naturally (e.g., "A, and B" or just "A")
+        if context_references:
+            instruction_suffix = f" and refer to {' and '.join(context_references)} corresponding to each query."
+        else:
+            instruction_suffix = "."
+
+        dynamic_instruction = f"Importantly, craft each question to match your exact persona{instruction_suffix}"
 
         system_prompt = f"""
         You are an expert natural language generation agent.
@@ -106,11 +128,9 @@ class ContextTranslatorAgent:
         
         Your goal is Reverse Translation: Given the inputs below, generate the precise, pure Natural Language question that would have produced each exact SQL query and result.
         Condition your generation heavily on the ACTUAL result shape to avoid vague or hallucinated intents. (e.g., if the query limits to 5, the question must say 'Which 5...').
-        Importantly, craft each question to match your exact persona and refer to the specific Database Schema corresponding to each query.
+        {dynamic_instruction}
         
-        [CONTEXT]
-        - Schemas Used:
-        {schemas_context}
+        {schema_section}
         
         - Queries to Translate:
         {queries_context}
@@ -153,7 +173,7 @@ def process_batch(batch_items, schemas_dict, persona, translator_agent, batch_nu
     
     for attempt in range(1, max_retries + 1):
         print(f"    [{persona_name} - Batch {batch_num}] Attempt {attempt}/{max_retries}...")
-        response_text = translator_agent.generate_questions(batch_items, schemas_dict, persona)
+        response_text = translator_agent.generate_questions(batch_items, schemas_dict, persona, include_result_summary=True, include_schema=True)
         
         if not response_text or response_text.startswith("Error"):
             print(f"    ⚠️ [{persona_name} - Batch {batch_num}] {response_text}")
@@ -232,7 +252,7 @@ def run_stage_2_pipeline(stage_1_dataset, schemas_dict, llm_client=None, max_ret
 # EXECUTION CELL
 # ==========================================
 if __name__ == "__main__":
-    TABLES_FILE = "./tables-new.json"
+    TABLES_FILE = "./tables-all.json"
     DATABASE_PATH = "./database/"
     INPUT_FILE_PATH = "./results/merged_synthetic_dataset.json"
     OUTPUT_FILE_PATH = "./results/merged_stage2_results_mt.json"
