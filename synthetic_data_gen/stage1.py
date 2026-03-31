@@ -8,18 +8,43 @@ import time
 from pydantic import BaseModel, Field
 from typing import List
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
+from collections import Counter
 
 
 class SmartSampler:
+    """
+    Utility class to load database schemas and sample real rows for prompt engineering.
+    
+    Attributes:
+        schemas (list): List of database schema dictionaries.
+        base_db_path (str): Root directory where SQLite files are stored.
+    """
     def __init__(self, tables_json_path, base_db_path):
-        """Loads the Spider dataset schemas."""
-        with open(tables_json_path, 'r') as f:
-            self.schemas = json.load(f)
-        self.base_db_path = base_db_path
+        """
+        Initializes the sampler by loading the master schema JSON.
+        
+        Args:
+            tables_json_path (str): Path to the tables-all.json file.
+            base_db_path (str): Path to the directory containing .sqlite files.
+        """
+        try:
+            with open(tables_json_path, 'r') as f:
+                self.schemas = json.load(f)
+            self.base_db_path = base_db_path
+        except Exception as e:
+            print(f"❌ Error loading schema file: {e}")
+            raise
 
     def get_formatted_schema_with_samples(self, db_id):
         """
-        Formats tables, columns, and 3 actual rows of data into a prompt-ready string.
+        Extracts table structures and sample rows from a database and formats them for an LLM prompt.
+
+        Args:
+            db_id (str): The unique identifier of the database to sample.
+
+        Returns:
+            str: A formatted string containing the schema and sample data, or an error message.
         """
         target_db = next((db for db in self.schemas if db['db_id'] == db_id), None)
         if not target_db:
@@ -41,6 +66,7 @@ class SmartSampler:
             cursor = conn.cursor()
 
             for table_idx, table_name in enumerate(table_names):
+                # print(f"   - Sampling table: {table_name}")
                 schema_text += f"Table: {table_name}\n"
                 
                 # 1. Get Columns
@@ -49,7 +75,6 @@ class SmartSampler:
                 
                 # 2. Get Sample Data (LIMIT 3)
                 try:
-                    # Wrapping table name in quotes in case of SQL keywords/spaces
                     cursor.execute(f'SELECT * FROM "{table_name}" LIMIT 3')
                     sample_rows = cursor.fetchall()
                     
@@ -62,7 +87,7 @@ class SmartSampler:
                 except sqlite3.Error as e:
                     schema_text += f"- (Could not fetch samples: {e})\n"
                 
-                schema_text += "\n" # Add spacing between tables
+                schema_text += "\n" 
 
             conn.close()
             
@@ -72,99 +97,31 @@ class SmartSampler:
         return schema_text.strip()
 
 
-class ArchitectAgent:
-    def __init__(self):
-        pass
-
-    def generate_sql(self, schema_with_samples_text, complexity_level):
-        """Prompts Gemini to generate a data-aware SQL query based on schema and sample rows."""
-        
-        prompt = f"""
-        You are an expert SQL Architect building a synthetic dataset. 
-        Your task is to generate a highly accurate, valid SQL query based on the provided database schema and sample data.
-
-        CRITICAL DIRECTIVE: The target databases are extremely small. To ensure your query returns actual data (more than 0 rows), you MUST adhere strictly to the following rules:
-
-        RULES:
-        1. NO MARKDOWN: Only output the raw SQL code. No explanations, no formatting blocks.
-        2. ALIASING: Use table aliasing (e.g., T1, T2) for clarity in all queries involving more than one table.
-        3. DATA-AWARE FILTERING: If you use a WHERE or HAVING clause, you may ONLY filter using exact data values explicitly shown in the "Sample Rows" for that specific column. Do not invent, guess, or assume values exist.
-        4. STRUCTURAL COMPLEXITY: To achieve "Medium" or "Complex" queries, do NOT use highly restrictive, multi-condition WHERE clauses. Instead, build complexity structurally using:
-            - Multiple JOINs
-            - GROUP BY with aggregations (COUNT, SUM, AVG)
-            - Subqueries in the FROM or WHERE clause
-            - Set operations (INTERSECT, UNION, EXCEPT)
-        5. BROAD FILTERS: If you cannot find a good sample value to filter on, use broad structural filters like `IS NOT NULL` or numeric comparisons like `> 0`.
-
-        FEW-SHOT EXAMPLES:
-        - Simple: SELECT Name, Country, Age FROM singer ORDER BY Age DESC
-        - Medium: SELECT T2.name, count(*) FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id = T2.stadium_id GROUP BY T1.stadium_id
-        - Complex: SELECT T1.name FROM student AS T1 JOIN student_course_attendance AS T2 ON T1.student_id = T2.student_id JOIN course AS T3 ON T2.course_id = T3.course_id WHERE T3.course_name = 'English' INTERSECT SELECT T1.name FROM student AS T1 JOIN student_course_attendance AS T2 ON T1.student_id = T2.student_id JOIN course AS T3 ON T2.course_id = T3.course_id WHERE T3.course_name = 'Math'
-
-        ---
-        TARGET SCHEMA & SAMPLE DATA:
-        {schema_with_samples_text}
-
-        REQUESTED COMPLEXITY: {complexity_level}
-        
-        SQL QUERY:
-        """
-
-        client = genai.Client(
-            vertexai=True,
-            project="mystic-bank-352905",
-            location="us-central1")
-
-        model = "gemini-2.5-pro"
-        contents = [
-            types.Content(
-                role="user",
-                parts=[
-                    types.Part.from_text(text=prompt)
-                ]
-            ),
-        ]
-
-        generate_content_config = types.GenerateContentConfig(
-            temperature = 1,
-            top_p = 0.95,
-            seed = 0,
-            max_output_tokens = 65535,
-            safety_settings = [types.SafetySetting(
-                category="HARM_CATEGORY_HATE_SPEECH",
-                threshold="OFF"
-            ),types.SafetySetting(
-                category="HARM_CATEGORY_DANGEROUS_CONTENT",
-                threshold="OFF"
-            ),types.SafetySetting(
-                category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                threshold="OFF"
-            ),types.SafetySetting(
-                category="HARM_CATEGORY_HARASSMENT",
-                threshold="OFF"
-            )],
-            thinking_config=types.ThinkingConfig(
-                thinking_budget=-1,
-            ),
-        )
-
-        response = client.models.generate_content(
-            model = model,
-            contents = contents,
-            config = generate_content_config,
-        )
-        return response.text.strip()
-
-
 class DatabaseExecutor:
+    """
+    Handles the execution of SQL queries against local SQLite databases for validation.
+    
+    Attributes:
+        base_db_path (str): Root directory where SQLite files are stored.
+    """
     def __init__(self, base_db_path):
         """
-        base_db_path: The path to the 'database' folder you uploaded to Workbench.
+        Args:
+            base_db_path (str): Path to the 'database' folder containing .sqlite files.
         """
         self.base_db_path = base_db_path
 
     def execute_query(self, db_id, sql_query):
-        """Executes SQL against the specific SQLite file. Fails fast on errors or empty results."""
+        """
+        Runs a SQL query and returns the results or a descriptive discard message.
+
+        Args:
+            db_id (str): The database identifier.
+            sql_query (str): The SQL string to execute.
+
+        Returns:
+            tuple: (bool success, str message, list results, list column_names)
+        """
         db_path = os.path.join(self.base_db_path, f"{db_id}.sqlite")
         
         if not os.path.exists(db_path):
@@ -191,36 +148,41 @@ class DatabaseExecutor:
 
 
 class ResultSummarizer:
-    def __init__(self):
-        pass
+    """
+    Agent responsible for describing the 'shape' of data returned by a query using an LLM.
+    """
+    def __init__(self, client, model_name, prompt_template):
+        """
+        Args:
+            client: The initialized Google GenAI client.
+            model_name (str): The ID of the Gemini model to use.
+            prompt_template (str): The template string for the summarization prompt.
+        """
+        self.client = client
+        self.model_name = model_name
+        self.prompt_template = prompt_template
 
     def summarize_shape(self, sql_query, column_names, sample_results):
-        """Prompts Gemini to describe the metadata/shape of the output."""
+        """
+        Calls the LLM to generate a natural language summary of the query output.
+
+        Args:
+            sql_query (str): The query that was run.
+            column_names (list): The headers of the returned data.
+            sample_results (list): The first few rows of the actual data.
+
+        Returns:
+            str: A one-sentence description of the data shape.
+        """
         preview_data = sample_results[:3]
         total_rows = len(sample_results)
         
-        prompt = f"""
-        You are a Data Summarization Agent in a synthetic data pipeline.
-        Your task is to describe the "shape" and metadata of a SQL query's output.
-        
-        RULES:
-        1. Strictly describe what the SQL query looks like in natural language.
-        2. Keep it to one concise sentence to help understand what scenario this data and query describe.
-        
-        Example Output: "Returns 5 rows containing the name and capacity of stadiums, ordered by capacity descending."
-        
-        ---
-        SQL QUERY: {sql_query}
-        RETURNED COLUMNS: {column_names}
-        TOTAL ROWS RETURNED: {total_rows}
-        SAMPLE DATA (First 3 rows): {preview_data}
-        
-        RESULT SUMMARY:
-        """
-        client = genai.Client(
-            vertexai=True,
-            project="mystic-bank-352905",
-            location="us-central1")
+        prompt = self.prompt_template.format(
+            sql_query=sql_query,
+            column_names=column_names,
+            total_rows=total_rows,
+            preview_data=preview_data
+        )
         contents = [
             types.Content(
                 role="user",
@@ -229,118 +191,43 @@ class ResultSummarizer:
                 ]
             ),
         ]
-        response = client.models.generate_content(
-            model = "gemini-2.5-pro",
+        response = self.client.models.generate_content(
+            model = self.model_name,
             contents = contents
         )
         return response.text.strip()
 
 
-def run_batch_generation(sampler, spider_db_dir, num_dbs=10, max_retries=3):
-    """
-    Runs Stage 1 across multiple databases to generate a batch dataset.
-    """
-    architect = ArchitectAgent()
-    executor = DatabaseExecutor(spider_db_dir)
-    summarizer = ResultSummarizer()
-    
-    db_ids = [db['db_id'] for db in sampler.schemas][:num_dbs]
-    print(f"📦 Starting batch run for {len(db_ids)} databases...\n" + "="*50)
-    
-    query_distribution = ["Medium", "Complex", "Complex"]
-    master_dataset = []
-
-    for db_id in db_ids:
-        print(f"\n🚀 Processing Database: '{db_id}'")
-        schema_text = sampler.get_formatted_schema_with_samples(db_id)
-        
-        if "Database not found" in schema_text:
-            print(f"❌ Skipping {db_id}: Schema not found.")
-            continue
-            
-        for i, complexity in enumerate(query_distribution):
-            print(f"\n  ⚙️ Generating Query {i+1}/{len(query_distribution)} ({complexity})...")
-            success = False
-            attempts = 0
-            
-            while not success and attempts < max_retries:
-                attempts += 1
-                
-                try:
-                    generated_sql = architect.generate_sql(schema_text, complexity)
-                    is_valid, msg, results, columns = executor.execute_query(db_id, generated_sql)
-                    
-                    if not is_valid:
-                        print(f"    ⚠️ Attempt {attempts}: {msg}")
-                        time.sleep(1)
-                        continue 
-                        
-                    summary = summarizer.summarize_shape(generated_sql, columns, results)
-                    
-                    master_dataset.append({
-                        "db_id": db_id,
-                        "complexity": complexity,
-                        "sql": generated_sql,
-                        "result_summary": summary
-                    })
-                    success = True
-                    print(f"    ✅ Success! ({len(results)} rows) -> {summary}")
-                    
-                except Exception as e:
-                    print(f"    🚨 Unexpected API/Runtime Error: {e}")
-                    time.sleep(2)
-                    
-            if not success:
-                print(f"  ❌ Failed to generate a valid {complexity} query for {db_id} after {max_retries} attempts.")
-
-        print(f"✅ Finished '{db_id}'. Accumulated {len(master_dataset)} total queries so far.")
-
-    return master_dataset
-
-
 class BatchArchitectAgent:
-    def __init__(self):
-        # We enforce JSON output using generation_config if supported, 
-        # but prompt engineering is still the safest cross-compatible way.
-        # self.model = genai.GenerativeModel('gemini-1.5-pro')
-        pass
+    """
+    Agent responsible for generating a batch of diverse SQL queries based on a database schema.
+    """
+    def __init__(self, client, model_name, prompt_template):
+        """
+        Args:
+            client: The initialized Google GenAI client.
+            model_name (str): The ID of the Gemini model to use.
+            prompt_template (str): The template string for the generation prompt.
+        """
+        self.client = client
+        self.model_name = model_name
+        self.prompt_template = prompt_template
     
     def generate_batch_sql(self, schema_with_samples_text):
-        """Prompts Gemini to generate 10 distinct queries in a single JSON payload."""
-        
-        prompt = f"""
-        You are an expert SQL Architect building a diverse synthetic dataset. 
-        Your task is to generate exactly 10 highly accurate, valid SQL queries based on the provided schema and sample data.
-
-        DISTRIBUTION REQUIREMENT:
-        - Exactly 13 "Complex" queries
-        - Exactly 7 "Medium" queries
-        - Exactly 5 "Simple" queries
-
-        CRITICAL RULES FOR DIVERSITY AND COVERAGE:
-        1. NO OVERLAP: Every query MUST test a completely different scenario. Do not repeat the same JOIN paths or logic.
-        2. MAXIMIZE FOOTPRINT: For your "Simple" and "Medium" queries, explicitly target different tables and columns to ensure 100% of the schema is covered across the batch.
-        3. DATA-AWARE: Only filter (WHERE/HAVING) using exact values explicitly shown in the "Sample Rows". 
-        4. STRUCTURAL COMPLEXITY: Build "Complex" queries using deep JOINs, subqueries, and set operations, NOT by making hyper-specific WHERE clauses that will return 0 rows.
-
-        OUTPUT FORMAT:
-        You MUST output ONLY a valid JSON array of objects. Do not wrap it in markdown blockquotes.
-        Format Example:
-        [
-            {{"complexity": "Simple", "sql": "SELECT ... FROM ..."}},
-            {{"complexity": "Medium", "sql": "SELECT ... FROM ... JOIN ..."}},
-            ...
-        ]
-
-        ---
-        TARGET SCHEMA & SAMPLE DATA:
-        {schema_with_samples_text}
         """
+        Requests the LLM to generate multiple SQL queries in one batch.
 
-        client = genai.Client(
-            vertexai=True,
-            project="mystic-bank-352905",
-            location="us-central1")
+        Args:
+            schema_with_samples_text (str): The formatted schema and sample rows.
+
+        Returns:
+            list: A list of dictionaries, each containing 'complexity' and 'sql'.
+        """
+        
+        prompt = self.prompt_template.format(
+            schema_with_samples_text=schema_with_samples_text
+        )
+        
         contents = [
             types.Content(
                 role="user",
@@ -349,12 +236,10 @@ class BatchArchitectAgent:
                 ]
             ),
         ]
-        response = client.models.generate_content(
-            model = "gemini-2.5-pro",
+        response = self.client.models.generate_content(
+            model = self.model_name,
             contents = contents
         )
-        
-        # response = self.model.generate_content(prompt)
         
         # Clean the response to ensure it's parseable JSON
         raw_text = response.text.strip()
@@ -366,28 +251,85 @@ class BatchArchitectAgent:
         try:
             return json.loads(raw_text)
         except json.JSONDecodeError as e:
-            print(f"❌ Failed to parse JSON from LLM: {e}")
+            print(f"   ❌ Failed to parse JSON from LLM: {e}")
             return []
 
-def process_single_database(db_id, spider_tables_path, spider_db_dir):
-    """Handles the complete Phase 1 flow for a single database."""
-    # Note: In a real multithreaded environment, you'd initialize these once 
-    # outside the thread to save memory, but this works for demonstration.
-    sampler = SmartSampler(spider_tables_path, spider_db_dir)
-    architect = BatchArchitectAgent()
-    executor = DatabaseExecutor(spider_db_dir)
-    summarizer = ResultSummarizer()
+
+def parse_db_selection(selection_str, schemas):
+    """
+    Parses a user-provided selection string to determine which databases to process.
+
+    Supported Formats:
+    - Exact Match: 'concert_singer' (returns that specific ID)
+    - Slice: '0:10' (first 10), '5:' (from index 5 to end)
+    - End Index: '10' (assumes 0:10)
+
+    Args:
+        selection_str (str): The raw selection string from configuration.
+        schemas (list): The list of all available database schemas.
+
+    Returns:
+        list: A list of db_id strings to be processed.
+    """
+    all_ids = [db['db_id'] for db in schemas]
+    selection_str = selection_str.strip()
     
-    verified_batch = []
+    # 1. Priority: Check if it's an exact DB ID match
+    if selection_str in all_ids:
+        return [selection_str]
+    
+    # 2. Check if it's a slice (contains :)
+    if ":" in selection_str:
+        parts = selection_str.split(":")
+        try:
+            start = int(parts[0]) if parts[0] else 0
+            end = int(parts[1]) if parts[1] else len(all_ids)
+            return all_ids[start:end]
+        except ValueError:
+            pass # Not a numeric slice, move on
+    
+    # 3. Check if it's just an end index (assume start 0)
+    if selection_str.isdigit():
+        end = int(selection_str)
+        return all_ids[0:end]
+        
+    return []
+
+
+def process_single_database(db_id, tables_path, db_dir, client, model_name, prompts, batch_prompt_name, summarize_prompt_name):
+    """
+    The end-to-end workflow for a single database: Sample -> Generate -> Validate -> Summarize.
+
+    Args:
+        db_id (str): Database to process.
+        tables_path (str): Path to master schema file.
+        db_dir (str): Root directory of SQLite files.
+        client: Google GenAI client.
+        model_name (str): LLM model ID.
+        prompts (dict): Dictionary of loaded prompt templates.
+        batch_prompt_name (str): Key for the generation prompt.
+        summarize_prompt_name (str): Key for the summarization prompt.
+
+    Returns:
+        list: A list of all attempted query objects (success and fail).
+    """
+    sampler = SmartSampler(tables_path, db_dir)
+    architect = BatchArchitectAgent(client, model_name, prompts[batch_prompt_name])
+    executor = DatabaseExecutor(db_dir)
+    summarizer = ResultSummarizer(client, model_name, prompts[summarize_prompt_name])
+    
+    results_batch = []
     
     schema_text = sampler.get_formatted_schema_with_samples(db_id)
     if "Error" in schema_text or "Database not found" in schema_text:
-        return verified_batch
+        return results_batch
 
-    # 1. Generate 10 queries in one API call
+    # 1. Sample and Generate
+    print(f"🔍 [{db_id}] Sampling schema and calling Architect...")
     generated_queries = architect.generate_batch_sql(schema_text)
     
-    # 2. Process each query in the generated batch
+    # 2. Validate and Summarize
+    print(f"🧪 [{db_id}] Validating {len(generated_queries)} generated queries...")
     for item in generated_queries:
         sql = item.get("sql")
         complexity = item.get("complexity")
@@ -398,22 +340,43 @@ def process_single_database(db_id, spider_tables_path, spider_db_dir):
         # Execute against the local SQLite DB
         is_valid, msg, results, columns = executor.execute_query(db_id, sql)
         
+        # Initialize the query entry (tracking success/failure)
+        query_entry = {
+            "db_id": db_id,
+            "complexity": complexity,
+            "sql": sql,
+            "success": is_valid
+        }
+        
         if is_valid:
             # Generate the natural language summary of the output shape
             summary = summarizer.summarize_shape(sql, columns, results)
-            verified_batch.append({
-                "db_id": db_id,
-                "complexity": complexity,
-                "sql": sql,
-                "result_summary": summary
-            })
+            query_entry["result_summary"] = summary
+        else:
+            query_entry["error_message"] = msg
             
-    return verified_batch
+        results_batch.append(query_entry)
+            
+    return results_batch
 
 
-def run_multithreaded_pipeline(spider_tables_path, spider_db_dir, db_ids, max_workers=5):
+def run_multithreaded_pipeline(tables_path, db_dir, db_ids, client, model_name, prompts, batch_prompt_name, summarize_prompt_name, max_workers=5):
     """
-    Runs the Generation Engine across multiple databases concurrently.
+    Orchestrates the concurrent processing of multiple databases.
+
+    Args:
+        tables_path (str): Path to master schema file.
+        db_dir (str): Root directory of SQLite files.
+        db_ids (list): List of databases to process.
+        client: Google GenAI client.
+        model_name (str): LLM model ID.
+        prompts (dict): Dictionary of all loaded prompt templates.
+        batch_prompt_name (str): Key for the generation prompt.
+        summarize_prompt_name (str): Key for the summarization prompt.
+        max_workers (int): Maximum number of concurrent database threads.
+
+    Returns:
+        list: The complete dataset of verified queries.
     """
     print(f"🚀 Starting Multithreaded Run on {len(db_ids)} DBs with {max_workers} workers...")
     start_time = time.time()
@@ -424,7 +387,7 @@ def run_multithreaded_pipeline(spider_tables_path, spider_db_dir, db_ids, max_wo
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         # Submit all tasks to the pool
         future_to_db = {
-            executor.submit(process_single_database, db_id, spider_tables_path, spider_db_dir): db_id 
+            executor.submit(process_single_database, db_id, tables_path, db_dir, client, model_name, prompts, batch_prompt_name, summarize_prompt_name): db_id 
             for db_id in db_ids
         }
         
@@ -435,42 +398,173 @@ def run_multithreaded_pipeline(spider_tables_path, spider_db_dir, db_ids, max_wo
                 # Get the verified list of queries from that specific thread
                 verified_queries = future.result() 
                 master_dataset.extend(verified_queries)
-                print(f"✅ DB '{db_id}' completed. Yielded {len(verified_queries)} valid queries.")
+                success_count = sum(1 for q in verified_queries if q.get("success"))
+                print(f"✅ DB '{db_id}' completed. Total: {len(verified_queries)}, Success: {success_count}")
             except Exception as exc:
                 print(f"❌ DB '{db_id}' generated an exception: {exc}")
 
     end_time = time.time()
     print("\n" + "="*50)
     print(f"🎉 Run Complete in {round(end_time - start_time, 2)} seconds!")
-    print(f"📊 Total Valid Queries Generated: {len(master_dataset)}")
     
     return master_dataset
 
+
+def analyze_stage1_pipeline(json_filepath, tables_json_path):
+    """
+    Calculates comprehensive metrics for the Stage 1 pipeline results.
+    
+    Metrics:
+    - Total Databases, Tables, Columns (Stage 1 Scope)
+    - Total SQL Generated vs Executed Successfully
+    - Complexity Distribution (Generated vs Executed)
+    - Successful Execution Rate
+    """
+    try:
+        with open(json_filepath, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        with open(tables_json_path, 'r', encoding='utf-8') as f:
+            schemas = json.load(f)
+            
+        if not isinstance(data, list):
+            print("❌ Error: JSON results must be a list of query objects.")
+            return
+
+        # 2. Schema Metrics (Databases, Tables, Columns)
+        active_db_ids = set(q.get("db_id") for q in data if q.get("db_id"))
+        total_dbs_stage1 = len(active_db_ids)
+        
+        active_schemas = [s for s in schemas if s.get('db_id') in active_db_ids]
+        total_tables_stage1 = sum(len(s.get('table_names_original', [])) for s in active_schemas)
+        total_columns_stage1 = sum(len([c for c in s.get('column_names_original', []) if c[1] != '*']) for s in active_schemas)
+        
+        # 3. SQL Execution Metrics
+        total_sql_generated = len(data)
+        successful_queries = [q for q in data if q.get("success", True)]
+        total_sql_success = len(successful_queries)
+        
+        success_rate = (total_sql_success / total_sql_generated * 100) if total_sql_generated > 0 else 0
+        
+        # 4. Complexity Distributions
+        gen_complexities = Counter(q.get("complexity", "Unknown") for q in data)
+        exec_complexities = Counter(q.get("complexity", "Unknown") for q in successful_queries)
+        
+        # 5. Print Formal Report
+        print("\n" + "="*70)
+        print("📊 STAGE 1 PIPELINE: COMPREHENSIVE METRICS REPORT")
+        print("="*70)
+        
+        print(f"{'DATABASE METRICS':<45}")
+        print(f"  - Total Databases (Stage 1):{' ':<15} {total_dbs_stage1}")
+        print(f"  - Total Tables (Stage 1):{' ':<18} {total_tables_stage1}")
+        print(f"  - Total Columns (Stage 1):{' ':<17} {total_columns_stage1}")
+        
+        print("\n" + f"{'SQL GENERATION & EXECUTION':<45}")
+        print(f"  - Total SQL Generated (Stage 1):{' ':<11} {total_sql_generated}")
+        print(f"  - Total SQL Executed successfully (Stage 1):{' ':<2} {total_sql_success}")
+        print(f"  - Successful Execution Rate (Stage 1):{' ':<6} {success_rate:.1f}%")
+        
+        print("\n" + f"{'GENERATED COMPLEXITY DISTRIBUTION':<45}")
+        for complexity, count in gen_complexities.most_common():
+            perc = (count / total_sql_generated * 100) if total_sql_generated > 0 else 0
+            print(f"  - {complexity:<15} : {count:<5} ({perc:.1f}%)")
+
+        print("\n" + f"{'EXECUTED COMPLEXITY DISTRIBUTION (SUCCESS ONLY)':<45}")
+        for complexity, count in exec_complexities.most_common():
+            perc = (count / total_sql_success * 100) if total_sql_success > 0 else 0
+            print(f"  - {complexity:<15} : {count:<5} ({perc:.1f}%)")
+            
+        print("="*70 + "\n")
+
+    except Exception as e:
+        print(f"❌ Error during metrics analysis: {e}")
+
+
 # ==========================================
-# EXECUTION of 1000 queries
+# EXECUTION
 # ==========================================
-if __name__ == "__main__":
-    TABLES_JSON_PATH = "tables-all.json"
-    DATABASE_DIR_PATH = "database/"     
+if __name__ == "__main__":  
+    # --- CONFIGURATION AREA ---
+    # GCP Project and Location details for Vertex AI
+    PROJECT_ID = "mystic-bank-352905"
+    LOCATION = "us-central1"
+    MODEL_ID = "gemini-2.5-pro"
     
-    # Assuming you have an instance of SmartSampler already to get the DB list
-    temp_sampler = SmartSampler(TABLES_JSON_PATH, DATABASE_DIR_PATH)
+    # Paths to the input data and prompt templates
+    TABLES_JSON_PATH = "synthetic_data_gen/tables-all.json"
+    DATABASE_DIR_PATH = "synthetic_data_gen/database/"
+    PROMPTS_DIR = "synthetic_data_gen/prompts/"
     
-    # Grab the first 2 databases to process concurrently
-    target_dbs = [db['db_id'] for db in temp_sampler.schemas][10:41]
+    # Specify which prompt files to use (using filenames without .txt)
+    BATCH_PROMPT_NAME = "batch_sql_generation_few_shot" 
+    SUMMARIZE_PROMPT_NAME = "summarize_sql"
     
-    # Run the multithreaded job (Watch out for Gemini API Rate Limits!)
-    final_dataset = run_multithreaded_pipeline(
-        spider_tables_path=TABLES_JSON_PATH, 
-        spider_db_dir=DATABASE_DIR_PATH,
-        db_ids=target_dbs,
-        max_workers=5 # Keep this conservative initially (5-10) to avoid rate limiting
+    # Selection logic for which databases to process
+    # Examples: '0:5' (range), 'perpetrator' (single ID), '10' (first 10)
+    DB_SELECTION = "1:2"
+    
+    # Setup for timestamped output to prevent overwriting previous runs
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    clean_selection = DB_SELECTION.replace(":", "_").replace(",", "_").replace(" ", "")
+    OUTPUT_FILENAME = f"synthetic_data_gen/results/stage1/synthetic_data_{clean_selection}_{timestamp}.json"
+    
+    # --- INITIALIZATION ---
+    print(f"🎬 Initializing Synthetic Data Pipeline [Stage 1]...")
+    
+    # 1. Load all external prompts from the prompts directory
+    print(f"📂 Loading prompt templates from {PROMPTS_DIR}...")
+    prompts = {}
+    if os.path.exists(PROMPTS_DIR):
+        for filename in os.listdir(PROMPTS_DIR):
+            if filename.endswith(".txt"):
+                prompt_name = filename[:-4]
+                with open(os.path.join(PROMPTS_DIR, filename), 'r') as f:
+                    prompts[prompt_name] = f.read()
+    
+    # 2. Initialize the shared Gemini client
+    print(f"☁️  Initializing Vertex AI Client (Project: {PROJECT_ID})...")
+    client = genai.Client(
+        vertexai=True,
+        project=PROJECT_ID,
+        location=LOCATION
     )
 
-    # Save the output to a JSON file so Phase 2 can pick it up
-    output_filename = "/home/jupyter/nl2sql/outputs/synthetic_data_batch_concurrent_31_25.json"
-    with open(output_filename, "w") as f:
+    # 3. Initialize the sampler to get the list of available databases
+    temp_sampler = SmartSampler(TABLES_JSON_PATH, DATABASE_DIR_PATH)
+    
+    # 4. Filter databases based on user selection
+    target_dbs = parse_db_selection(DB_SELECTION, temp_sampler.schemas)
+    if not target_dbs:
+        print(f"❌ Error: No databases matched selection '{DB_SELECTION}'")
+        exit(1)
+        
+    print(f"🎯 Selected {len(target_dbs)} database(s): {', '.join(target_dbs)}")
+    
+    # --- EXECUTION ---
+    # Run the multithreaded generation pipeline
+    final_dataset = run_multithreaded_pipeline(
+        tables_path=TABLES_JSON_PATH, 
+        db_dir=DATABASE_DIR_PATH,
+        db_ids=target_dbs,
+        client=client,
+        model_name=MODEL_ID,
+        prompts=prompts,
+        batch_prompt_name=BATCH_PROMPT_NAME,
+        summarize_prompt_name=SUMMARIZE_PROMPT_NAME,
+        max_workers=8 
+    )
+
+    # --- FINALIZATION ---
+    # Ensure the results directory exists
+    print(f"💾 Saving results to {OUTPUT_FILENAME}...")
+    os.makedirs(os.path.dirname(OUTPUT_FILENAME), exist_ok=True)
+    
+    # Write the verified dataset to JSON
+    with open(OUTPUT_FILENAME, "w") as f:
         json.dump(final_dataset, f, indent=4)
         
     print("\n" + "="*50)
-    print(f"🎉 Batch Complete! Saved {len(final_dataset)} verified queries to '{output_filename}'.")
+    print(f"🎉 Stage 1 Complete! Saved {len(final_dataset)} verified queries.")
+    print(f"📍 Output: {OUTPUT_FILENAME}")
+    print("="*50 + "\n")
+    analyze_stage1_pipeline(OUTPUT_FILENAME, TABLES_JSON_PATH)

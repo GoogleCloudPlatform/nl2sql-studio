@@ -1,0 +1,177 @@
+[
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT ID, name, tot_cred FROM student WHERE dept_name = 'History';",
+        "success": true,
+        "result_summary": "Returns 117 rows containing the ID, name, and total credits for all students in the History department."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT name, salary FROM instructor WHERE salary = 94333.99;",
+        "success": true,
+        "result_summary": "RESULT SUMMARY:\nReturns 1 row containing the name and salary of an instructor whose salary is exactly 94333.99."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT title, dept_name FROM course WHERE credits = 4;",
+        "success": true,
+        "result_summary": "Returns 92 rows containing the title and department name of all courses that are worth 4 credits."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT dept_name, budget FROM department WHERE building = 'Chandler';",
+        "success": true,
+        "result_summary": "Returns 1 row containing the department name and budget for the department located in the 'Chandler' building."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT room_number, capacity FROM classroom WHERE building = 'Lamberton';",
+        "success": true,
+        "result_summary": "Returns 2 rows containing the room number and capacity for all classrooms in the 'Lamberton' building."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Medium",
+        "sql": "SELECT T1.title, T2.semester, T2.year FROM course AS T1 JOIN section AS T2 ON T1.course_id = T2.course_id WHERE T1.course_id = '313';",
+        "success": true,
+        "result_summary": "Returns a single row containing the title, semester, and year of the section for the course with an ID of 313."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Medium",
+        "sql": "SELECT T1.name, T2.budget FROM instructor AS T1 JOIN department AS T2 ON T1.dept_name = T2.dept_name WHERE T1.dept_name = 'Cybernetics';",
+        "success": true,
+        "result_summary": "Returns 4 rows containing the names of instructors in the Cybernetics department and their department's budget."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Medium",
+        "sql": "SELECT T2.name, T1.course_id FROM teaches AS T1 JOIN instructor AS T2 ON T1.ID = T2.ID WHERE T1.ID = '34175' AND T1.year = 2004;",
+        "success": true,
+        "result_summary": "Returns 2 rows containing the name of an instructor and the course IDs for courses taught by that specific instructor in the year 2004."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Medium",
+        "sql": "SELECT T1.name AS student_name, T3.name AS advisor_name FROM student AS T1 JOIN advisor AS T2 ON T1.ID = T2.s_ID JOIN instructor AS T3 ON T2.i_ID = T3.ID WHERE T1.ID = '24746';",
+        "success": true,
+        "result_summary": "Returns 1 row containing the name of a specific student and their corresponding advisor's name."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Medium",
+        "sql": "SELECT T2.name, T1.grade FROM takes AS T1 JOIN student AS T2 ON T1.ID = T2.ID WHERE T1.course_id = '401' AND T1.grade = 'C-';",
+        "success": true,
+        "result_summary": "Returns 33 rows containing the name and grade of students who received a 'C-' in course '401'."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Medium",
+        "sql": "SELECT T1.title AS course_title, T2.prereq_id FROM course AS T1 JOIN prereq AS T2 ON T1.course_id = T2.course_id WHERE T1.course_id = '376';",
+        "success": true,
+        "result_summary": "Returns 1 row containing the course title and prerequisite ID for the specific course with ID '376'."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Medium",
+        "sql": "SELECT T1.building, T1.room_number, T2.day, T2.start_hr, T2.end_hr FROM section AS T1 JOIN time_slot AS T2 ON T1.time_slot_id = T2.time_slot_id WHERE T2.day = 'M';",
+        "success": true,
+        "result_summary": "Returns 34 rows containing the building, room number, day, and start and end hours for all course sections scheduled on a Monday."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT course_id FROM section WHERE semester = 'Fall' AND year = 2010 INTERSECT SELECT course_id FROM section WHERE semester = 'Spring' AND year = 2010;",
+        "success": false,
+        "error_message": "Discarded: Executed successfully but returned 0 rows."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT name, salary, dept_name FROM instructor AS i WHERE salary > (SELECT AVG(salary) FROM instructor WHERE dept_name = i.dept_name);",
+        "success": true,
+        "result_summary": "Returns 20 rows containing the name, salary, and department name for instructors whose salary is greater than the average salary of their respective department."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT name, dept_name, salary FROM (SELECT name, dept_name, salary, RANK() OVER (PARTITION BY dept_name ORDER BY salary DESC) as rank_num FROM instructor) AS ranked_instructors WHERE rank_num = 1;",
+        "success": true,
+        "result_summary": "Returns 17 rows containing the name, department name, and salary of the highest-paid instructor within each department."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT DISTINCT T1.name FROM student AS T1 JOIN takes AS T2 ON T1.ID = T2.ID JOIN teaches AS T3 ON T2.course_id = T3.course_id AND T2.sec_id = T3.sec_id AND T2.semester = T3.semester AND T2.year = T3.year JOIN instructor AS T4 ON T3.ID = T4.ID WHERE T1.dept_name = T4.dept_name;",
+        "success": true,
+        "result_summary": "Returns 832 rows containing the unique names of students who have taken a course taught by an instructor from their same department."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT T1.dept_name FROM department AS T1 JOIN instructor AS T2 ON T1.dept_name = T2.dept_name GROUP BY T1.dept_name, T1.budget HAVING SUM(T2.salary) > T1.budget;",
+        "success": true,
+        "result_summary": "Returns the names of 4 departments where the total instructor salaries exceed the department's budget."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT T2.title, T1.num_sections FROM (SELECT course_id, COUNT(*) AS num_sections FROM section GROUP BY course_id) AS T1 JOIN course AS T2 ON T1.course_id = T2.course_id ORDER BY T1.num_sections DESC LIMIT 1;",
+        "success": true,
+        "result_summary": "Returns 1 row containing the title and section count for the course with the most sections."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT c.course_id, c.title FROM course AS c JOIN section AS s ON c.course_id = s.course_id WHERE s.semester = 'Fall' AND s.year = 2010 AND NOT EXISTS (SELECT 1 FROM takes AS t WHERE t.course_id = s.course_id AND t.sec_id = s.sec_id AND t.semester = s.semester AND t.year = s.year);",
+        "success": false,
+        "error_message": "Discarded: Executed successfully but returned 0 rows."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT name, dept_name FROM student WHERE tot_cred > 100 UNION SELECT name, dept_name FROM instructor WHERE salary > 119921.40;",
+        "success": true,
+        "result_summary": "Returns 465 rows containing the name and department name of students with over 100 credits or instructors with a salary over $119,921.40."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "WITH TopStudent AS (SELECT ID FROM student WHERE dept_name = 'Finance' ORDER BY tot_cred DESC LIMIT 1) SELECT T3.title, T2.grade FROM TopStudent AS T1 JOIN takes AS T2 ON T1.ID = T2.ID JOIN course AS T3 ON T2.course_id = T3.course_id;",
+        "success": true,
+        "result_summary": "Returns 17 rows containing the course titles and grades for the single finance student with the most total credits."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT T1.dept_name, COUNT(T2.course_id) AS num_courses, AVG(T2.credits) AS avg_credits FROM department AS T1 JOIN course AS T2 ON T1.dept_name = T2.dept_name WHERE T1.building = 'Chandler' GROUP BY T1.dept_name;",
+        "success": true,
+        "result_summary": "Returns 1 row containing the department name, total number of courses, and average course credits for departments located in the 'Chandler' building."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT name FROM student WHERE ID IN (SELECT ID FROM takes WHERE (course_id, sec_id, semester, year) IN (SELECT course_id, sec_id, semester, year FROM teaches WHERE ID = '63395'));",
+        "success": false,
+        "error_message": "Discarded: Executed successfully but returned 0 rows."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT ID, name FROM instructor EXCEPT SELECT T1.ID, T1.name FROM instructor AS T1 JOIN teaches AS T2 ON T1.ID = T2.ID WHERE T2.semester = 'Spring' AND T2.year = 2004;",
+        "success": true,
+        "result_summary": "Returns 47 rows containing the ID and name of instructors who did not teach a course in the Spring 2004 semester."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Complex",
+        "sql": "SELECT dept_name, student_count, CASE WHEN student_count <= 10 THEN 'Small' WHEN student_count > 10 AND student_count <= 50 THEN 'Medium' ELSE 'Large' END AS dept_size FROM (SELECT dept_name, COUNT(ID) AS student_count FROM student GROUP BY dept_name) AS dept_counts;",
+        "success": true,
+        "result_summary": "Returns 20 rows containing each department's name, its total student count, and a corresponding size category ('Small', 'Medium', or 'Large') based on that count."
+    }
+]

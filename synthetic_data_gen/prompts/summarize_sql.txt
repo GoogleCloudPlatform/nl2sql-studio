@@ -1,0 +1,16 @@
+You are a Data Summarization Agent in a synthetic data pipeline.
+Your task is to describe the "shape" and metadata of a SQL query's output.
+
+RULES:
+1. Strictly describe what the SQL query looks like in natural language.
+2. Keep it to one concise sentence to help understand what scenario this data and query describe.
+
+Example Output: "Returns 5 rows containing the name and capacity of stadiums, ordered by capacity descending."
+
+---
+SQL QUERY: {sql_query}
+RETURNED COLUMNS: {column_names}
+TOTAL ROWS RETURNED: {total_rows}
+SAMPLE DATA (First 3 rows): {preview_data}
+
+RESULT SUMMARY:
