@@ -161,7 +161,7 @@ opentelemetry-util-http==0.45b0
 opt-einsum==3.3.0
 optax==0.2.2
 orbax-checkpoint==0.5.11
-orjson==3.10.3
+orjson==3.11.6
 overrides==7.7.0
 packaging==23.2
 pandas==2.1.1
