@@ -208,7 +208,7 @@ def clean_json_response(response_text: str) -> str:
     return text.strip()
 
 
-def process_batch(batch_items, schemas_dict, persona, translator_agent, batch_num, total_batches, max_retries):
+def process_batch(batch_items, schemas_dict, persona, translator_agent, batch_num, total_batches, max_retries, include_result_summary, include_schema):
     """
     Processes a single batch of queries for translation, with retry logic.
 
@@ -229,7 +229,7 @@ def process_batch(batch_items, schemas_dict, persona, translator_agent, batch_nu
     
     for attempt in range(1, max_retries + 1):
         print(f"    [{persona_name} - Batch {batch_num}] Attempt {attempt}/{max_retries}...")
-        response_text = translator_agent.generate_questions(batch_items, schemas_dict, persona, include_result_summary=True, include_schema=True)
+        response_text = translator_agent.generate_questions(batch_items, schemas_dict, persona, include_result_summary=include_result_summary, include_schema=include_schema)
         
         if not response_text or response_text.startswith("Error"):
             print(f"    ⚠️ [{persona_name} - Batch {batch_num}] {response_text}")
@@ -265,7 +265,7 @@ def process_batch(batch_items, schemas_dict, persona, translator_agent, batch_nu
     return []
 
 
-def run_stage_2_pipeline(stage_1_dataset, schemas_dict, llm_client=None, max_retries=3, max_workers=5):
+def run_stage_2_pipeline(stage_1_dataset, schemas_dict, llm_client=None, max_retries=3, max_workers=5, include_result_summary=True, include_schema=True):
     """
     Orchestrates the Stage 2 pipeline across all personas using multi-threading.
 
@@ -300,7 +300,7 @@ def run_stage_2_pipeline(stage_1_dataset, schemas_dict, llm_client=None, max_ret
         for i in range(0, len(items), batch_size):
             batch_items = items[i:i + batch_size]
             batch_num = i // batch_size + 1
-            jobs.append((batch_items, schemas_dict, persona, translator_agent, batch_num, total_batches, max_retries))
+            jobs.append((batch_items, schemas_dict, persona, translator_agent, batch_num, total_batches, max_retries, include_result_summary, include_schema))
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = [executor.submit(process_batch, *job) for job in jobs]
@@ -323,8 +323,10 @@ def run_stage_2_pipeline(stage_1_dataset, schemas_dict, llm_client=None, max_ret
 if __name__ == "__main__":
     TABLES_FILE = "./tables-all.json"
     DATABASE_PATH = "./database/"
-    INPUT_FILE_PATH = "./results/merged_synthetic_dataset.json"
-    OUTPUT_FILE_PATH = "./results/merged_stage2_results_mt.json"
+    INPUT_FILE_PATH = "./results/stage1/910_merged_synthetic_dataset.json"
+    OUTPUT_FILE_PATH = "./results/stage2/merged_stage2_results_mt.json"
+    INCLUDE_RESULT_SUMMARY = True
+    INCLUDE_SCHEMA = True
     
     try:
         with open(INPUT_FILE_PATH, 'r') as f:
@@ -355,7 +357,7 @@ if __name__ == "__main__":
         print(f"Error initializing Gemini client: {e}")
         llm_client = None
     
-    final_golden_data = run_stage_2_pipeline(stage_1_data, schemas, llm_client)
+    final_golden_data = run_stage_2_pipeline(stage_1_data, schemas, llm_client, INCLUDE_RESULT_SUMMARY, INCLUDE_SCHEMA)
     
     with open(OUTPUT_FILE_PATH, 'w') as f:
         json.dump(final_golden_data, f, indent=4)
