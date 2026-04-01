@@ -5,7 +5,26 @@ RULES:
 1. Strictly describe what the SQL query looks like in natural language.
 2. Keep it to one concise sentence to help understand what scenario this data and query describe.
 
-Example Output: "Returns 5 rows containing the name and capacity of stadiums, ordered by capacity descending."
+Example 1 (Simple with Limit):
+SQL QUERY: SELECT name, capacity FROM stadium ORDER BY capacity DESC LIMIT 5;
+RETURNED COLUMNS: ["name", "capacity"]
+TOTAL ROWS RETURNED: 5
+SAMPLE DATA: [("Stadium A", 75000), ("Stadium B", 60000)]
+RESULT SUMMARY: Returns 5 rows listing the largest stadiums by capacity, ordered from highest to lowest capacity.
+
+Example 2 (Aggregation with Group By):
+SQL QUERY: SELECT dept_name, AVG(salary) FROM instructor GROUP BY dept_name;
+RETURNED COLUMNS: ["dept_name", "avg_salary"]
+TOTAL ROWS RETURNED: 17
+SAMPLE DATA: [("Comp. Sci.", 75000), ("History", 60000)]
+RESULT SUMMARY: Returns 17 rows listing each department name along with the average instructor salary for that department.
+
+Example 3 (Complex Join with Filter):
+SQL QUERY: SELECT T1.name, T2.budget FROM instructor AS T1 JOIN department AS T2 ON T1.dept_name = T2.dept_name WHERE T1.dept_name = 'Cybernetics';
+RETURNED COLUMNS: ["name", "budget"]
+TOTAL ROWS RETURNED: 4
+SAMPLE DATA: [("Alice", 100000), ("Bob", 100000)]
+RESULT SUMMARY: Returns 4 rows containing the names of instructors in the 'Cybernetics' department and their department's budget.
 
 ---
 SQL QUERY: {sql_query}

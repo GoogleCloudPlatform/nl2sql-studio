@@ -6,11 +6,17 @@ DISTRIBUTION REQUIREMENT:
 - Exactly 7 "Medium" queries
 - Exactly 5 "Simple" queries
 
-CRITICAL RULES FOR DIVERSITY AND COVERAGE:
-1. NO OVERLAP: Every query MUST test a completely different scenario. Do not repeat the same JOIN paths or logic.
-2. MAXIMIZE FOOTPRINT: For your "Simple" and "Medium" queries, explicitly target different tables and columns to ensure 100% of the schema is covered across the batch.
-3. DATA-AWARE: Only filter (WHERE/HAVING) using exact values explicitly shown in the "Sample Rows". 
-4. STRUCTURAL COMPLEXITY: Build "Complex" queries using deep JOINs, subqueries, and set operations, NOT by making hyper-specific WHERE clauses that will return 0 rows.
+RULES:
+1. NO MARKDOWN: Only output the raw SQL code. No explanations, no formatting blocks.
+2. ALIASING: Use table aliasing (e.g., T1, T2) for clarity in all queries involving more than one table.
+3. DATA-AWARE FILTERING: If you use a WHERE or HAVING clause, you may ONLY filter using exact data values explicitly shown in the "Sample Rows" for that specific column. Do not invent, guess, or assume values exist.
+4. STRUCTURAL COMPLEXITY: To achieve "Medium" or "Complex" queries, do NOT use highly restrictive, multi-condition WHERE clauses. Instead, build complexity structurally using:
+    - Multiple JOINs
+    - GROUP BY with aggregations (COUNT, SUM, AVG)
+    - Subqueries in the FROM or WHERE clause
+    - Set operations (INTERSECT, UNION, EXCEPT)
+5. BROAD FILTERS: If you cannot find a good sample value to filter on, use broad structural filters like `IS NOT NULL` or numeric comparisons like `> 0`.
+
 
 OUTPUT FORMAT:
 You MUST output ONLY a valid JSON array of objects. Do not wrap it in markdown blockquotes.
@@ -20,6 +26,13 @@ Format Example:
     {{"complexity": "Medium", "sql": "SELECT ... FROM ... JOIN ..."}},
     ...
 ]
+
+FEW-SHOT EXAMPLES:
+- Simple: SELECT Name, Country, Age FROM singer ORDER BY Age DESC
+- Medium: SELECT T2.name, count(*) FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id = T2.stadium_id GROUP BY T1.stadium_id
+- Complex: SELECT T1.name, T1.capacity FROM stadium AS T1 WHERE T1.capacity > (SELECT avg(capacity) FROM stadium) AND T1.stadium_id IN (SELECT T2.stadium_id FROM concert AS T2 GROUP BY T2.stadium_id HAVING count(*) >= 2) ORDER BY T1.capacity DESC
+- Complex: SELECT T1.maker FROM maker AS T1 JOIN model AS T2 ON T1.maker_id = T2.maker_id JOIN car_names AS T3 ON T2.model_id = T3.model_id JOIN cars_data AS T4 ON T3.make_id = T4.id WHERE T4.horsepower > (SELECT avg(horsepower) FROM cars_data) GROUP BY T1.maker HAVING count(*) >= 2 ORDER BY count(*) DESC LIMIT 3
+- Complex: SELECT T1.first_name, T1.last_name FROM student AS T1 JOIN student_course_attendance AS T2 ON T1.student_id = T2.student_id JOIN course AS T3 ON T2.course_id = T3.course_id GROUP BY T1.student_id HAVING count(*) > 1 EXCEPT SELECT T1.first_name, T1.last_name FROM student AS T1 JOIN student_course_attendance AS T2 ON T1.student_id = T2.student_id JOIN course AS T3 ON T2.course_id = T3.course_id JOIN course_prerequisite AS T4 ON T3.course_id = T4.course_id
 
 ---
 TARGET SCHEMA & SAMPLE DATA:
