@@ -214,17 +214,13 @@ def chunk_list(lst, n):
 
 if __name__ == "__main__":
     # CONFIGURATION FLAGS
-    INCLUDE_SCHEMA = False
-    INCLUDE_RESULTS_SUMMARY = False
 
     
-    INPUT_FILE_PATH = "./results/stage2/merged_stage2_results_without_schema_flash.json"
-    OUTPUT_FILE_PATH = "./results/stage3/merged_stage3_golden_eval_results_without_schema_flash_input.json"
+    INPUT_FILE_PATH = "./results/stage2/merged_stage2_results_without_rs_flash.json"
+    OUTPUT_FILE_PATH = "./results/stage3/merged_stage3_golden_eval_flash_without_rs_flash_input.json"
     
 
     print(f"Configuration:")
-    print(f"  INCLUDE_SCHEMA: {INCLUDE_SCHEMA}")
-    print(f"  INCLUDE_RESULTS_SUMMARY: {INCLUDE_RESULTS_SUMMARY}")
     print(f"  INPUT_FILE_PATH: {INPUT_FILE_PATH}")
     print(f"  OUTPUT_FILE_PATH: {OUTPUT_FILE_PATH}")
 

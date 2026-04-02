@@ -195,7 +195,7 @@ class ContextTranslatorAgent:
         try:
             logger.info("Calling Gemini model to generate natural language questions...")
             response = self.llm_client.models.generate_content(
-                model='gemini-2.5-flash',
+                model='gemini-2.5-pro',
                 contents=[types.Content(role="user", parts=[types.Part.from_text(text=system_prompt)])],
                 config=types.GenerateContentConfig(response_mime_type="application/json")
             )
@@ -339,7 +339,7 @@ if __name__ == "__main__":
     TABLES_FILE = "./tables-all.json"
     DATABASE_PATH = "./database/"
     INPUT_FILE_PATH = "./results/stage1/910_merged_synthetic_dataset.json"
-    OUTPUT_FILE_PATH = "./results/stage2/merged_stage2_results_without_rs_flash.json"
+    OUTPUT_FILE_PATH = "./results/stage2/merged_stage2_results_without_schema.json"
     INCLUDE_RESULT_SUMMARY = False
     INCLUDE_SCHEMA = False
     
