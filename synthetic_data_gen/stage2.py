@@ -95,6 +95,71 @@ class SmartSampler:
 
         return "\n".join(schema_parts).strip()
 
+def build_system_prompt(sql_items: list, schemas_dict: dict, persona: dict, include_result_summary: bool = True, include_schema: bool = True) -> str:
+    """
+    Builds the unified system prompt for both Stage 2 (batch generation) and Stage 3 (single-item evaluation recreation).
+
+    Args:
+        sql_items (list): Items to translate.
+        schemas_dict (dict): Database schemas lookup.
+        persona (dict): Target persona.
+        include_result_summary (bool): Include result summary in context.
+        include_schema (bool): Include schema in context.
+
+    Returns:
+        str: The generated system prompt.
+    """
+    schema_section = ""
+    if include_schema:
+        db_ids = {item['db_id'] for item in sql_items}
+        schemas_text = "\n".join(
+            f"--- Schema for Database: {db_id} ---\n{schemas_dict.get(db_id, 'Schema not provided.')}\n" 
+            for db_id in db_ids
+        )
+        schema_section = f"- Schemas Used:\n{schemas_text}\n"
+
+    queries_context = "\n".join(
+        f"--- Query {idx} ---\n"
+        f"Database ID: {item.get('db_id')}\n"
+        f"SQL: {item.get('sql', '')}\n"
+        + (f"Result Summary: {item.get('result_summary', '')}\n" if include_result_summary else "")
+        for idx, item in enumerate(sql_items)
+    )
+
+    dynamic_instructions = []
+    if include_schema:
+        dynamic_instructions.append("You MUST refer to the specific Database Schema corresponding to each query.")
+    if include_result_summary:
+        dynamic_instructions.append("You MUST refer to the expected Result Summary corresponding to each query.")
+    dynamic_instruction = " ".join(dynamic_instructions)
+
+    system_prompt = f"""
+    [ROLE]
+    You are an expert natural language generation agent specializing in Reverse Translation (SQL to Natural Language queries).
+    Your persona for this task is: {persona['name']}.
+    Persona Description: {persona['description']}
+
+    [GOAL]
+    Translate the provided SQL queries into the exact Natural Language questions that would have generated them, matching your assigned persona's perspective.
+
+    {schema_section}
+    - Queries to Translate:
+    {queries_context}
+
+    [GUIDELINES & CONSTRAINTS]
+    1. Exact Match: Generate questions that correspond strictly to the SQL logic and output shape (e.g., if the query limits to 5, the question must reflect 'Which 5...').
+    2. Persona Alignment: Use the tone, terminology, and focus described in your persona.
+    3. No Hallucinations: Do not assume or invent data constraints not present in the SQL.
+    4. No Open-Endedness: Avoid vague inquiries if the result set is small or heavily constrained.
+    5. {dynamic_instruction}
+
+    [OUTPUT FORMAT]
+    You MUST return ONLY a valid JSON array of strings. 
+    - The array length MUST be exactly {len(sql_items)}.
+    - Do not include extra conversational filler or markdown formatting outside of the JSON array.
+    """
+    return system_prompt
+
 
 class ContextTranslatorAgent:
     def __init__(self, llm_client=None):
@@ -121,57 +186,7 @@ class ContextTranslatorAgent:
         Returns:
             str: JSON string containing the generated questions.
         """
-        db_ids = {item['db_id'] for item in sql_items}
-        schemas_context = "\n".join(
-            f"--- Schema for Database: {db_id} ---\n{schemas_dict.get(db_id, 'Schema not provided.')}\n" 
-            for db_id in db_ids
-        )
-
-        queries_context = "\n".join(
-            f"--- Query {idx} ---\n"
-            f"Database ID: {item.get('db_id')}\n"
-            f"SQL: {item.get('sql', '')}\n"
-            + (f"Result Summary: {item.get('result_summary', '')}\n" if include_result_summary else "")
-            for idx, item in enumerate(sql_items)
-        )
-
-        schema_section = (
-            f"[CONTEXT]\n- Schemas Used:\n{schemas_context}\n" 
-            if include_schema else ""
-        )
-
-        context_references = []
-        if include_schema:
-            context_references.append("the specific Database Schema")
-        if include_result_summary:
-            context_references.append("the expected Result Summary")
-
-        # Join the references naturally (e.g., "A, and B" or just "A")
-        if context_references:
-            instruction_suffix = f" and refer to {' and '.join(context_references)} corresponding to each query."
-        else:
-            instruction_suffix = "."
-
-        dynamic_instruction = f"Importantly, craft each question to match your exact persona{instruction_suffix}"
-
-        system_prompt = f"""
-        You are an expert natural language generation agent.
-        Your persona for this task is: {persona['name']}.
-        Persona Description: {persona['description']}
-        
-        Your goal is Reverse Translation: Given the inputs below, generate the precise, pure Natural Language question that would have produced each exact SQL query and result.
-        Condition your generation heavily on the ACTUAL result shape to avoid vague or hallucinated intents. (e.g., if the query limits to 5, the question must say 'Which 5...').
-        {dynamic_instruction}
-        
-        {schema_section}
-        
-        - Queries to Translate:
-        {queries_context}
-        
-        CRITICAL: Please generate ONLY a valid JSON array of strings, where the string at index `i` is the Natural Language question matching your persona's perspective for Query `i`.
-        The length of the JSON array MUST be exactly {len(sql_items)}. 
-        Do not include extra conversational filler or markdown formatting outside of the JSON array.
-        """
+        system_prompt = build_system_prompt(sql_items, schemas_dict, persona, include_result_summary, include_schema)
 
         if not self.llm_client:
             logger.info("Prompt constructed successfully (LLM client not provided).")
@@ -180,7 +195,7 @@ class ContextTranslatorAgent:
         try:
             logger.info("Calling Gemini model to generate natural language questions...")
             response = self.llm_client.models.generate_content(
-                model='gemini-2.5-pro',
+                model='gemini-2.5-flash',
                 contents=[types.Content(role="user", parts=[types.Part.from_text(text=system_prompt)])],
                 config=types.GenerateContentConfig(response_mime_type="application/json")
             )
@@ -324,9 +339,9 @@ if __name__ == "__main__":
     TABLES_FILE = "./tables-all.json"
     DATABASE_PATH = "./database/"
     INPUT_FILE_PATH = "./results/stage1/910_merged_synthetic_dataset.json"
-    OUTPUT_FILE_PATH = "./results/stage2/merged_stage2_results_mt.json"
-    INCLUDE_RESULT_SUMMARY = True
-    INCLUDE_SCHEMA = True
+    OUTPUT_FILE_PATH = "./results/stage2/merged_stage2_results_without_rs_flash.json"
+    INCLUDE_RESULT_SUMMARY = False
+    INCLUDE_SCHEMA = False
     
     try:
         with open(INPUT_FILE_PATH, 'r') as f:
@@ -337,7 +352,7 @@ if __name__ == "__main__":
         stage_1_data = [item for item in stage_1_data if item.get('success') is True]
         print(f"📋 Loaded {original_count} items from Stage 1. Kept {len(stage_1_data)} successful items for translation.")
     except FileNotFoundError:
-        print("Error: Could not find ./results/merged_synthetic_dataset.json")
+        print(f"Error: Could not find {INPUT_FILE_PATH}")
         sys.exit(1)
 
 
@@ -357,7 +372,7 @@ if __name__ == "__main__":
         print(f"Error initializing Gemini client: {e}")
         llm_client = None
     
-    final_golden_data = run_stage_2_pipeline(stage_1_data, schemas, llm_client, INCLUDE_RESULT_SUMMARY, INCLUDE_SCHEMA)
+    final_golden_data = run_stage_2_pipeline(stage_1_data, schemas, llm_client, include_result_summary=INCLUDE_RESULT_SUMMARY, include_schema=INCLUDE_SCHEMA)
     
     with open(OUTPUT_FILE_PATH, 'w') as f:
         json.dump(final_golden_data, f, indent=4)

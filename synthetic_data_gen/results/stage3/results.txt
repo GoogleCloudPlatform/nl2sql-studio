@@ -1,0 +1,94 @@
+Pro new template
+Without RS
+--- Average Scores by Complexity ---
+Simple: 32.21 / 35 (169 records)
+Medium: 32.51 / 35 (245 records)
+Complex: 32.76 / 35 (496 records)
+--- Average Scores by Category (Out of 10) ---
+technical_accuracy: 4.82
+persona_alignment: 4.10
+schema_adherence: 4.91
+groundedness: 4.85
+conciseness_clarity: 4.53
+information_density_clarity: 4.42
+fluency: 4.97
+
+With RS
+--- Average Scores by Complexity ---
+Simple: 32.18 / 35 (169 records)
+Medium: 32.70 / 35 (245 records)
+Complex: 32.61 / 35 (496 records)
+
+--- Average Scores by Category (Out of 10) ---
+technical_accuracy: 4.83
+persona_alignment: 4.33
+schema_adherence: 4.87
+groundedness: 4.90
+conciseness_clarity: 4.41
+information_density_clarity: 4.29
+fluency: 4.93
+
+Flash new tamplate
+
+--- Average Scores by Complexity ---
+Simple: 32.18 / 35 (169 records)
+Medium: 32.70 / 35 (245 records)
+Complex: 32.61 / 35 (496 records)
+
+--- Average Scores by Category (Out of 10) ---
+technical_accuracy: 4.83
+persona_alignment: 4.33
+schema_adherence: 4.87
+groundedness: 4.90
+conciseness_clarity: 4.41
+information_density_clarity: 4.29
+fluency: 4.93
+
+Without RS
+--- Average Scores by Complexity ---
+Simple: 31.69 / 35 (169 records)
+Medium: 32.52 / 35 (245 records)
+Complex: 32.35 / 35 (496 records)
+
+--- Average Scores by Category ---
+technical_accuracy: 4.76 / 5
+persona_alignment: 3.85 / 5
+schema_adherence: 4.93 / 5
+groundedness: 4.81 / 5
+conciseness_clarity: 4.52 / 5
+information_density_clarity: 4.47 / 5
+fluency: 4.95 / 5
+
+
+Golden context eval:
+
+with rs and schema
+--- Average Scores by Complexity ---
+Simple: 32.41 / 35 (165 records)
+Medium: 32.84 / 35 (237 records)
+Complex: 32.60 / 35 (478 records)
+
+--- Average Scores by Category ---
+technical_accuracy: 4.74 / 5
+persona_alignment: 4.30 / 5
+schema_adherence: 4.87 / 5
+groundedness: 4.76 / 5
+conciseness_clarity: 4.54 / 5
+information_density_clarity: 4.45 / 5
+fluency: 4.96 / 5
+
+
+Without RS
+--- Average Scores by Complexity ---
+Simple: 31.98 / 35 (169 records)
+Medium: 32.39 / 35 (245 records)
+Complex: 32.31 / 35 (496 records)
+
+--- Average Scores by Category ---
+technical_accuracy: 4.75 / 5
+persona_alignment: 4.07 / 5
+schema_adherence: 4.91 / 5
+groundedness: 4.73 / 5
+conciseness_clarity: 4.52 / 5
+information_density_clarity: 4.36 / 5
+fluency: 4.94 / 5

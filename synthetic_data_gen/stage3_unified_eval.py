@@ -4,6 +4,8 @@ import json
 from vertexai.generative_models import GenerativeModel, Part, GenerationConfig
 from pydantic import BaseModel, Field
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import List
+from stage2 import build_system_prompt
 
 class CategoryEvaluation(BaseModel):
     passed: bool = Field(description="True if the clip passes this category (Score 8+), False otherwise.")
@@ -61,8 +63,6 @@ class GenAIReport(BaseModel):
     genai_total_score: int = Field(description="Total score across all 7 GenAI categories (out of 35).")
 
 
-from typing import List
-
 class BatchEvaluationReport(BaseModel):
     evaluations: List[GenAIReport] = Field(description="A list of evaluation reports, one for exactly each input record provided.")
 
@@ -84,7 +84,7 @@ def evaluate_batch(model: GenerativeModel, batch_records: list) -> BatchEvaluati
         records_text = ""
         for i, rec in enumerate(batch_records):
             records_text += f"\n--- RECORD {i+1} ---\n"
-            records_text += f"[CONTEXT/INSTRUCTIONS]:\n{rec.get('system_prompt', '')}\n"
+            records_text += f"[GOLDEN CONTEXT / ANSWER KEY]:\n{rec.get('golden_context', '')}\n"
             records_text += f"[GENERATED QUESTION TO EVALUATE]:\n{rec.get('nl_question', '')}\n"
             
         eval_prompt = f"""
@@ -210,62 +210,16 @@ def chunk_list(lst, n):
         yield lst[i:i + n]
 
 
-def generate_system_prompt(row, include_schema: bool, include_results_summary: bool) -> str:
-    """
-    Generates the system prompt for evaluation based on configurable parameters.
-
-    Args:
-        row (dict): The data record (must contain 'persona', 'sql', 'schema', etc.).
-        include_schema (bool): Whether to include schema information in context.
-        include_results_summary (bool): Whether to include the expected result summary.
-
-    Returns:
-        str: The generated prompt text.
-    """
-    persona_desc = get_persona_description(row.get('persona', ''))
-    
-    prompt = f"""You are an expert natural language generation agent.
-        Your persona for this task is: {row.get('persona', '')}.
-        Persona Description: {persona_desc}
-
-        Your goal is Reverse Translation: Given the inputs below, generate the precise, pure Natural Language question that would have produced each exact SQL query.
-        """
-            
-            if include_results_summary:
-                prompt += "Condition your generation heavily on the ACTUAL result shape to avoid vague or hallucinated intents. (e.g., if the query limits to 5, the question must say 'Which 5...').\n"
-                
-            prompt += "Importantly, craft each question to match your exact persona"
-            if include_schema:
-                prompt += " and refer to the specific Database Schema corresponding to each query.\n"
-            else:
-                prompt += ".\n"
-                
-            if include_schema:
-                prompt += f"""
-        [CONTEXT]
-        - Schema Used: {row.get('schema', '')}
-        """
-                
-            prompt += f"""
-        - Query to Translate:
-        --- Query ---
-        SQL: {row.get('sql', '')}
-        """
-    
-    if include_results_summary:
-        prompt += f"Result Summary: {row.get('result_summary', '')}\n"
-        
-    return prompt
 
 
 if __name__ == "__main__":
     # CONFIGURATION FLAGS
-    INCLUDE_SCHEMA = True
-    INCLUDE_RESULTS_SUMMARY = True
+    INCLUDE_SCHEMA = False
+    INCLUDE_RESULTS_SUMMARY = False
 
     
-    INPUT_FILE_PATH = "./results/results-910_records/merged_stage2_results_mt.json"
-    OUTPUT_FILE_PATH = "./results/results-910_records/merged_stage3_eval_results_pro_v2.json"
+    INPUT_FILE_PATH = "./results/stage2/merged_stage2_results_without_schema_flash.json"
+    OUTPUT_FILE_PATH = "./results/stage3/merged_stage3_golden_eval_results_without_schema_flash_input.json"
     
 
     print(f"Configuration:")
@@ -290,11 +244,19 @@ if __name__ == "__main__":
     
     # Inject system_prompt dynamically
     for row in stage2_data:
-        row['system_prompt'] = generate_system_prompt(row, INCLUDE_SCHEMA, INCLUDE_RESULTS_SUMMARY)
+        row['golden_context'] = (
+             f"--- GOLDEN CONTEXT (GROUND TRUTH) ---\n"
+            f"Target Persona: {row.get('persona', '')}\n"
+            f"Persona Description: {get_persona_description(row.get('persona', ''))}\n\n"
+            f"Database Schema:\n{row.get('schema', row.get('schema', ''))}\n\n"
+            f"Original SQL Query:\n{row.get('sql', '')}\n\n"
+            f"Result Summary (Expected Output Shape):\n{row.get('result_summary', '')}\n"
+        )
+        
 
     if stage2_data:
         # Remove items that do not have necessary prompts
-        valid_data = [r for r in stage2_data if r.get("system_prompt") and r.get("nl_question")]
+        valid_data = [r for r in stage2_data if r.get("golden_context") and r.get("nl_question")]
         print(f"Starting evaluation of {len(valid_data)} valid items via batched LLM calls...")
         
         BATCH_SIZE = 20 # Process 20 records per LLM call
