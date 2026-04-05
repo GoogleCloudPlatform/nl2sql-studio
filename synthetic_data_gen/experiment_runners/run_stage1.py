@@ -24,12 +24,12 @@ if __name__ == "__main__":
     PROMPTS_DIR = "synthetic_data_gen/prompts/"
     
     # Specify which prompt files to use (using filenames without .txt)
-    BATCH_PROMPT_NAME = "batch_sql_generation_few_shot" 
+    BATCH_PROMPT_NAME = "batch_sql_generation_cot" 
     SUMMARIZE_PROMPT_NAME = "summarize_sql"
     
     # Selection logic for which databases to process
     # Examples: '0:5' (range), 'perpetrator' (single ID), '10' (first 10)
-    DB_SELECTION = "0:5"
+    DB_SELECTION = "0:41"
     
     # Setup for timestamped output to prevent overwriting previous runs
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
