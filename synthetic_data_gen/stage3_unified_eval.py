@@ -8,8 +8,8 @@ from typing import List
 from stage2 import build_system_prompt
 
 class CategoryEvaluation(BaseModel):
-    passed: bool = Field(description="True if the clip passes this category (Score 8+), False otherwise.")
-    score: int = Field(description="Score for this category from 0 to 10.")
+    passed: bool = Field(description="True if the question passes this category (Score 4+), False otherwise.")
+    score: int = Field(description="Score for this category from 1 to 5.")
     details: str = Field(description="Explanation for the score and pass/fail status.")
 
 def get_persona_description(persona_name):
@@ -255,7 +255,7 @@ if __name__ == "__main__":
         valid_data = [r for r in stage2_data if r.get("golden_context") and r.get("nl_question")]
         print(f"Starting evaluation of {len(valid_data)} valid items via batched LLM calls...")
         
-        BATCH_SIZE = 20 # Process 20 records per LLM call
+        BATCH_SIZE = 5 # Process 5 records per LLM call
         MAX_WORKERS = 5 # Number of parallel threads
         
         batches = list(chunk_list(valid_data, BATCH_SIZE))
