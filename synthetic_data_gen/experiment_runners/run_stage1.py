@@ -7,6 +7,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from stage1 import SmartSampler, parse_db_selection, run_multithreaded_pipeline
 from metrics.sql_generation_metrics import analyze_stage1_pipeline
+import pandas as pd
+from metrics.schema_coverage import calculate_schema_coverage
 
 # ==========================================
 # EXPERIMENT RUNNER STAGE1
@@ -97,3 +99,19 @@ if __name__ == "__main__":
     print(f"📍 Output: {OUTPUT_FILENAME}")
     print("="*50 + "\n")
     analyze_stage1_pipeline(OUTPUT_FILENAME, TABLES_JSON_PATH)
+    
+    print("\n📊 Calculating Schema Coverage...")
+    try:
+        with open(OUTPUT_FILENAME, 'r') as f:
+            results_data = json.load(f)
+        # Filter for successful items
+        successful_queries = [item for item in results_data if item.get('success') is True]
+        if successful_queries:
+            df = pd.DataFrame(successful_queries)
+            coverage_report, avg_score = calculate_schema_coverage(df, TABLES_JSON_PATH)
+            print(f"Average Schema Coverage: {avg_score:.2%}")
+            print(coverage_report[['db_id', 'tables_used', 'total_tables', 'columns_used', 'total_columns', 'schema_coverage']])
+        else:
+            print("No successful queries to calculate coverage for.")
+    except Exception as e:
+        print(f"Error calculating schema coverage: {e}")
