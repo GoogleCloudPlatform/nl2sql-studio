@@ -195,7 +195,7 @@ class ContextTranslatorAgent:
         try:
             logger.info("Calling Gemini model to generate natural language questions...")
             response = self.llm_client.models.generate_content(
-                model='gemini-2.5-pro',
+                model='gemini-2.5-flash',
                 contents=[types.Content(role="user", parts=[types.Part.from_text(text=system_prompt)])],
                 config=types.GenerateContentConfig(response_mime_type="application/json")
             )
@@ -258,7 +258,7 @@ def process_batch(batch_items, schemas_dict, persona, translator_agent, batch_nu
                 print(f"    ✅ [{persona_name} - Batch {batch_num}] Translation Success!")
                 results = []
                 for idx, item in enumerate(batch_items):
-                    print(f"    📝 [{persona_name}] Generated Question (DB: {item['db_id']}): {nl_questions[idx]}")
+                    # print(f"    📝 [{persona_name}] Generated Question (DB: {item['db_id']}): {nl_questions[idx]}")
                     results.append({
                         "db_id": item['db_id'],
                         "complexity": item['complexity'],
@@ -338,10 +338,10 @@ def run_stage_2_pipeline(stage_1_dataset, schemas_dict, llm_client=None, max_ret
 if __name__ == "__main__":
     TABLES_FILE = "./tables-all.json"
     DATABASE_PATH = "./database/"
-    INPUT_FILE_PATH = "./results/stage1/910_merged_synthetic_dataset.json"
-    OUTPUT_FILE_PATH = "./results/stage2/merged_stage2_results_without_schema.json"
-    INCLUDE_RESULT_SUMMARY = False
-    INCLUDE_SCHEMA = False
+    INPUT_FILE_PATH = "./results/stage1/synthetic_data_0_49_20260407_221624.json"
+    OUTPUT_FILE_PATH = "./results/stage2/s2_flash_synthetic_data_0_49_20260407_221624.json"
+    INCLUDE_RESULT_SUMMARY = True
+    INCLUDE_SCHEMA = True
     
     try:
         with open(INPUT_FILE_PATH, 'r') as f:

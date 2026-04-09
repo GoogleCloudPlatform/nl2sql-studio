@@ -216,8 +216,8 @@ if __name__ == "__main__":
     # CONFIGURATION FLAGS
 
     
-    INPUT_FILE_PATH = "./results/stage2/merged_stage2_results_without_rs_flash.json"
-    OUTPUT_FILE_PATH = "./results/stage3/merged_stage3_golden_eval_flash_without_rs_flash_input.json"
+    INPUT_FILE_PATH = "./results/stage2/s2_flash_synthetic_data_0_49_20260407_221624.json"
+    OUTPUT_FILE_PATH = "./results/stage3/s3_flash_synthetic_data_0_49_20260407_221624.json"
     
 
     print(f"Configuration:")
