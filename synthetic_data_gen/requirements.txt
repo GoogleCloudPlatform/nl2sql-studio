@@ -2,3 +2,4 @@ google-genai
 vertexai
 google-cloud-aiplatform[evaluation]
 sqlglot
+tqdm
