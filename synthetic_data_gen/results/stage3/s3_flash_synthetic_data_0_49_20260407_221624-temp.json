@@ -1,0 +1,198 @@
+[
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT name, tot_cred FROM student WHERE dept_name = 'History';",
+        "result_summary": "Returns 117 rows listing the name and total credits for every student in the 'History' department.",
+        "schema": "Database: college_2\n\nTable: classroom\nColumns: building, room_number, capacity\nSample Rows (Limit 3):\n- ('Lamberton', '134', 10)\n- ('Chandler', '375', 10)\n- ('Fairchild', '145', 27)\n\nTable: department\nColumns: dept_name, building, budget\nSample Rows (Limit 3):\n- ('Civil Eng.', 'Chandler', 255041.46)\n- ('Biology', 'Candlestick', 647610.55)\n- ('History', 'Taylor', 699140.86)\n\nTable: course\nColumns: course_id, title, dept_name, credits\nSample Rows (Limit 3):\n- ('787', 'C  Programming', 'Mech. Eng.', 4)\n- ('238', 'The Music of Donovan', 'Mech. Eng.', 3)\n- ('608', 'Electron Microscopy', 'Mech. Eng.', 3)\n\nTable: instructor\nColumns: ID, name, dept_name, salary\nSample Rows (Limit 3):\n- ('63395', 'McKinnon', 'Cybernetics', 94333.99)\n- ('78699', 'Pingr', 'Statistics', 59303.62)\n- ('96895', 'Mird', 'Marketing', 119921.41)\n\nTable: section\nColumns: course_id, sec_id, semester, year, building, room_number, time_slot_id\nSample Rows (Limit 3):\n- ('313', '1', 'Fall', 2010, 'Chandler', '804', 'N')\n- ('747', '1', 'Spring', 2004, 'Gates', '314', 'K')\n- ('443', '1', 'Spring', 2010, 'Whitman', '434', 'O')\n\nTable: teaches\nColumns: ID, course_id, sec_id, semester, year\nSample Rows (Limit 3):\n- ('34175', '747', '1', 'Spring', 2004)\n- ('3199', '169', '1', 'Spring', 2007)\n- ('6569', '445', '1', 'Spring', 2001)\n\nTable: student\nColumns: ID, name, dept_name, tot_cred\nSample Rows (Limit 3):\n- ('24746', 'Schrefl', 'History', 4)\n- ('79352', 'Rumat', 'Finance', 100)\n- ('76672', 'Miliko', 'Statistics', 116)\n\nTable: takes\nColumns: ID, course_id, sec_id, semester, year, grade\nSample Rows (Limit 3):\n- ('65901', '401', '1', 'Fall', 2003, 'C-')\n- ('24932', '802', '1', 'Spring', 2003, 'B-')\n- ('61332', '200', '1', 'Spring', 2007, 'A-')\n\nTable: advisor\nColumns: s_ID, i_ID\nSample Rows (Limit 3):\n- ('24746', '19368')\n- ('79352', '95030')\n- ('76672', '22591')\n\nTable: time_slot\nColumns: time_slot_id, day, start_hr, start_min, end_hr, end_min\nSample Rows (Limit 3):\n- ('A', 'M', 8, 0, 8, 50)\n- ('A', 'W', 8, 0, 8, 50)\n- ('A', 'F', 8, 0, 8, 50)\n\nTable: prereq\nColumns: course_id, prereq_id\nSample Rows (Limit 3):\n- ('376', '130')\n- ('760', '169')\n- ('403', '345')",
+        "persona": "The Executive",
+        "nl_question": "What are the names and total credits for all students in the History department?",
+        "golden_context": "--- GOLDEN CONTEXT (GROUND TRUTH) ---\nTarget Persona: The Executive\nPersona Description: Focuses on high-level KPIs and trends (e.g., 'How is our Q3 revenue looking?').\n\nDatabase Schema:\nDatabase: college_2\n\nTable: classroom\nColumns: building, room_number, capacity\nSample Rows (Limit 3):\n- ('Lamberton', '134', 10)\n- ('Chandler', '375', 10)\n- ('Fairchild', '145', 27)\n\nTable: department\nColumns: dept_name, building, budget\nSample Rows (Limit 3):\n- ('Civil Eng.', 'Chandler', 255041.46)\n- ('Biology', 'Candlestick', 647610.55)\n- ('History', 'Taylor', 699140.86)\n\nTable: course\nColumns: course_id, title, dept_name, credits\nSample Rows (Limit 3):\n- ('787', 'C  Programming', 'Mech. Eng.', 4)\n- ('238', 'The Music of Donovan', 'Mech. Eng.', 3)\n- ('608', 'Electron Microscopy', 'Mech. Eng.', 3)\n\nTable: instructor\nColumns: ID, name, dept_name, salary\nSample Rows (Limit 3):\n- ('63395', 'McKinnon', 'Cybernetics', 94333.99)\n- ('78699', 'Pingr', 'Statistics', 59303.62)\n- ('96895', 'Mird', 'Marketing', 119921.41)\n\nTable: section\nColumns: course_id, sec_id, semester, year, building, room_number, time_slot_id\nSample Rows (Limit 3):\n- ('313', '1', 'Fall', 2010, 'Chandler', '804', 'N')\n- ('747', '1', 'Spring', 2004, 'Gates', '314', 'K')\n- ('443', '1', 'Spring', 2010, 'Whitman', '434', 'O')\n\nTable: teaches\nColumns: ID, course_id, sec_id, semester, year\nSample Rows (Limit 3):\n- ('34175', '747', '1', 'Spring', 2004)\n- ('3199', '169', '1', 'Spring', 2007)\n- ('6569', '445', '1', 'Spring', 2001)\n\nTable: student\nColumns: ID, name, dept_name, tot_cred\nSample Rows (Limit 3):\n- ('24746', 'Schrefl', 'History', 4)\n- ('79352', 'Rumat', 'Finance', 100)\n- ('76672', 'Miliko', 'Statistics', 116)\n\nTable: takes\nColumns: ID, course_id, sec_id, semester, year, grade\nSample Rows (Limit 3):\n- ('65901', '401', '1', 'Fall', 2003, 'C-')\n- ('24932', '802', '1', 'Spring', 2003, 'B-')\n- ('61332', '200', '1', 'Spring', 2007, 'A-')\n\nTable: advisor\nColumns: s_ID, i_ID\nSample Rows (Limit 3):\n- ('24746', '19368')\n- ('79352', '95030')\n- ('76672', '22591')\n\nTable: time_slot\nColumns: time_slot_id, day, start_hr, start_min, end_hr, end_min\nSample Rows (Limit 3):\n- ('A', 'M', 8, 0, 8, 50)\n- ('A', 'W', 8, 0, 8, 50)\n- ('A', 'F', 8, 0, 8, 50)\n\nTable: prereq\nColumns: course_id, prereq_id\nSample Rows (Limit 3):\n- ('376', '130')\n- ('760', '169')\n- ('403', '345')\n\nOriginal SQL Query:\nSELECT name, tot_cred FROM student WHERE dept_name = 'History';\n\nResult Summary (Expected Output Shape):\nReturns 117 rows listing the name and total credits for every student in the 'History' department.\n",
+        "evaluation": {
+            "self_debate": "The question is a direct and accurate translation of the SQL. However, the persona is an 'Executive' who focuses on high-level KPIs. Asking for a list of 117 individual students and their credits is very granular. An executive might be more likely to ask for an aggregate like 'What is the average number of credits for students in the History department?' or 'How many students are in the History department?'. The question is technically correct but the level of detail might not perfectly align with the persona's typical focus.",
+            "technical_accuracy": {
+                "passed": true,
+                "score": 5,
+                "details": "The question flawlessly translates the SELECT (name, tot_cred) and WHERE (dept_name = 'History') clauses from the SQL query."
+            },
+            "persona_alignment": {
+                "passed": true,
+                "score": 4,
+                "details": "The question is plausible for an executive, but it asks for a detailed list rather than a high-level KPI or trend. It's slightly too granular for a perfect score, as an executive would more likely ask for an aggregation."
+            },
+            "schema_adherence": {
+                "passed": true,
+                "score": 5,
+                "details": "The question correctly uses the column names 'name' and 'total credits' and references the 'History department' from the 'student' table."
+            },
+            "groundedness": {
+                "passed": true,
+                "score": 5,
+                "details": "The question asks for a list of names and credits, which perfectly matches the result shape of 117 rows with two columns. The use of 'all students' correctly implies no row limit."
+            },
+            "conciseness_clarity": {
+                "passed": true,
+                "score": 5,
+                "details": "The question is direct, professional, and contains no unnecessary filler or conversational text."
+            },
+            "information_density_clarity": {
+                "passed": true,
+                "score": 5,
+                "details": "The question is highly descriptive, unambiguous, and phrased as a natural human inquiry."
+            },
+            "fluency": {
+                "passed": true,
+                "score": 5,
+                "details": "The question is grammatically perfect and well-formed."
+            },
+            "genai_total_score": 34
+        }
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT ID, name, salary FROM instructor WHERE dept_name = 'Cybernetics';",
+        "result_summary": "Returns 4 rows listing the ID, name, and salary for each instructor belonging to the 'Cybernetics' department.",
+        "schema": "Database: college_2\n\nTable: classroom\nColumns: building, room_number, capacity\nSample Rows (Limit 3):\n- ('Lamberton', '134', 10)\n- ('Chandler', '375', 10)\n- ('Fairchild', '145', 27)\n\nTable: department\nColumns: dept_name, building, budget\nSample Rows (Limit 3):\n- ('Civil Eng.', 'Chandler', 255041.46)\n- ('Biology', 'Candlestick', 647610.55)\n- ('History', 'Taylor', 699140.86)\n\nTable: course\nColumns: course_id, title, dept_name, credits\nSample Rows (Limit 3):\n- ('787', 'C  Programming', 'Mech. Eng.', 4)\n- ('238', 'The Music of Donovan', 'Mech. Eng.', 3)\n- ('608', 'Electron Microscopy', 'Mech. Eng.', 3)\n\nTable: instructor\nColumns: ID, name, dept_name, salary\nSample Rows (Limit 3):\n- ('63395', 'McKinnon', 'Cybernetics', 94333.99)\n- ('78699', 'Pingr', 'Statistics', 59303.62)\n- ('96895', 'Mird', 'Marketing', 119921.41)\n\nTable: section\nColumns: course_id, sec_id, semester, year, building, room_number, time_slot_id\nSample Rows (Limit 3):\n- ('313', '1', 'Fall', 2010, 'Chandler', '804', 'N')\n- ('747', '1', 'Spring', 2004, 'Gates', '314', 'K')\n- ('443', '1', 'Spring', 2010, 'Whitman', '434', 'O')\n\nTable: teaches\nColumns: ID, course_id, sec_id, semester, year\nSample Rows (Limit 3):\n- ('34175', '747', '1', 'Spring', 2004)\n- ('3199', '169', '1', 'Spring', 2007)\n- ('6569', '445', '1', 'Spring', 2001)\n\nTable: student\nColumns: ID, name, dept_name, tot_cred\nSample Rows (Limit 3):\n- ('24746', 'Schrefl', 'History', 4)\n- ('79352', 'Rumat', 'Finance', 100)\n- ('76672', 'Miliko', 'Statistics', 116)\n\nTable: takes\nColumns: ID, course_id, sec_id, semester, year, grade\nSample Rows (Limit 3):\n- ('65901', '401', '1', 'Fall', 2003, 'C-')\n- ('24932', '802', '1', 'Spring', 2003, 'B-')\n- ('61332', '200', '1', 'Spring', 2007, 'A-')\n\nTable: advisor\nColumns: s_ID, i_ID\nSample Rows (Limit 3):\n- ('24746', '19368')\n- ('79352', '95030')\n- ('76672', '22591')\n\nTable: time_slot\nColumns: time_slot_id, day, start_hr, start_min, end_hr, end_min\nSample Rows (Limit 3):\n- ('A', 'M', 8, 0, 8, 50)\n- ('A', 'W', 8, 0, 8, 50)\n- ('A', 'F', 8, 0, 8, 50)\n\nTable: prereq\nColumns: course_id, prereq_id\nSample Rows (Limit 3):\n- ('376', '130')\n- ('760', '169')\n- ('403', '345')",
+        "persona": "The Data Analyst",
+        "nl_question": "What are the ID, name, and salary details for instructors in the 'Cybernetics' department?",
+        "golden_context": "--- GOLDEN CONTEXT (GROUND TRUTH) ---\nTarget Persona: The Data Analyst\nPersona Description: Focuses on precise cuts (e.g., 'Select top 5 users by spend, grouped by region').\n\nDatabase Schema:\nDatabase: college_2\n\nTable: classroom\nColumns: building, room_number, capacity\nSample Rows (Limit 3):\n- ('Lamberton', '134', 10)\n- ('Chandler', '375', 10)\n- ('Fairchild', '145', 27)\n\nTable: department\nColumns: dept_name, building, budget\nSample Rows (Limit 3):\n- ('Civil Eng.', 'Chandler', 255041.46)\n- ('Biology', 'Candlestick', 647610.55)\n- ('History', 'Taylor', 699140.86)\n\nTable: course\nColumns: course_id, title, dept_name, credits\nSample Rows (Limit 3):\n- ('787', 'C  Programming', 'Mech. Eng.', 4)\n- ('238', 'The Music of Donovan', 'Mech. Eng.', 3)\n- ('608', 'Electron Microscopy', 'Mech. Eng.', 3)\n\nTable: instructor\nColumns: ID, name, dept_name, salary\nSample Rows (Limit 3):\n- ('63395', 'McKinnon', 'Cybernetics', 94333.99)\n- ('78699', 'Pingr', 'Statistics', 59303.62)\n- ('96895', 'Mird', 'Marketing', 119921.41)\n\nTable: section\nColumns: course_id, sec_id, semester, year, building, room_number, time_slot_id\nSample Rows (Limit 3):\n- ('313', '1', 'Fall', 2010, 'Chandler', '804', 'N')\n- ('747', '1', 'Spring', 2004, 'Gates', '314', 'K')\n- ('443', '1', 'Spring', 2010, 'Whitman', '434', 'O')\n\nTable: teaches\nColumns: ID, course_id, sec_id, semester, year\nSample Rows (Limit 3):\n- ('34175', '747', '1', 'Spring', 2004)\n- ('3199', '169', '1', 'Spring', 2007)\n- ('6569', '445', '1', 'Spring', 2001)\n\nTable: student\nColumns: ID, name, dept_name, tot_cred\nSample Rows (Limit 3):\n- ('24746', 'Schrefl', 'History', 4)\n- ('79352', 'Rumat', 'Finance', 100)\n- ('76672', 'Miliko', 'Statistics', 116)\n\nTable: takes\nColumns: ID, course_id, sec_id, semester, year, grade\nSample Rows (Limit 3):\n- ('65901', '401', '1', 'Fall', 2003, 'C-')\n- ('24932', '802', '1', 'Spring', 2003, 'B-')\n- ('61332', '200', '1', 'Spring', 2007, 'A-')\n\nTable: advisor\nColumns: s_ID, i_ID\nSample Rows (Limit 3):\n- ('24746', '19368')\n- ('79352', '95030')\n- ('76672', '22591')\n\nTable: time_slot\nColumns: time_slot_id, day, start_hr, start_min, end_hr, end_min\nSample Rows (Limit 3):\n- ('A', 'M', 8, 0, 8, 50)\n- ('A', 'W', 8, 0, 8, 50)\n- ('A', 'F', 8, 0, 8, 50)\n\nTable: prereq\nColumns: course_id, prereq_id\nSample Rows (Limit 3):\n- ('376', '130')\n- ('760', '169')\n- ('403', '345')\n\nOriginal SQL Query:\nSELECT ID, name, salary FROM instructor WHERE dept_name = 'Cybernetics';\n\nResult Summary (Expected Output Shape):\nReturns 4 rows listing the ID, name, and salary for each instructor belonging to the 'Cybernetics' department.\n",
+        "evaluation": {
+            "self_debate": "The question is very good, but the phrase 'salary details' is slightly less precise than just 'salary'. While the meaning is easily inferred from context, a Data Analyst (the persona) who values precision might have just asked for 'salary'. It introduces a minor, almost negligible, level of vagueness.",
+            "technical_accuracy": {
+                "passed": true,
+                "score": 5,
+                "details": "The question perfectly captures all elements of the SQL query: SELECT ID, name, salary and WHERE dept_name = 'Cybernetics'."
+            },
+            "persona_alignment": {
+                "passed": true,
+                "score": 5,
+                "details": "The question asks for a precise cut of data on a specific segment, which is perfectly aligned with the Data Analyst persona."
+            },
+            "schema_adherence": {
+                "passed": true,
+                "score": 5,
+                "details": "The question correctly uses the terms 'ID', 'name', 'salary', 'instructors', and 'Cybernetics department', all of which align with the schema."
+            },
+            "groundedness": {
+                "passed": true,
+                "score": 5,
+                "details": "The question asks for a list of ID, name, and salary, which exactly matches the 4-row result shape."
+            },
+            "conciseness_clarity": {
+                "passed": true,
+                "score": 5,
+                "details": "The question is direct and to the point. The word 'details' is a minor flourish but does not make it wordy."
+            },
+            "information_density_clarity": {
+                "passed": true,
+                "score": 4,
+                "details": "The question is clear and natural, but using 'salary details' instead of the more direct 'salary' makes it slightly less descriptive than it could be."
+            },
+            "fluency": {
+                "passed": true,
+                "score": 5,
+                "details": "The question is grammatically perfect."
+            },
+            "genai_total_score": 34
+        }
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT course_id, title, dept_name FROM course WHERE credits = 4;",
+        "result_summary": "Returns 92 rows listing the course ID, title, and department name for all courses that are worth exactly 4 credits.",
+        "schema": "Database: college_2\n\nTable: classroom\nColumns: building, room_number, capacity\nSample Rows (Limit 3):\n- ('Lamberton', '134', 10)\n- ('Chandler', '375', 10)\n- ('Fairchild', '145', 27)\n\nTable: department\nColumns: dept_name, building, budget\nSample Rows (Limit 3):\n- ('Civil Eng.', 'Chandler', 255041.46)\n- ('Biology', 'Candlestick', 647610.55)\n- ('History', 'Taylor', 699140.86)\n\nTable: course\nColumns: course_id, title, dept_name, credits\nSample Rows (Limit 3):\n- ('787', 'C  Programming', 'Mech. Eng.', 4)\n- ('238', 'The Music of Donovan', 'Mech. Eng.', 3)\n- ('608', 'Electron Microscopy', 'Mech. Eng.', 3)\n\nTable: instructor\nColumns: ID, name, dept_name, salary\nSample Rows (Limit 3):\n- ('63395', 'McKinnon', 'Cybernetics', 94333.99)\n- ('78699', 'Pingr', 'Statistics', 59303.62)\n- ('96895', 'Mird', 'Marketing', 119921.41)\n\nTable: section\nColumns: course_id, sec_id, semester, year, building, room_number, time_slot_id\nSample Rows (Limit 3):\n- ('313', '1', 'Fall', 2010, 'Chandler', '804', 'N')\n- ('747', '1', 'Spring', 2004, 'Gates', '314', 'K')\n- ('443', '1', 'Spring', 2010, 'Whitman', '434', 'O')\n\nTable: teaches\nColumns: ID, course_id, sec_id, semester, year\nSample Rows (Limit 3):\n- ('34175', '747', '1', 'Spring', 2004)\n- ('3199', '169', '1', 'Spring', 2007)\n- ('6569', '445', '1', 'Spring', 2001)\n\nTable: student\nColumns: ID, name, dept_name, tot_cred\nSample Rows (Limit 3):\n- ('24746', 'Schrefl', 'History', 4)\n- ('79352', 'Rumat', 'Finance', 100)\n- ('76672', 'Miliko', 'Statistics', 116)\n\nTable: takes\nColumns: ID, course_id, sec_id, semester, year, grade\nSample Rows (Limit 3):\n- ('65901', '401', '1', 'Fall', 2003, 'C-')\n- ('24932', '802', '1', 'Spring', 2003, 'B-')\n- ('61332', '200', '1', 'Spring', 2007, 'A-')\n\nTable: advisor\nColumns: s_ID, i_ID\nSample Rows (Limit 3):\n- ('24746', '19368')\n- ('79352', '95030')\n- ('76672', '22591')\n\nTable: time_slot\nColumns: time_slot_id, day, start_hr, start_min, end_hr, end_min\nSample Rows (Limit 3):\n- ('A', 'M', 8, 0, 8, 50)\n- ('A', 'W', 8, 0, 8, 50)\n- ('A', 'F', 8, 0, 8, 50)\n\nTable: prereq\nColumns: course_id, prereq_id\nSample Rows (Limit 3):\n- ('376', '130')\n- ('760', '169')\n- ('403', '345')",
+        "persona": "The Product Manager",
+        "nl_question": "To better understand our curriculum offerings, could you list the course ID, title, and department name for all courses that are worth exactly 4 credits?",
+        "golden_context": "--- GOLDEN CONTEXT (GROUND TRUTH) ---\nTarget Persona: The Product Manager\nPersona Description: Focuses on user engagement and feature adoption (e.g., 'How many active users engaged with the new dashboard last week?').\n\nDatabase Schema:\nDatabase: college_2\n\nTable: classroom\nColumns: building, room_number, capacity\nSample Rows (Limit 3):\n- ('Lamberton', '134', 10)\n- ('Chandler', '375', 10)\n- ('Fairchild', '145', 27)\n\nTable: department\nColumns: dept_name, building, budget\nSample Rows (Limit 3):\n- ('Civil Eng.', 'Chandler', 255041.46)\n- ('Biology', 'Candlestick', 647610.55)\n- ('History', 'Taylor', 699140.86)\n\nTable: course\nColumns: course_id, title, dept_name, credits\nSample Rows (Limit 3):\n- ('787', 'C  Programming', 'Mech. Eng.', 4)\n- ('238', 'The Music of Donovan', 'Mech. Eng.', 3)\n- ('608', 'Electron Microscopy', 'Mech. Eng.', 3)\n\nTable: instructor\nColumns: ID, name, dept_name, salary\nSample Rows (Limit 3):\n- ('63395', 'McKinnon', 'Cybernetics', 94333.99)\n- ('78699', 'Pingr', 'Statistics', 59303.62)\n- ('96895', 'Mird', 'Marketing', 119921.41)\n\nTable: section\nColumns: course_id, sec_id, semester, year, building, room_number, time_slot_id\nSample Rows (Limit 3):\n- ('313', '1', 'Fall', 2010, 'Chandler', '804', 'N')\n- ('747', '1', 'Spring', 2004, 'Gates', '314', 'K')\n- ('443', '1', 'Spring', 2010, 'Whitman', '434', 'O')\n\nTable: teaches\nColumns: ID, course_id, sec_id, semester, year\nSample Rows (Limit 3):\n- ('34175', '747', '1', 'Spring', 2004)\n- ('3199', '169', '1', 'Spring', 2007)\n- ('6569', '445', '1', 'Spring', 2001)\n\nTable: student\nColumns: ID, name, dept_name, tot_cred\nSample Rows (Limit 3):\n- ('24746', 'Schrefl', 'History', 4)\n- ('79352', 'Rumat', 'Finance', 100)\n- ('76672', 'Miliko', 'Statistics', 116)\n\nTable: takes\nColumns: ID, course_id, sec_id, semester, year, grade\nSample Rows (Limit 3):\n- ('65901', '401', '1', 'Fall', 2003, 'C-')\n- ('24932', '802', '1', 'Spring', 2003, 'B-')\n- ('61332', '200', '1', 'Spring', 2007, 'A-')\n\nTable: advisor\nColumns: s_ID, i_ID\nSample Rows (Limit 3):\n- ('24746', '19368')\n- ('79352', '95030')\n- ('76672', '22591')\n\nTable: time_slot\nColumns: time_slot_id, day, start_hr, start_min, end_hr, end_min\nSample Rows (Limit 3):\n- ('A', 'M', 8, 0, 8, 50)\n- ('A', 'W', 8, 0, 8, 50)\n- ('A', 'F', 8, 0, 8, 50)\n\nTable: prereq\nColumns: course_id, prereq_id\nSample Rows (Limit 3):\n- ('376', '130')\n- ('760', '169')\n- ('403', '345')\n\nOriginal SQL Query:\nSELECT course_id, title, dept_name FROM course WHERE credits = 4;\n\nResult Summary (Expected Output Shape):\nReturns 92 rows listing the course ID, title, and department name for all courses that are worth exactly 4 credits.\n",
+        "evaluation": {
+            "self_debate": "The question includes the introductory phrase 'To better understand our curriculum offerings, could you list...'. While this phrase does a good job of aligning with the persona by providing context, it is technically conversational filler that makes the question less concise. A more direct question would omit this preamble.",
+            "technical_accuracy": {
+                "passed": true,
+                "score": 5,
+                "details": "The question perfectly translates the SQL query, correctly identifying the columns to select and the specific constraint 'credits = 4' (phrased as 'worth exactly 4 credits')."
+            },
+            "persona_alignment": {
+                "passed": true,
+                "score": 5,
+                "details": "The framing 'To better understand our curriculum offerings' is a perfect match for a Product Manager persona analyzing the product (the curriculum)."
+            },
+            "schema_adherence": {
+                "passed": true,
+                "score": 5,
+                "details": "The question uses schema-correct terms: 'course ID', 'title', 'department name', 'courses', and 'credits'."
+            },
+            "groundedness": {
+                "passed": true,
+                "score": 5,
+                "details": "The question asks for a list of specific columns for 'all courses' that meet a criterion, which perfectly matches the 92-row result shape."
+            },
+            "conciseness_clarity": {
+                "passed": true,
+                "score": 4,
+                "details": "The question is generally concise but includes a conversational preamble ('To better understand..., could you list...') that could be trimmed."
+            },
+            "information_density_clarity": {
+                "passed": true,
+                "score": 5,
+                "details": "The question is highly descriptive, natural, and unambiguous. The context provided by the preamble actually enhances clarity."
+            },
+            "fluency": {
+                "passed": true,
+                "score": 5,
+                "details": "The question is grammatically perfect and well-structured."
+            },
+            "genai_total_score": 34
+        }
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT dept_name, budget FROM department ORDER BY budget DESC;",
+        "result_summary": "Returns 20 rows listing each department's name and its corresponding budget, ordered from the highest budget to the lowest.",
+        "schema": "Database: college_2\n\nTable: classroom\nColumns: building, room_number, capacity\nSample Rows (Limit 3):\n- ('Lamberton', '134', 10)\n- ('Chandler', '375', 10)\n- ('Fairchild', '145', 27)\n\nTable: department\nColumns: dept_name, building, budget\nSample Rows (Limit 3):\n- ('Civil Eng.', 'Chandler', 255041.46)\n- ('Biology', 'Candlestick', 647610.55)\n- ('History', 'Taylor', 699140.86)\n\nTable: course\nColumns: course_id, title, dept_name, credits\nSample Rows (Limit 3):\n- ('787', 'C  Programming', 'Mech. Eng.', 4)\n- ('238', 'The Music of Donovan', 'Mech. Eng.', 3)\n- ('608', 'Electron Microscopy', 'Mech. Eng.', 3)\n\nTable: instructor\nColumns: ID, name, dept_name, salary\nSample Rows (Limit 3):\n- ('63395', 'McKinnon', 'Cybernetics', 94333.99)\n- ('78699', 'Pingr', 'Statistics', 59303.62)\n- ('96895', 'Mird', 'Marketing', 119921.41)\n\nTable: section\nColumns: course_id, sec_id, semester, year, building, room_number, time_slot_id\nSample Rows (Limit 3):\n- ('313', '1', 'Fall', 2010, 'Chandler', '804', 'N')\n- ('747', '1', 'Spring', 2004, 'Gates', '314', 'K')\n- ('443', '1', 'Spring', 2010, 'Whitman', '434', 'O')\n\nTable: teaches\nColumns: ID, course_id, sec_id, semester, year\nSample Rows (Limit 3):\n- ('34175', '747', '1', 'Spring', 2004)\n- ('3199', '169', '1', 'Spring', 2007)\n- ('6569', '445', '1', 'Spring', 2001)\n\nTable: student\nColumns: ID, name, dept_name, tot_cred\nSample Rows (Limit 3):\n- ('24746', 'Schrefl', 'History', 4)\n- ('79352', 'Rumat', 'Finance', 100)\n- ('76672', 'Miliko', 'Statistics', 116)\n\nTable: takes\nColumns: ID, course_id, sec_id, semester, year, grade\nSample Rows (Limit 3):\n- ('65901', '401', '1', 'Fall', 2003, 'C-')\n- ('24932', '802', '1', 'Spring', 2003, 'B-')\n- ('61332', '200', '1', 'Spring', 2007, 'A-')\n\nTable: advisor\nColumns: s_ID, i_ID\nSample Rows (Limit 3):\n- ('24746', '19368')\n- ('79352', '95030')\n- ('76672', '22591')\n\nTable: time_slot\nColumns: time_slot_id, day, start_hr, start_min, end_hr, end_min\nSample Rows (Limit 3):\n- ('A', 'M', 8, 0, 8, 50)\n- ('A', 'W', 8, 0, 8, 50)\n- ('A', 'F', 8, 0, 8, 50)\n\nTable: prereq\nColumns: course_id, prereq_id\nSample Rows (Limit 3):\n- ('376', '130')\n- ('760', '169')\n- ('403', '345')",
+        "persona": "The Product Manager",
+        "nl_question": "For strategic resource planning, can we get a report showing each department's name and its budget, ordered from the highest budget to the lowest?",
+        "golden_context": "--- GOLDEN CONTEXT (GROUND TRUTH) ---\nTarget Persona: The Product Manager\nPersona Description: Focuses on user engagement and feature adoption (e.g., 'How many active users engaged with the new dashboard last week?').\n\nDatabase Schema:\nDatabase: college_2\n\nTable: classroom\nColumns: building, room_number, capacity\nSample Rows (Limit 3):\n- ('Lamberton', '134', 10)\n- ('Chandler', '375', 10)\n- ('Fairchild', '145', 27)\n\nTable: department\nColumns: dept_name, building, budget\nSample Rows (Limit 3):\n- ('Civil Eng.', 'Chandler', 255041.46)\n- ('Biology', 'Candlestick', 647610.55)\n- ('History', 'Taylor', 699140.86)\n\nTable: course\nColumns: course_id, title, dept_name, credits\nSample Rows (Limit 3):\n- ('787', 'C  Programming', 'Mech. Eng.', 4)\n- ('238', 'The Music of Donovan', 'Mech. Eng.', 3)\n- ('608', 'Electron Microscopy', 'Mech. Eng.', 3)\n\nTable: instructor\nColumns: ID, name, dept_name, salary\nSample Rows (Limit 3):\n- ('63395', 'McKinnon', 'Cybernetics', 94333.99)\n- ('78699', 'Pingr', 'Statistics', 59303.62)\n- ('96895', 'Mird', 'Marketing', 119921.41)\n\nTable: section\nColumns: course_id, sec_id, semester, year, building, room_number, time_slot_id\nSample Rows (Limit 3):\n- ('313', '1', 'Fall', 2010, 'Chandler', '804', 'N')\n- ('747', '1', 'Spring', 2004, 'Gates', '314', 'K')\n- ('443', '1', 'Spring', 2010, 'Whitman', '434', 'O')\n\nTable: teaches\nColumns: ID, course_id, sec_id, semester, year\nSample Rows (Limit 3):\n- ('34175', '747', '1', 'Spring', 2004)\n- ('3199', '169', '1', 'Spring', 2007)\n- ('6569', '445', '1', 'Spring', 2001)\n\nTable: student\nColumns: ID, name, dept_name, tot_cred\nSample Rows (Limit 3):\n- ('24746', 'Schrefl', 'History', 4)\n- ('79352', 'Rumat', 'Finance', 100)\n- ('76672', 'Miliko', 'Statistics', 116)\n\nTable: takes\nColumns: ID, course_id, sec_id, semester, year, grade\nSample Rows (Limit 3):\n- ('65901', '401', '1', 'Fall', 2003, 'C-')\n- ('24932', '802', '1', 'Spring', 2003, 'B-')\n- ('61332', '200', '1', 'Spring', 2007, 'A-')\n\nTable: advisor\nColumns: s_ID, i_ID\nSample Rows (Limit 3):\n- ('24746', '19368')\n- ('79352', '95030')\n- ('76672', '22591')\n\nTable: time_slot\nColumns: time_slot_id, day, start_hr, start_min, end_hr, end_min\nSample Rows (Limit 3):\n- ('A', 'M', 8, 0, 8, 50)\n- ('A', 'W', 8, 0, 8, 50)\n- ('A', 'F', 8, 0, 8, 50)\n\nTable: prereq\nColumns: course_id, prereq_id\nSample Rows (Limit 3):\n- ('376', '130')\n- ('760', '169')\n- ('403', '345')\n\nOriginal SQL Query:\nSELECT dept_name, budget FROM department ORDER BY budget DESC;\n\nResult Summary (Expected Output Shape):\nReturns 20 rows listing each department's name and its corresponding budget, ordered from the highest budget to the lowest.\n",
+        "evaluation": {
+            "self_debate": "The persona is a Product Manager, who focuses on user engagement and feature adoption. A question about ranking all departmental budgets for 'strategic resource planning' seems more aligned with an Executive or Finance persona. While a PM might care about their specific team's budget, a query this broad is a bit of a mismatch for the specified persona.",
+            "technical_accuracy": {
+                "passed": true,
+                "score": 5,
+                "details": "The question flawlessly captures all SQL logic, including the SELECT clause, the table, and the ORDER BY budget DESC clause ('ordered from the highest budget to the lowest')."
+            },
+            "persona_alignment": {
+                "passed": true,
+                "score": 3,
+                "details": "The question has a generic professional tone but does not align well with the specific focus of a Product Manager (user engagement). This type of strategic budget overview is more suited for an Executive or Finance role."
+            },
+            "schema_adherence": {
+                "passed": true,
+                "score": 5,
+                "details": "The question correctly uses the terms 'department's name' and 'budget' from the 'department' table."
+            },
+            "groundedness": {
+                "passed": true,
+                "score": 5,
+                "details": "The question explicitly asks for the exact output shape, including the descending order of the budget, which matches the result summary."
+            },
+            "conciseness_clarity": {
+                "passed": true,
+                "score": 4,
+                "details": "The question includes a preamble ('For strategic resource planning, can we get a report showing...') which adds context but reduces pure conciseness."
+            },
+            "information_density_clarity": {
+                "passed": true,
+                "score": 5,
+                "details": "The question is very clear, descriptive, and sounds like a natural human request. The ordering constraint is stated perfectly."
+            },
+            "fluency": {
+                "passed": true,
+                "score": 5,
+                "details": "The question is grammatically perfect and well-formed."
+            },
+            "genai_total_score": 32
+        }
+    }
+]

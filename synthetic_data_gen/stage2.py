@@ -332,49 +332,4 @@ def run_stage_2_pipeline(stage_1_dataset, schemas_dict, llm_client=None, max_ret
     return final_dataset
 
 
-# ==========================================
-# EXECUTION CELL
-# ==========================================
-if __name__ == "__main__":
-    TABLES_FILE = "./tables-all.json"
-    DATABASE_PATH = "./database/"
-    INPUT_FILE_PATH = "./results/stage1/synthetic_data_0_49_20260407_221624.json"
-    OUTPUT_FILE_PATH = "./results/stage2/s2_flash_synthetic_data_0_49_20260407_221624.json"
-    INCLUDE_RESULT_SUMMARY = True
-    INCLUDE_SCHEMA = True
-    
-    try:
-        with open(INPUT_FILE_PATH, 'r') as f:
-            stage_1_data = json.load(f)
-        
-        # Filter for successful items
-        original_count = len(stage_1_data)
-        stage_1_data = [item for item in stage_1_data if item.get('success') is True]
-        print(f"📋 Loaded {original_count} items from Stage 1. Kept {len(stage_1_data)} successful items for translation.")
-    except FileNotFoundError:
-        print(f"Error: Could not find {INPUT_FILE_PATH}")
-        sys.exit(1)
 
-
-    sampler = SmartSampler(TABLES_FILE, DATABASE_PATH)
-    
-    # Extract unique DB IDs to prevent duplicate schema formatting
-    db_ids = {item['db_id'] for item in stage_1_data}
-    schemas = {db_id: sampler.get_formatted_schema_with_samples(db_id) for db_id in db_ids}
-
-    try:
-        llm_client = genai.Client(
-            vertexai=True,
-            project="sl-test-project-353312",
-            location="us-central1"
-        )
-    except Exception as e:
-        print(f"Error initializing Gemini client: {e}")
-        llm_client = None
-    
-    final_golden_data = run_stage_2_pipeline(stage_1_data, schemas, llm_client, include_result_summary=INCLUDE_RESULT_SUMMARY, include_schema=INCLUDE_SCHEMA)
-    
-    with open(OUTPUT_FILE_PATH, 'w') as f:
-        json.dump(final_golden_data, f, indent=4)
-        
-    print(f"Results saved to {OUTPUT_FILE_PATH}")

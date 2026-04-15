@@ -1,13 +1,32 @@
+"""
+Stage 3: Unified Evaluation Pipeline for Synthetic NL2SQL Data.
+
+This script acts as an automated evaluator for synthetic Natural Language (NL) questions
+generated in Stage 2. It leverages the Gemini 2.5 Pro model to score questions on
+seven distinct criteria, using a batched approach to maximize efficiency and respect API limits.
+"""
+
+# Standard library imports for file system operations, JSON parsing, and type safety.
 import os
-import vertexai
 import json
-from vertexai.generative_models import GenerativeModel, Part, GenerationConfig
-from pydantic import BaseModel, Field
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
-from stage2 import build_system_prompt
+
+# Google Vertex AI SDK for accessing state-of-the-art Gemini models.
+import vertexai
+from vertexai.generative_models import GenerativeModel, Part, GenerationConfig
+
+# Pydantic is used to enforce strict typing and automatically validate JSON responses against a defined schema.
+from pydantic import BaseModel, Field
+
+# Concurrency utilities to run multiple API calls in parallel, speeding up the evaluation of large datasets.
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class CategoryEvaluation(BaseModel):
+    """
+    Represents the evaluation result for a single quality dimension (e.g., Fluency).
+    It forces the LLM to provide a structured object with a boolean pass flag,
+    a numeric score, and a text explanation for its decision.
+    """
     passed: bool = Field(description="True if the question passes this category (Score 4+), False otherwise.")
     score: int = Field(description="Score for this category from 1 to 5.")
     details: str = Field(description="Explanation for the score and pass/fail status.")
@@ -52,6 +71,11 @@ def get_persona_description(persona_name):
     return next((p["description"] for p in PERSONAS if p["name"] == persona_name), "Persona not found.")
 
 class GenAIReport(BaseModel):
+    """
+    The complete evaluation container for a single synthesized question.
+    It contains the results for all 7 grading criteria defined in the rubric,
+    plus a 'self_debate' field where the model argues against its own assessment to avoid bias.
+    """
     self_debate: str
     technical_accuracy: CategoryEvaluation
     persona_alignment: CategoryEvaluation
@@ -64,6 +88,11 @@ class GenAIReport(BaseModel):
 
 
 class BatchEvaluationReport(BaseModel):
+    """
+    The top-level container for processing batches.
+    We send a list of questions to Gemini and expect this model to wrap the list of responses,
+    ensuring we get a 1:1 mapping of input records to output evaluations.
+    """
     evaluations: List[GenAIReport] = Field(description="A list of evaluation reports, one for exactly each input record provided.")
 
 
@@ -80,13 +109,18 @@ def evaluate_batch(model: GenerativeModel, batch_records: list) -> BatchEvaluati
                                Returns None if evaluation fails after all retries.
     """
     try:
-        # Construct the batched prompt payload
+        # Construct the batched prompt payload.
+        # We iterate through the records in the batch and build a single string
+        # that presents each record with its 'Answer Key' (golden context) and the question to evaluate.
         records_text = ""
         for i, rec in enumerate(batch_records):
             records_text += f"\n--- RECORD {i+1} ---\n"
             records_text += f"[GOLDEN CONTEXT / ANSWER KEY]:\n{rec.get('golden_context', '')}\n"
             records_text += f"[GENERATED QUESTION TO EVALUATE]:\n{rec.get('nl_question', '')}\n"
             
+        # The main system prompt for the evaluation.
+        # It defines the role, instructions, detailed multi-dimensional rubrics,
+        # and the strict JSON format required for output parsing.
         eval_prompt = f"""
         You are an expert evaluator assessing the quality of synthetic Reverse Translation (SQL to Natural Language).
         You will evaluate a batch of {len(batch_records)} records. First, read the context and the generated question for each record.
@@ -169,6 +203,9 @@ def evaluate_batch(model: GenerativeModel, batch_records: list) -> BatchEvaluati
         }}
         """
 
+        # Configure generation parameters for the Gemini model.
+        # - temperature=0.1: Ensures high focus and determinism, making scores more objective.
+        # - response_mime_type="application/json": Forces the model to return structured JSON matching our Pydantic schema.
         config = GenerationConfig(
             temperature=0.1, 
             response_mime_type="application/json"
@@ -195,6 +232,8 @@ def evaluate_batch(model: GenerativeModel, batch_records: list) -> BatchEvaluati
         return None
 
 
+# Helper generator to split the data into smaller chunks for processing.
+# This is used to create manageable batches for parallel execution.
 def chunk_list(lst, n):
     """
     Chunks a list into segments of size n.
@@ -209,121 +248,30 @@ def chunk_list(lst, n):
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 
-
-
-
-if __name__ == "__main__":
-    # CONFIGURATION FLAGS
-
-    
-    INPUT_FILE_PATH = "./results/stage2/s2_flash_synthetic_data_0_49_20260407_221624.json"
-    OUTPUT_FILE_PATH = "./results/stage3/s3_flash_synthetic_data_0_49_20260407_221624.json"
-    
-
-    print(f"Configuration:")
-    print(f"  INPUT_FILE_PATH: {INPUT_FILE_PATH}")
-    print(f"  OUTPUT_FILE_PATH: {OUTPUT_FILE_PATH}")
-
-    # Initialize Vertex AI
-    vertexai.init() 
-    
-    # Instantiate the Generative Model 
-    eval_model = GenerativeModel("gemini-2.5-pro")
-
-    print(f"\nLoading data from {INPUT_FILE_PATH}")
+# The worker function intended for use in the ThreadPoolExecutor.
+# It picks up a batch of records, calls evaluate_batch, and updates the records in place.
+# The worker function intended for use in the ThreadPoolExecutor.
+# It picks up a batch of records, calls evaluate_batch, and updates the records in place.
+# Parameters eval_model and total_batches are passed explicitly to avoid reliance on global scope.
+def process_batch_thread(batch_idx, batch, eval_model, total_batches):
+    print(f"Starting Batch {batch_idx + 1}/{total_batches} (Records: {len(batch)})...")
     try:
-        with open(INPUT_FILE_PATH, "r") as f:
-            stage2_data = json.load(f)
-    except FileNotFoundError:
-        print(f"Error: Could not find input file at {INPUT_FILE_PATH}")
-        stage2_data = []
-    
-    # Inject system_prompt dynamically
-    for row in stage2_data:
-        row['golden_context'] = (
-             f"--- GOLDEN CONTEXT (GROUND TRUTH) ---\n"
-            f"Target Persona: {row.get('persona', '')}\n"
-            f"Persona Description: {get_persona_description(row.get('persona', ''))}\n\n"
-            f"Database Schema:\n{row.get('schema', row.get('schema', ''))}\n\n"
-            f"Original SQL Query:\n{row.get('sql', '')}\n\n"
-            f"Result Summary (Expected Output Shape):\n{row.get('result_summary', '')}\n"
-        )
+        batch_result = evaluate_batch(eval_model, batch)
         
-
-    if stage2_data:
-        # Remove items that do not have necessary prompts
-        valid_data = [r for r in stage2_data if r.get("golden_context") and r.get("nl_question")]
-        print(f"Starting evaluation of {len(valid_data)} valid items via batched LLM calls...")
-        
-        BATCH_SIZE = 5 # Process 5 records per LLM call
-        MAX_WORKERS = 5 # Number of parallel threads
-        
-        batches = list(chunk_list(valid_data, BATCH_SIZE))
-        
-        def process_batch_thread(batch_idx, batch):
-            print(f"Starting Batch {batch_idx + 1}/{len(batches)} (Records: {len(batch)})...")
-            try:
-                batch_result = evaluate_batch(eval_model, batch)
+        if batch_result and len(batch_result.evaluations) == len(batch):
+            for i, record in enumerate(batch):
+                eval_obj = batch_result.evaluations[i]
+                record["evaluation"] = eval_obj.model_dump()
+        else:
+            print(f"Warning: Batch returned {len(batch_result.evaluations) if batch_result else 0} evaluations, expected {len(batch)}. Skipping these results.")
+            for record in batch:
+                record["evaluation"] = None
                 
-                if batch_result and len(batch_result.evaluations) == len(batch):
-                    for i, record in enumerate(batch):
-                        eval_obj = batch_result.evaluations[i]
-                        record["evaluation"] = eval_obj.model_dump()
-                else:
-                    print(f"Warning: Batch returned {len(batch_result.evaluations) if batch_result else 0} evaluations, expected {len(batch)}. Skipping these results.")
-                    for record in batch:
-                        record["evaluation"] = None
-                        
-            except Exception as e:
-                print(f"Batch {batch_idx + 1} failed: {e}")
-                for record in batch:
-                    record["evaluation"] = None
-            print(f"Completed Batch {batch_idx + 1}/{len(batches)}")
+    except Exception as e:
+        print(f"Batch {batch_idx + 1} failed: {e}")
+        for record in batch:
+            record["evaluation"] = None
+    print(f"Completed Batch {batch_idx + 1}/{total_batches}")
 
-        print(f"Processing {len(batches)} batches using {MAX_WORKERS} threads...")
-        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-            futures = [executor.submit(process_batch_thread, i, b) for i, b in enumerate(batches)]
-            for future in as_completed(futures):
-                pass # wait for all to complete
-                
-        # Calculate scores after all threads finish
-        complexity_scores = {"Simple": [], "Medium": [], "Complex": []}
-        categories = ["technical_accuracy", "persona_alignment", "schema_adherence", "groundedness", "conciseness_clarity", "information_density_clarity", "fluency"]
-        metric_scores = {cat: [] for cat in categories}
-        
-        for record in valid_data:
-            eval_data = record.get("evaluation")
-            if eval_data and "genai_total_score" in eval_data:
-                total_score = eval_data["genai_total_score"]
-                comp = record.get("complexity")
-                if comp in complexity_scores:
-                    complexity_scores[comp].append(total_score)
-                    
-                for cat in categories:
-                    if cat in eval_data and "score" in eval_data[cat]:
-                        metric_scores[cat].append(eval_data[cat]["score"])
 
-        # Print avg scores
-        print("\n--- Average Scores by Complexity ---")
-        for comp, scores in complexity_scores.items():
-            if scores:
-                avg = sum(scores) / len(scores)
-                print(f"{comp}: {avg:.2f} / 35 ({len(scores)} records)")
-            else:
-                print(f"{comp}: N/A")
-                
-        print("\n--- Average Scores by Category ---")
-        for cat, scores in metric_scores.items():
-            if scores:
-                avg = sum(scores) / len(scores)
-                print(f"{cat}: {avg:.2f} / 5")
-            else:
-                print(f"{cat}: N/A")
 
-        # Save to output file
-        print(f"\nSaving results to {OUTPUT_FILE_PATH}...")
-        os.makedirs(os.path.dirname(OUTPUT_FILE_PATH), exist_ok=True)
-        with open(OUTPUT_FILE_PATH, "w") as f:
-            json.dump(stage2_data, f, indent=4)
-            
-        print("Done!")

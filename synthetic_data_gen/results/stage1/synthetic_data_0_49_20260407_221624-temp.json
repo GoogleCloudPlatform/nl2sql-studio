@@ -1,0 +1,30 @@
+[
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT ID, name, salary FROM instructor WHERE dept_name = 'Cybernetics';",
+        "success": true,
+        "result_summary": "Returns 4 rows listing the ID, name, and salary for each instructor belonging to the 'Cybernetics' department."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT course_id, title, dept_name FROM course WHERE credits = 4;",
+        "success": true,
+        "result_summary": "Returns 92 rows listing the course ID, title, and department name for all courses that are worth exactly 4 credits."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT name, tot_cred FROM student WHERE dept_name = 'History';",
+        "success": true,
+        "result_summary": "Returns 117 rows listing the name and total credits for every student in the 'History' department."
+    },
+    {
+        "db_id": "college_2",
+        "complexity": "Simple",
+        "sql": "SELECT dept_name, budget FROM department ORDER BY budget DESC;",
+        "success": true,
+        "result_summary": "Returns 20 rows listing each department's name and its corresponding budget, ordered from the highest budget to the lowest."
+    }
+]
