@@ -137,7 +137,7 @@ def evaluate_bird_queries(file_path: str, db_root_path: str):
 if __name__ == "__main__":
     # Execution entry point
     # This assumes you have run gen_bird_ai_sql.py first to generate the file
-    generated_file = '/Users/roopayk/Documents/nl-sql/nl2sql-studio/synthetic_data_gen/results/sft/filtered_dev_ai_qwen.json'
+    generated_file = '/Users/roopayk/Documents/nl-sql/nl2sql-studio/synthetic_data_gen/results/sft/test_set_ai_qwen.json'
     db_root = '/Users/roopayk/Documents/nl-sql/nl2sql-studio/synthetic_data_gen/database'
     
     evaluate_bird_queries(generated_file, db_root)

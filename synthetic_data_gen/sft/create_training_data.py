@@ -33,76 +33,76 @@ ground truth sql: {ground_truth_sql}\n
 Chain of Thought:
 """
 
-def create_llama_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
-    """
-    Formats the inputs and ground truth SQL into the Llama chat JSONL structure.
+# def create_llama_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
+#     """
+#     Formats the inputs and ground truth SQL into the Llama chat JSONL structure.
     
-    Args:
-        system_prompt (str): The system instructions for the model.
-        schema (dict): The database schema as a dictionary.
-        question (str): The natural language question.
-        cot_reasoning (str): The generated reasoning steps.
-        ground_truth_sql (str): The correct SQL query.
+#     Args:
+#         system_prompt (str): The system instructions for the model.
+#         schema (dict): The database schema as a dictionary.
+#         question (str): The natural language question.
+#         cot_reasoning (str): The generated reasoning steps.
+#         ground_truth_sql (str): The correct SQL query.
         
-    Returns:
-        dict: A dictionary structured for Llama fine-tuning.
-    """
-    schema_json_string = json.dumps(schema, indent=2)
-    user_content = f"{system_prompt}\n\nDATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {question}"
+#     Returns:
+#         dict: A dictionary structured for Llama fine-tuning.
+#     """
+#     schema_json_string = json.dumps(schema, indent=2)
+#     user_content = f"{system_prompt}\n\nDATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {question}"
 
-    record = {
-        "messages": [
-            {
-                "role": "user",
-                "content": user_content
-            },
-            {
-                "role": "assistant",
-                "content": f"""{cot_reasoning}
-```sql
-{ground_truth_sql}
-```"""
-            }
-        ]
-    }
-    return record
+#     record = {
+#         "messages": [
+#             {
+#                 "role": "user",
+#                 "content": user_content
+#             },
+#             {
+#                 "role": "assistant",
+#                 "content": f"""{cot_reasoning}
+# ```sql
+# {ground_truth_sql}
+# ```"""
+#             }
+#         ]
+#     }
+#     return record
 
 
-def create_gemini_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
-    """
-    Formats the inputs and ground truth SQL into the Gemini JSONL structure.
+# def create_gemini_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
+#     """
+#     Formats the inputs and ground truth SQL into the Gemini JSONL structure.
     
-    Args:
-        system_prompt (str): The system instructions for the model.
-        schema (dict): The database schema as a dictionary.
-        question (str): The natural language question.
-        cot_reasoning (str): The generated reasoning steps.
-        ground_truth_sql (str): The correct SQL query.
+#     Args:
+#         system_prompt (str): The system instructions for the model.
+#         schema (dict): The database schema as a dictionary.
+#         question (str): The natural language question.
+#         cot_reasoning (str): The generated reasoning steps.
+#         ground_truth_sql (str): The correct SQL query.
         
-    Returns:
-        dict: A dictionary structured for Gemini fine-tuning.
-    """
-    schema_json_string = json.dumps(schema, indent=2)
-    user_content = f"{system_prompt}\n\nDATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {question}"
+#     Returns:
+#         dict: A dictionary structured for Gemini fine-tuning.
+#     """
+#     schema_json_string = json.dumps(schema, indent=2)
+#     user_content = f"{system_prompt}\n\nDATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {question}"
 
-    assistant_content = f"""{cot_reasoning}
-```sql
-{ground_truth_sql}
-```"""
+#     assistant_content = f"""{cot_reasoning}
+# ```sql
+# {ground_truth_sql}
+# ```"""
 
-    record = {
-        "contents": [
-            {
-                "role": "user",
-                "parts": [{"text": user_content}]
-            },
-            {
-                "role": "model",
-                "parts": [{"text": assistant_content}]
-            }
-        ]
-    }
-    return record
+#     record = {
+#         "contents": [
+#             {
+#                 "role": "user",
+#                 "parts": [{"text": user_content}]
+#             },
+#             {
+#                 "role": "model",
+#                 "parts": [{"text": assistant_content}]
+#             }
+#         ]
+#     }
+#     return record
 
 
 def create_qwen_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
