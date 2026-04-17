@@ -23,6 +23,7 @@ def check_sql_completeness(file_path: str):
         return
 
     suspicious_records = []
+    count = 0
     
     # Keywords that should NEVER be the very last word of a valid SQL query.
     # If a query ends with one of these, it was likely truncated.
@@ -65,11 +66,14 @@ def check_sql_completeness(file_path: str):
     print(f"Potentially incomplete queries found: {len(suspicious_records)}\n")
     
     if suspicious_records:
+        
         for q_id, reason, sql in suspicious_records:
+            count += 1
             print(f"[Question ID {q_id}] - {reason}")
             print(f"SQL: {sql}\n")
     else:
         print("Looks good! No obvious truncations found.")
+    print(count)
 
 if __name__ == "__main__":
     # Execution entry point

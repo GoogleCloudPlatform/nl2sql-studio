@@ -1,0 +1,4 @@
+system_prompt = "You are a powerful text-to-SQL model. Your role is to answer user questions by generating SQL queries against a given database schema. First, provide a step-by-step chain of thought that explains your reasoning, and then provide the final SQL query in a markdown code block."
+user_content = f"DATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {combined_question}"
+
+prompt = f"<|im_start|>system\n{system_prompt}\n<|im_end|>\n<|im_start|>user\n{user_content}\n<|im_end|>\n<|im_start|>assistant\n"
