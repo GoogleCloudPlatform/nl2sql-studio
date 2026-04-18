@@ -2,4 +2,3 @@
 .github/.DS_Store
 *.pyc
 nl2sql_library/.DS_Store
-synthetic_data_gen/database_full/
