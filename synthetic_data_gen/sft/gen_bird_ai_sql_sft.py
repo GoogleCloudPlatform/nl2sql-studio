@@ -7,7 +7,7 @@ from google.cloud import aiplatform
 from get_schema_details import get_schema_details
 
 # Configuration
-ENDPOINT_ID = "4143612923366866944"
+ENDPOINT_ID = "1857473162522918912"
 PROJECT_ID = "862253555914"
 LOCATION = "asia-southeast1"
 API_ENDPOINT = f"{LOCATION}-aiplatform.googleapis.com"
@@ -94,7 +94,7 @@ def add_ai_sql_to_json(file_path: str):
         with open(file_path, 'r') as f:
             data = json.load(f)
 
-        base_db_path = os.path.join("../database")
+        base_db_path = os.path.join("synthetic_data_gen/database")
         processed_data = []
 
         for item in tqdm(data):
@@ -123,5 +123,5 @@ def add_ai_sql_to_json(file_path: str):
         print(f"An unexpected error occurred: {e}")
 
 if __name__ == "__main__":
-    json_file = '../results/sft/test_set.json' 
+    json_file = 'synthetic_data_gen/results/sft/test_set.json'
     add_ai_sql_to_json(json_file)

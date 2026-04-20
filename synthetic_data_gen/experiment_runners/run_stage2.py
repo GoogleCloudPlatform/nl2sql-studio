@@ -20,8 +20,8 @@ if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     TABLES_FILE = os.path.abspath(os.path.join(script_dir, "../tables-all.json"))
     DATABASE_PATH = os.path.abspath(os.path.join(script_dir, "../database/"))
-    INPUT_FILE_PATH = os.path.abspath(os.path.join(script_dir, "../results/stage1/synthetic_data_0_49_20260407_221624.json"))
-    OUTPUT_FILE_PATH = os.path.abspath(os.path.join(script_dir, "../results/stage2/s2_flash_synthetic_data_0_49_20260407_221624.json"))
+    INPUT_FILE_PATH = os.path.abspath(os.path.join(script_dir, "../results/stage1/synthetic_data_0_51_20260417_103303.json"))
+    OUTPUT_FILE_PATH = os.path.abspath(os.path.join(script_dir, "../results/stage2/s2_flash_synthetic_data_0_51_20260417_103303.json"))
     INCLUDE_RESULT_SUMMARY = True
     INCLUDE_SCHEMA = True
     

@@ -33,79 +33,79 @@ ground truth sql: {ground_truth_sql}\n
 Chain of Thought:
 """
 
-# def create_llama_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
-#     """
-#     Formats the inputs and ground truth SQL into the Llama chat JSONL structure.
+def create_llama_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
+    """
+    Formats the inputs and ground truth SQL into the Llama chat JSONL structure.
     
-#     Args:
-#         system_prompt (str): The system instructions for the model.
-#         schema (dict): The database schema as a dictionary.
-#         question (str): The natural language question.
-#         cot_reasoning (str): The generated reasoning steps.
-#         ground_truth_sql (str): The correct SQL query.
+    Args:
+        system_prompt (str): The system instructions for the model.
+        schema (dict): The database schema as a dictionary.
+        question (str): The natural language question.
+        cot_reasoning (str): The generated reasoning steps.
+        ground_truth_sql (str): The correct SQL query.
         
-#     Returns:
-#         dict: A dictionary structured for Llama fine-tuning.
-#     """
-#     schema_json_string = json.dumps(schema, indent=2)
-#     user_content = f"{system_prompt}\n\nDATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {question}"
+    Returns:
+        dict: A dictionary structured for Llama fine-tuning.
+    """
+    schema_json_string = json.dumps(schema, indent=2)
+    user_content = f"{system_prompt}\n\nDATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {question}"
 
-#     record = {
-#         "messages": [
-#             {
-#                 "role": "user",
-#                 "content": user_content
-#             },
-#             {
-#                 "role": "assistant",
-#                 "content": f"""{cot_reasoning}
-# ```sql
-# {ground_truth_sql}
-# ```"""
-#             }
-#         ]
-#     }
-#     return record
+    record = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [{"text": user_content}]
+            },
+            {
+                "role": "model",
+                "parts": [{"text": f"""{cot_reasoning}
+```sql
+{ground_truth_sql}
+```"""}]
+            }
+        ]
+    }
+    return record
 
 
-# def create_gemini_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
-#     """
-#     Formats the inputs and ground truth SQL into the Gemini JSONL structure.
+def create_gemini_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
+    """
+    Formats the inputs and ground truth SQL into the Gemini JSONL structure.
     
-#     Args:
-#         system_prompt (str): The system instructions for the model.
-#         schema (dict): The database schema as a dictionary.
-#         question (str): The natural language question.
-#         cot_reasoning (str): The generated reasoning steps.
-#         ground_truth_sql (str): The correct SQL query.
+    Args:
+        system_prompt (str): The system instructions for the model.
+        schema (dict): The database schema as a dictionary.
+        question (str): The natural language question.
+        cot_reasoning (str): The generated reasoning steps.
+        ground_truth_sql (str): The correct SQL query.
         
-#     Returns:
-#         dict: A dictionary structured for Gemini fine-tuning.
-#     """
-#     schema_json_string = json.dumps(schema, indent=2)
-#     user_content = f"{system_prompt}\n\nDATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {question}"
+    Returns:
+        dict: A dictionary structured for Gemini fine-tuning.
+    """
+    schema_json_string = json.dumps(schema, indent=2)
+    user_content = f"{system_prompt}\n\nDATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {question}"
 
-#     assistant_content = f"""{cot_reasoning}
-# ```sql
-# {ground_truth_sql}
-# ```"""
+    assistant_content = f"""{cot_reasoning}
+```sql
+{ground_truth_sql}
+```"""
 
-#     record = {
-#         "contents": [
-#             {
-#                 "role": "user",
-#                 "parts": [{"text": user_content}]
-#             },
-#             {
-#                 "role": "model",
-#                 "parts": [{"text": assistant_content}]
-#             }
-#         ]
-#     }
-#     return record
+    record = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [{"text": user_content}]
+            },
+            {
+                "role": "model",
+                "parts": [{"text": assistant_content}]
+            }
+        ]
+    }
+    return record
 
 
-def create_qwen_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
+def create_qwen_or_gemma_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
     """
     Formats the inputs and ground truth SQL into the Qwen JSONL structure.
     
@@ -170,7 +170,8 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
     record_creators = {
         "llama": create_llama_tuning_record,
         "gemini": create_gemini_tuning_record,
-        "qwen": create_qwen_tuning_record,
+        "qwen": create_qwen_or_gemma_tuning_record,
+        "gemma": create_qwen_or_gemma_tuning_record
     }
     create_record_func = record_creators.get(model_type)
     if not create_record_func:
@@ -279,9 +280,9 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
 
 if __name__ == "__main__":
     # Configuration for the generation run
-    INPUT_FILE_PATH = '../results/stage2/s2_flash_synthetic_data_0_49_20260407_221624.json'
+    INPUT_FILE_PATH = '../results/stage2/s2_flash_synthetic_data_0_51_20260417_103303.json'
     
-    MODEL_TYPE = "qwen" # Target model format: "llama", "gemini", or "qwen"
+    MODEL_TYPE = "gemma" # Target model format: "llama", "gemini", or "qwen"
     GENERATE_COT = True # Set to True to generate reasoning steps
     CONCURRENT_BATCH_SIZE = 10 # Number of parallel calls to Gemini
 

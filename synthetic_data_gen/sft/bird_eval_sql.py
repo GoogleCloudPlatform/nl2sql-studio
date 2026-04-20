@@ -114,13 +114,22 @@ def evaluate_bird_queries(file_path: str, db_root_path: str):
             
             if ai_error:
                 execution_failed_count += 1
+                item["status"] = "Execution Failure"
+                item["error"] = ai_error
                 continue
 
             # Compare results
             if are_results_equal(ground_truth_sql, gt_result or [], ai_result):
                 correct_count += 1
+                item["status"] = "Correct"
             else:
                 incorrect_result_count += 1
+                item["status"] = "Incorrect"
+
+        # Save the updated data back to the input file
+        with open(file_path, 'w') as f:
+            json.dump(data, f, indent=2)
+        print(f"Updated evaluation results saved to '{file_path}'")
 
         # Print final metrics
         accuracy = correct_count / total_count if total_count > 0 else 0.0
@@ -137,7 +146,7 @@ def evaluate_bird_queries(file_path: str, db_root_path: str):
 if __name__ == "__main__":
     # Execution entry point
     # This assumes you have run gen_bird_ai_sql.py first to generate the file
-    generated_file = '/Users/roopayk/Documents/nl-sql/nl2sql-studio/synthetic_data_gen/results/sft/test_set_ai_qwen.json'
+    generated_file = '/Users/roopayk/Documents/nl-sql/nl2sql-studio/synthetic_data_gen/results/sft/test_set_ai_gemma-base.json'
     db_root = '/Users/roopayk/Documents/nl-sql/nl2sql-studio/synthetic_data_gen/database'
     
     evaluate_bird_queries(generated_file, db_root)

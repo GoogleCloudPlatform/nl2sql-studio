@@ -8,7 +8,7 @@ formats them into a readable string suitable for inclusion in LLM prompts.
 import os
 import sqlite3
 
-def get_schema_details(db_id, base_db_path):
+def get_schema_details(db_id, base_db_path='../database'):
     """
     Generates a detailed schema string for a given database ID.
 
