@@ -35,6 +35,30 @@ class SmartSampler:
             print(f"❌ Error loading schema file: {e}")
             raise
 
+    def is_db_empty(self, db_id):
+        """
+        Checks if a database has no data in any of its tables.
+        """
+        target_db = next((db for db in self.schemas if db['db_id'] == db_id), None)
+        if not target_db:
+            return True
+        table_names = target_db['table_names_original']
+        db_path = os.path.join(self.base_db_path, f"{db_id}", f"{db_id}.sqlite")
+        if not os.path.exists(db_path):
+            return True
+        try:
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            for table_name in table_names:
+                cursor.execute(f'SELECT 1 FROM "{table_name}" LIMIT 1')
+                if cursor.fetchone():
+                    conn.close()
+                    return False
+            conn.close()
+            return True
+        except sqlite3.Error:
+            return True
+
     def get_formatted_schema_with_samples(self, db_id):
         """
         Extracts table structures and sample rows from a database and formats them for an LLM prompt.
@@ -53,7 +77,7 @@ class SmartSampler:
         column_data = target_db['column_names_original'] 
         
         # Connect to the actual SQLite database for this db_id
-        db_path = os.path.join(self.base_db_path, f"{db_id}.sqlite")
+        db_path = os.path.join(self.base_db_path, f"{db_id}", f"{db_id}.sqlite")
         
         if not os.path.exists(db_path):
             return f"Error: Database file not found at {db_path}"
@@ -121,7 +145,7 @@ class DatabaseExecutor:
         Returns:
             tuple: (bool success, str message, list results, list column_names)
         """
-        db_path = os.path.join(self.base_db_path, f"{db_id}.sqlite")
+        db_path = os.path.join(self.base_db_path, f"{db_id}", f"{db_id}.sqlite")
         
         if not os.path.exists(db_path):
             return False, f"Discarded: Database file not found at {db_path}", None, None
@@ -190,11 +214,26 @@ class ResultSummarizer:
                 ]
             ),
         ]
-        response = self.client.models.generate_content(
-            model = self.model_name,
-            contents = contents
-        )
-        return response.text.strip()
+        import time
+        max_attempts = 5
+        base_delay = 2
+        for attempt in range(max_attempts):
+            try:
+                response = self.client.models.generate_content(
+                    model = self.model_name,
+                    contents = contents
+                )
+                return response.text.strip()
+            except Exception as e:
+                if "RESOURCE_EXHAUSTED" in str(e) or "429" in str(e):
+                    if attempt == max_attempts - 1:
+                        print(f"❌ [{self.model_name}] Max attempts reached for 429 error.")
+                        raise e
+                    delay = base_delay * (2 ** attempt)
+                    print(f"⚠️ [{self.model_name}] Rate limited (429). Retrying in {delay}s... (Attempt {attempt + 1}/{max_attempts})")
+                    time.sleep(delay)
+                else:
+                    raise e
 
 
 class BatchArchitectAgent:
@@ -235,10 +274,27 @@ class BatchArchitectAgent:
                 ]
             ),
         ]
-        response = self.client.models.generate_content(
-            model = self.model_name,
-            contents = contents
-        )
+        import time
+        max_attempts = 5
+        base_delay = 2
+        response = None
+        for attempt in range(max_attempts):
+            try:
+                response = self.client.models.generate_content(
+                    model = self.model_name,
+                    contents = contents
+                )
+                break
+            except Exception as e:
+                if "RESOURCE_EXHAUSTED" in str(e) or "429" in str(e):
+                    if attempt == max_attempts - 1:
+                        print(f"❌ [{self.model_name}] Max attempts reached for 429 error.")
+                        raise e
+                    delay = base_delay * (2 ** attempt)
+                    print(f"⚠️ [{self.model_name}] Rate limited (429). Retrying in {delay}s... (Attempt {attempt + 1}/{max_attempts})")
+                    time.sleep(delay)
+                else:
+                    raise e
         
         # Clean the response to ensure it's parseable JSON
         raw_text = response.text.strip()
@@ -274,7 +330,14 @@ def parse_db_selection(selection_str, schemas):
     all_ids = [db['db_id'] for db in schemas]
     selection_str = selection_str.strip()
     
-    # 1. Priority: Check if it's an exact DB ID match
+    # 1. Priority: Check if it's a comma-separated list
+    if "," in selection_str:
+        requested_ids = [s.strip() for s in selection_str.split(",")]
+        matched_ids = [db_id for db_id in requested_ids if db_id in all_ids]
+        if matched_ids:
+            return matched_ids
+
+    # 2. Priority: Check if it's an exact DB ID match
     if selection_str in all_ids:
         return [selection_str]
     
@@ -314,48 +377,65 @@ def process_single_database(db_id, tables_path, db_dir, client, model_name, prom
         list: A list of all attempted query objects (success and fail).
     """
     sampler = SmartSampler(tables_path, db_dir)
+    results_batch = []
+    
+    if sampler.is_db_empty(db_id):
+        print(f"⏭️ [{db_id}] Skipping because database is empty.")
+        return results_batch
+        
     architect = BatchArchitectAgent(client, model_name, prompts[batch_prompt_name])
     executor = DatabaseExecutor(db_dir)
     summarizer = ResultSummarizer(client, model_name, prompts[summarize_prompt_name])
     
-    results_batch = []
-    
     schema_text = sampler.get_formatted_schema_with_samples(db_id)
     if "Error" in schema_text or "Database not found" in schema_text:
+        results_batch.append({
+            "db_id": db_id,
+            "success": False,
+            "error_message": f"Sampling failed: {schema_text}"
+        })
         return results_batch
 
-    # 1. Sample and Generate
-    print(f"🔍 [{db_id}] Sampling schema and calling Architect...")
-    generated_queries = architect.generate_batch_sql(schema_text)
-    
-    # 2. Validate and Summarize
-    print(f"🧪 [{db_id}] Validating {len(generated_queries)} generated queries...")
-    for item in generated_queries:
-        sql = item.get("sql")
-        complexity = item.get("complexity")
+    try:
+        # 1. Sample and Generate
+        print(f"🔍 [{db_id}] Sampling schema and calling Architect...")
+        generated_queries = architect.generate_batch_sql(schema_text)
         
-        if not sql:
-            continue
+        # 2. Validate and Summarize
+        print(f"🧪 [{db_id}] Validating {len(generated_queries)} generated queries...")
+        for item in generated_queries:
+            sql = item.get("sql")
+            complexity = item.get("complexity")
             
-        # Execute against the local SQLite DB
-        is_valid, msg, results, columns = executor.execute_query(db_id, sql)
-        
-        # Initialize the query entry (tracking success/failure)
-        query_entry = {
+            if not sql:
+                continue
+                
+            # Execute against the local SQLite DB
+            is_valid, msg, results, columns = executor.execute_query(db_id, sql)
+            
+            # Initialize the query entry (tracking success/failure)
+            query_entry = {
+                "db_id": db_id,
+                "complexity": complexity,
+                "sql": sql,
+                "success": is_valid
+            }
+            
+            if is_valid:
+                # Generate the natural language summary of the output shape
+                summary = summarizer.summarize_shape(sql, columns, results)
+                query_entry["result_summary"] = summary
+            else:
+                query_entry["error_message"] = msg
+                
+            results_batch.append(query_entry)
+                
+    except Exception as e:
+        results_batch.append({
             "db_id": db_id,
-            "complexity": complexity,
-            "sql": sql,
-            "success": is_valid
-        }
-        
-        if is_valid:
-            # Generate the natural language summary of the output shape
-            summary = summarizer.summarize_shape(sql, columns, results)
-            query_entry["result_summary"] = summary
-        else:
-            query_entry["error_message"] = msg
-            
-        results_batch.append(query_entry)
+            "success": False,
+            "error_message": f"Execution failed: {str(e)}"
+        })
             
     return results_batch
 

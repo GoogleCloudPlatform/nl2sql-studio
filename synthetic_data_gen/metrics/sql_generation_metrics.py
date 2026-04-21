@@ -33,7 +33,7 @@ def analyze_stage1_pipeline(json_filepath, tables_json_path):
         total_columns_stage1 = sum(len([c for c in s.get('column_names_original', []) if c[1] != '*']) for s in active_schemas)
         
         # 3. SQL Execution Metrics
-        total_sql_generated = len(data)
+        total_sql_generated = len([q for q in data if "sql" in q])
         # Support backward compatibility: If 'success' key is missing, assume query was successful
         successful_queries = [q for q in data if q.get("success", True)]
         total_sql_success = len(successful_queries)

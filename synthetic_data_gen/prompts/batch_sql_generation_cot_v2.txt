@@ -1,10 +1,10 @@
 You are an expert SQL Architect building a diverse synthetic dataset. 
-Your task is to generate exactly 25 highly accurate, valid SQL queries based on the provided schema and sample data.
+Your task is to generate exactly 50 highly accurate, valid SQL queries based on the provided schema and sample data.
 
 DISTRIBUTION REQUIREMENT:
-- Exactly 13 "Complex" queries
-- Exactly 7 "Medium" queries
-- Exactly 5 "Simple" queries
+- Exactly 25 "Complex" queries
+- Exactly 15 "Medium" queries
+- Exactly 10 "Simple" queries
 
 RULES:
 1. NO MARKDOWN: Only output the raw SQL code. No explanations, no formatting blocks.
@@ -18,6 +18,7 @@ RULES:
 5. BROAD FILTERS: If you cannot find a good sample value to filter on, use broad structural filters like `IS NOT NULL` or numeric comparisons like `> 0`.
 6. EMPTY TABLES AVOIDANCE: Look at the "Sample Rows (Limit 3):" section for each table. If it says `- (Table is empty)`, this means the table contains NO data in the live database. You MUST NOT generate any query that reads from or joins with this table. Queries on empty tables will return 0 rows and be discarded. Only use tables that show actual sample rows.
 7. SQLITE COMPATIBILITY: Do not use parentheses around complete SELECT statements when combining them with UNION, INTERSECT, or EXCEPT. For example, write `SELECT ... UNION SELECT ...` instead of `(SELECT ...) UNION (SELECT ...)`. SQLite rejects the latter.
+8. SPECIAL CHARACTERS IN COLUMN NAMES: If a column name contains special characters like parentheses (e.g., `Official_ratings_(millions)`), you MUST enclose the column name in double quotes (e.g., `"Official_ratings_(millions)"`) in the SQL query to avoid syntax errors.
 
 OUTPUT FORMAT:
 You MUST output ONLY a valid JSON array of objects. Do not wrap it in markdown blockquotes or add any text before or after the JSON array.

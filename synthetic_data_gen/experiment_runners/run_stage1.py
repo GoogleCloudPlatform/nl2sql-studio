@@ -32,7 +32,7 @@ if __name__ == "__main__":
     
     # Selection logic for which databases to process
     # Examples: '0:5' (range), 'perpetrator' (single ID), '10' (first 10)
-    DB_SELECTION = "0:50"
+    DB_SELECTION = "products_for_hire,cinema,candidate_poll,film_rank,race_track,music_2,roller_coaster,cre_Doc_Template_Mgt,election_representative,scholar,wine_1,flight_1,university_basketball"
     
     # Setup for timestamped output to prevent overwriting previous runs
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
