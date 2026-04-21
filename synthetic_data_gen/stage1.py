@@ -5,8 +5,16 @@ import os
 import sqlite3
 import json
 import time
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, TypeAdapter
 from typing import List
+
+class SQLQueryItem(BaseModel):
+    complexity: str = Field(description="Complexity level: Simple, Medium, or Complex")
+    thought: str = Field(description="Step-by-step reasoning for why the query will yield results")
+    sql: str = Field(description="The valid SQL query")
+
+class SQLQueryBatch(BaseModel):
+    queries: List[SQLQueryItem]
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from metrics.sql_generation_metrics import analyze_stage1_pipeline
@@ -282,7 +290,11 @@ class BatchArchitectAgent:
             try:
                 response = self.client.models.generate_content(
                     model = self.model_name,
-                    contents = contents
+                    contents = contents,
+                    config = types.GenerateContentConfig(
+                        response_mime_type = "application/json",
+                        response_schema = SQLQueryBatch
+                    )
                 )
                 break
             except Exception as e:
@@ -304,7 +316,8 @@ class BatchArchitectAgent:
             raw_text = raw_text[3:-3].strip()
             
         try:
-            return json.loads(raw_text)
+            batch = SQLQueryBatch.model_validate_json(raw_text)
+            return [item.model_dump() for item in batch.queries]
         except json.JSONDecodeError as e:
             print(f"   ❌ Failed to parse JSON from LLM: {e}")
             print(f"   Raw Text Was:\n{raw_text}")
