@@ -17,7 +17,7 @@ from get_schema_details import get_schema_details
 import re
 
 # Configuration for Vertex AI Endpoint
-ENDPOINT_ID = "7602940387140829184"
+ENDPOINT_ID = "mg-endpoint-ed425d0b-3cde-4d67-bb71-a0efa63f17df"
 PROJECT_ID = "862253555914"
 LOCATION = "asia-southeast1"
 API_ENDPOINT = f"{LOCATION}-aiplatform.googleapis.com"
@@ -122,7 +122,7 @@ def add_ai_sql_to_json(file_path: str):
     # Create the Endpoint Object once to reuse connections
     vertex_endpoint = aiplatform.Endpoint(ENDPOINT_ID)
 
-    out_filename = file_path.replace('.json', '_ai_gemma-base.json')
+    out_filename = file_path.replace('.json', f'_ai_{MODEL_NAME}.json')
     
     try:
         with open(file_path, 'r') as f:
@@ -136,7 +136,7 @@ def add_ai_sql_to_json(file_path: str):
         for item in tqdm(data, desc="Generating SQL queries"):
             db_id = item.get('db_id')
             
-            ai_sql = get_ai_sql_qwen_or_gemma(
+            ai_sql = get_ai_sql_gemma(
                 vertex_endpoint, 
                 json.dumps(get_schema_details(db_id)), 
                 item.get('question'), 
@@ -157,5 +157,6 @@ def add_ai_sql_to_json(file_path: str):
 
 if __name__ == "__main__":
     # Input file containing BIRD questions
-    json_file = '../results/sft/test_set.json' 
+    json_file = '../results/sft/spider_test_set.json' 
+    MODEL_NAME = 'gemma-26b-base'
     add_ai_sql_to_json(json_file)
