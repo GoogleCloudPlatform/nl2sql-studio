@@ -16,8 +16,6 @@ import textwrap
 import os
 import sys
 
-# Add the path to the spider_eval directory to import nl2sql utilities
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../fine_tuning/spider_eval')))
 from nl2sql import generate
 from get_schema_details import get_schema_details
 
@@ -280,7 +278,8 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
 
 if __name__ == "__main__":
     # Configuration for the generation run
-    INPUT_FILE_PATH = '../results/stage2/s2_flash_synthetic_data_0_51_20260417_103303.json'
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    INPUT_FILE_PATH = os.path.abspath(os.path.join(current_dir, "../results/stage2/s2_flash_synthetic_data_0_166_20260417_150731_4k.json"))
     
     MODEL_TYPE = "gemma" # Target model format: "llama", "gemini", or "qwen"
     GENERATE_COT = True # Set to True to generate reasoning steps

@@ -4,7 +4,7 @@ import sys
 # Add the sft directory to sys.path to import from it
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from gen_bird_ai_sql import add_ai_sql_to_json
+from generate_base_model_results import add_ai_sql_to_json
 
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))

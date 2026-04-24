@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # Configuration
     INPUT_FILE_PATH = os.path.abspath(os.path.join(script_dir, '../../results/stage2/s2_flash_synthetic_data_0_49_20260407_221624.json'))
     
-    MODEL_TYPE = "qwen" # possible values: "llama", "gemini", "qwen"
+    MODEL_TYPE = "qwen" # possible values: "llama", "gemini", "qwen", "gemma"
     GENERATE_COT = True
     CONCURRENT_BATCH_SIZE = 10
 

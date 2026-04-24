@@ -24,14 +24,17 @@ def analyze_file(file_path):
     # Global counters for query types (Whole Analytics)
     query_types = Counter()
     failure_types = Counter()
+    schema_failures = Counter()
+    keyword_failures = Counter()
 
     for item in data:
         difficulty = item.get("difficulty", "Unknown")
+        db_id = item.get("db_id", "Unknown")
         if difficulty not in diff_stats:
             diff_stats[difficulty] = {
                 "total": 0,
                 "passed": 0,
-                "zero_rows": 0,
+                "incorrect_results": 0,
                 "syntax_failed": 0,
                 "other_failed": 0
             }
@@ -57,9 +60,9 @@ def analyze_file(file_path):
             diff_stats[difficulty]["passed"] += 1
             query_types[q_type] += 1
         else:
-            if "RETURNED 0 ROWS" in error_msg.upper():
-                diff_stats[difficulty]["zero_rows"] += 1
-                failure_types[f"{q_type} - 0 Rows"] += 1
+            if item.get("status") == "Incorrect":
+                diff_stats[difficulty]["incorrect_results"] += 1
+                failure_types[f"{q_type} - Incorrect Results"] += 1
             elif "SYNTAX ERROR" in error_msg.upper() or "NO SUCH" in error_msg.upper():
                 diff_stats[difficulty]["syntax_failed"] += 1
                 failure_types[f"{q_type} - Syntax/Schema"] += 1
@@ -67,11 +70,20 @@ def analyze_file(file_path):
                 diff_stats[difficulty]["other_failed"] += 1
                 failure_types[f"{q_type} - Other"] += 1
 
+            # Track schema failures
+            schema_failures[db_id] += 1
+
+            # Track keyword failures
+            keywords = ['HAVING', 'EXISTS', 'INTERSECT', 'UNION', 'EXCEPT', 'LIMIT', 'ORDER BY', 'AVG', 'SUM', 'COUNT']
+            for kw in keywords:
+                if kw in sql:
+                    keyword_failures[kw] += 1
+
     # Calculate whole analytics
     whole_stats = {
         "total": total,
         "passed": sum(s["passed"] for s in diff_stats.values()),
-        "zero_rows": sum(s["zero_rows"] for s in diff_stats.values()),
+        "incorrect_results": sum(s["incorrect_results"] for s in diff_stats.values()),
         "syntax_failed": sum(s["syntax_failed"] for s in diff_stats.values()),
         "other_failed": sum(s["other_failed"] for s in diff_stats.values())
     }
@@ -83,7 +95,7 @@ def analyze_file(file_path):
         print(f"Total Queries Attempted: {stats['total']}")
         if stats['total'] > 0:
             print(f"✅ Passed: {stats['passed']} ({stats['passed']/stats['total']*100:.2f}%)")
-            print(f"❌ Failed (0 Rows): {stats['zero_rows']} ({stats['zero_rows']/stats['total']*100:.2f}%)")
+            print(f"❌ Incorrect Results: {stats['incorrect_results']} ({stats['incorrect_results']/stats['total']*100:.2f}%)")
             print(f"🚨 Syntax/Schema Failed: {stats['syntax_failed']} ({stats['syntax_failed']/stats['total']*100:.2f}%)")
             print(f"❓ Other Failures: {stats['other_failed']} ({stats['other_failed']/stats['total']*100:.2f}%)")
         else:
@@ -108,13 +120,26 @@ def analyze_file(file_path):
     for ft, count in failure_types.most_common():
         print(f"- {ft}: {count}")
     
+    print("\n" + "=" * 50)
+    print("Top 10 Schemas with Most Failures:")
+    print("=" * 50)
+    for schema, count in schema_failures.most_common(10):
+        print(f"- {schema}: {count}")
+
+    print("\n" + "=" * 50)
+    print("Failing SQL Keywords Frequency:")
+    print("=" * 50)
+    for kw, count in keyword_failures.most_common():
+        print(f"- {kw}: {count}")
+    
     for difficulty in sorted(diff_stats.keys()):
         print("\n")
         print_stats(f"Difficulty Level: {difficulty}", diff_stats[difficulty])
 
 if __name__ == "__main__":
     # You can pass a file path as an argument, or it will use a default one
-    default_file = "/Users/roopayk/Documents/nl-sql/nl2sql-studio/synthetic_data_gen/results/sft/test_set_ai_gemma-base.json"
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    default_file = os.path.abspath(os.path.join(current_dir, "../../results/sft/spider_test_set_ai_gemma4-26b-base.json"))
     target_file = sys.argv[1] if len(sys.argv) > 1 else default_file
     
     print(f"Analyzing: {target_file}")

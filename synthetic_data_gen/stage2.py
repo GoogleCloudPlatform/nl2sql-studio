@@ -192,17 +192,29 @@ class ContextTranslatorAgent:
             logger.info("Prompt constructed successfully (LLM client not provided).")
             return None
 
-        try:
-            logger.info("Calling Gemini model to generate natural language questions...")
-            response = self.llm_client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=[types.Content(role="user", parts=[types.Part.from_text(text=system_prompt)])],
-                config=types.GenerateContentConfig(response_mime_type="application/json")
-            )
-            return response.text.strip()
-        except Exception as e:
-            logger.error(f"Gemini API error: {e}")
-            return f"Error generating questions: {e}"
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                logger.info("Calling Gemini model to generate natural language questions...")
+                response = self.llm_client.models.generate_content(
+                    model='gemini-2.5-flash',
+                    contents=[types.Content(role="user", parts=[types.Part.from_text(text=system_prompt)])],
+                    config=types.GenerateContentConfig(response_mime_type="application/json")
+                )
+                return response.text.strip()
+            except Exception as e:
+                logger.error(f"Gemini API error: {e}")
+                if attempt == max_retries - 1:
+                    return f"Error generating questions: {e}"
+                
+                err_str = str(e)
+                if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                    sleep_time = (2 ** attempt) * 5 + random.uniform(1, 5)
+                else:
+                    sleep_time = 2 ** attempt
+                
+                logger.info(f"Retrying in {sleep_time:.2f}s...")
+                time.sleep(sleep_time)
 
 
 def clean_json_response(response_text: str) -> str:
