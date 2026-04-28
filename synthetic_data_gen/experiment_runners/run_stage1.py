@@ -26,13 +26,12 @@ if __name__ == "__main__":
     PROMPTS_DIR = "synthetic_data_gen/prompts/"
     
     # Specify which prompt files to use (using filenames without .txt)
-    #BATCH_PROMPT_NAME = "batch_sql_generation_cot" 
-    BATCH_PROMPT_NAME = "batch_sql_generation_cot_v2"
+    BATCH_PROMPT_NAME = "batch_sql_generation_cot_v3"
     SUMMARIZE_PROMPT_NAME = "summarize_sql"
     
     # Selection logic for which databases to process
     # Examples: '0:5' (range), 'perpetrator' (single ID), '10' (first 10)
-    DB_SELECTION = "products_for_hire"
+    DB_SELECTION = ":"
     
     # Setup for timestamped output to prevent overwriting previous runs
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -71,6 +70,10 @@ if __name__ == "__main__":
         
     print(f"🎯 Selected {len(target_dbs)} database(s): {', '.join(target_dbs)}")
     
+    # Define a run-specific directory for checkpoints based on selection
+    # This allows resuming if the same selection is run again.
+    JOB_RUN_DIR = f"synthetic_data_gen/results/stage1/synthetic_data_{clean_selection}"
+    
     # --- EXECUTION ---
     # Run the multithreaded generation pipeline
     final_dataset = run_multithreaded_pipeline(
@@ -82,7 +85,8 @@ if __name__ == "__main__":
         prompts=prompts,
         batch_prompt_name=BATCH_PROMPT_NAME,
         summarize_prompt_name=SUMMARIZE_PROMPT_NAME,
-        max_workers=8 
+        max_workers=8,
+        output_dir=JOB_RUN_DIR
     )
 
     # --- FINALIZATION ---

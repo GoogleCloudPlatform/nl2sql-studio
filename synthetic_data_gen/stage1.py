@@ -372,7 +372,7 @@ def parse_db_selection(selection_str, schemas):
     return []
 
 
-def process_single_database(db_id, tables_path, db_dir, client, model_name, prompts, batch_prompt_name, summarize_prompt_name):
+def process_single_database(db_id, tables_path, db_dir, client, model_name, prompts, batch_prompt_name, summarize_prompt_name, output_dir=None):
     """
     The end-to-end workflow for a single database: Sample -> Generate -> Validate -> Summarize.
 
@@ -385,6 +385,7 @@ def process_single_database(db_id, tables_path, db_dir, client, model_name, prom
         prompts (dict): Dictionary of loaded prompt templates.
         batch_prompt_name (str): Key for the generation prompt.
         summarize_prompt_name (str): Key for the summarization prompt.
+        output_dir (str, optional): Directory to save individual DB results.
 
     Returns:
         list: A list of all attempted query objects (success and fail).
@@ -450,10 +451,17 @@ def process_single_database(db_id, tables_path, db_dir, client, model_name, prom
             "error_message": f"Execution failed: {str(e)}"
         })
             
+    if output_dir and results_batch:
+        os.makedirs(output_dir, exist_ok=True)
+        file_path = os.path.join(output_dir, f"{db_id}.json")
+        with open(file_path, 'w') as f:
+            json.dump(results_batch, f, indent=4)
+        print(f"💾 Saved results for {db_id} to {file_path}")
+
     return results_batch
 
 
-def run_multithreaded_pipeline(tables_path, db_dir, db_ids, client, model_name, prompts, batch_prompt_name, summarize_prompt_name, max_workers=5):
+def run_multithreaded_pipeline(tables_path, db_dir, db_ids, client, model_name, prompts, batch_prompt_name, summarize_prompt_name, max_workers=5, output_dir=None):
     """
     Orchestrates the concurrent processing of multiple databases.
 
@@ -467,6 +475,7 @@ def run_multithreaded_pipeline(tables_path, db_dir, db_ids, client, model_name, 
         batch_prompt_name (str): Key for the generation prompt.
         summarize_prompt_name (str): Key for the summarization prompt.
         max_workers (int): Maximum number of concurrent database threads.
+        output_dir (str, optional): Directory to save individual DB results.
 
     Returns:
         list: The complete dataset of verified queries.
@@ -479,10 +488,20 @@ def run_multithreaded_pipeline(tables_path, db_dir, db_ids, client, model_name, 
     # Create a thread pool
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         # Submit all tasks to the pool
-        future_to_db = {
-            executor.submit(process_single_database, db_id, tables_path, db_dir, client, model_name, prompts, batch_prompt_name, summarize_prompt_name): db_id 
-            for db_id in db_ids
-        }
+        future_to_db = {}
+        for db_id in db_ids:
+            if output_dir:
+                file_path = os.path.join(output_dir, f"{db_id}.json")
+                if os.path.exists(file_path):
+                    print(f"⏭️ [{db_id}] Skipping because results file already exists.")
+                    try:
+                        with open(file_path, 'r') as f:
+                            master_dataset.extend(json.load(f))
+                    except Exception as e:
+                        print(f"⚠️ Error loading existing file for {db_id}: {e}")
+                    continue
+            
+            future_to_db[executor.submit(process_single_database, db_id, tables_path, db_dir, client, model_name, prompts, batch_prompt_name, summarize_prompt_name, output_dir)] = db_id
         
         # As each thread completes, gather the results
         for future in as_completed(future_to_db):

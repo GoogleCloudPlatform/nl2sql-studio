@@ -1,0 +1,56 @@
+You are an expert SQL Architect building a diverse synthetic dataset. 
+Your task is to generate exactly 25 highly accurate, valid SQL queries based on the provided schema and sample data.
+
+DISTRIBUTION REQUIREMENT:
+- Exactly 13 "Complex" queries
+- Exactly 7 "Medium" queries
+- Exactly 5 "Simple" queries
+
+RULES:
+1. NO MARKDOWN: Only output the raw SQL code. No explanations, no formatting blocks.
+2. ALIASING: Use table aliasing (e.g., T1, T2) for clarity in all queries involving more than one table.
+3. DATA-AWARE FILTERING: If you use a WHERE or HAVING clause, you may ONLY filter using exact data values explicitly shown in the "Sample Rows" for that specific column. Do not invent, guess, or assume values exist.
+4. STRUCTURAL COMPLEXITY: To achieve "Medium" or "Complex" queries, do NOT simply add multiple conditions to a WHERE clause (e.g., WHERE col1=A AND col2=B AND col3=C), as this often results in empty datasets. Instead, increase the relational and analytical depth of the query. Focus on the following structural patterns:
+    - **Multi-Table Joins**: Connect 3 or more tables to answer questions that span across different domain entities. Ensure you use proper join conditions based on foreign keys.
+    - **Advanced Aggregations with GROUP BY and HAVING**: Instead of just grouping, use the `HAVING` clause to filter aggregated results (e.g., "Find groups where the count is greater than 2"). This adds logical depth without restricting the raw data too early.
+    - **Nested Subqueries**: Use subqueries in the `FROM` clause (derived tables) or in the `WHERE` clause (using `IN`, `NOT IN`, `EXISTS`, or comparative operators like `> (SELECT AVG...)`). This forces the model to perform multi-step reasoning.
+    - **Set Operations**: Use `UNION`, `INTERSECT`, and `EXCEPT` to combine or compare results from different queries. This is excellent for creating complex scenarios like "Find entities that meet condition A but not condition B".
+5. BROAD FILTERS: If you cannot find a good sample value to filter on, use broad structural filters like `IS NOT NULL` or numeric comparisons like `> 0`.
+6. EMPTY TABLES AVOIDANCE: Look at the "Sample Rows (Limit 3):" section for each table. If it says `- (Table is empty)`, this means the table contains NO data in the live database. You MUST NOT generate any query that reads from or joins with this table. Queries on empty tables will return 0 rows and be discarded. Only use tables that show actual sample rows.
+7. SQLITE COMPATIBILITY: Do not use parentheses around complete SELECT statements when combining them with UNION, INTERSECT, or EXCEPT. For example, write `SELECT ... UNION SELECT ...` instead of `(SELECT ...) UNION (SELECT ...)`. SQLite rejects the latter.
+8. SPECIAL CHARACTERS IN COLUMN NAMES: If a column name contains special characters like parentheses (e.g., `Official_ratings_(millions)`), you MUST enclose the column name in double quotes (e.g., `"Official_ratings_(millions)"`) in the SQL query to avoid syntax errors.
+9. STRICT SCHEMA ADHERENCE & DATA TYPE AWARENESS:
+    - You MUST ONLY use column names that are explicitly listed in the "Table:" definitions for that specific table.
+    - Do NOT assume or guess column names based on other tables (e.g., if `city` table has `CountryCode`, do NOT assume `country` table also has `CountryCode` if it is not listed).
+    - Pay close attention to join columns. Ensure that the data types and values match when joining (e.g., do not join a text `Maker` name with a numeric `Maker` ID).
+10. FORCE FULL COLUMN COVERAGE: You MUST ensure that every column in the schema is referenced in at least one query in the batch. If there are many columns, use them in the "Simple" and "Medium" queries by selecting or filtering on them (e.g., instead of just selecting Name, select less common attributes like `GNP`, `LifeExpectancy`, etc. if present).
+
+OUTPUT FORMAT:
+You MUST output ONLY a valid JSON object with a key named "queries" containing the array of query objects. Do not wrap it in markdown blockquotes or add any text before or after the JSON.
+Include a `thought` field where you explain your step-by-step reasoning for why you believe the query will yield results (i.e., not return 0 rows).
+
+Format Example:
+{{
+    "queries": [
+        {{"complexity": "Simple", "thought": "Sample rows show an instructor with salary 94333.99, so I find instructors with this salary to ensure it returns data.", "sql": "SELECT name, salary FROM instructor WHERE salary = 94333.99;"}},
+        {{"complexity": "Medium", "thought": "GROUP BY on instructor name with aggregation on student credits will yield results if tables are populated. Count count of students per instructor is stable.", "sql": "SELECT T1.name, SUM(T2.tot_cred) FROM instructor AS T1 JOIN student AS T2 ON T1.dept_name = T2.dept_name GROUP BY T1.name;"}},
+        ...
+    ]
+}}
+
+FEW-SHOT EXAMPLES:
+{{
+    "queries": [
+        {{"complexity": "Complex", "thought": "Count languages spoken in each country. Note that `country` table uses `Code` as primary key, while `countrylanguage` uses `CountryCode`. I must join on `Code = CountryCode`.", "sql": "SELECT T1.Name, COUNT(T2.Language) FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code = T2.CountryCode GROUP BY T1.Name;"}},
+        {{"complexity": "Medium", "thought": "Find models for a maker named 'amc'. In `car_makers`, `Id` is the numeric identifier and `Maker` is the text name. In `model_list`, `Maker` is the numeric identifier referencing `car_makers.Id`. I must join `car_makers.Id = model_list.Maker` and filter on `car_makers.Maker = 'amc'`.", "sql": "SELECT T2.Model FROM car_makers AS T1 JOIN model_list AS T2 ON T1.Id = T2.Maker WHERE T1.Maker = 'amc';"}},
+        {{"complexity": "Medium", "thought": "Find students who have taken more than 2 courses. I must group by `ID` and use `HAVING COUNT(*) > 2` to filter on the aggregate count.", "sql": "SELECT ID FROM takes GROUP BY ID HAVING COUNT(course_id) > 2;"}},
+        {{"complexity": "Complex", "thought": "Find names of instructors teaching 'CS-101'. `course` table doesn't have `instructor_id`. I must link `instructor` -> `teaches` -> `course` via correct foreign keys.", "sql": "SELECT T1.name FROM instructor AS T1 JOIN teaches AS T2 ON T1.ID = T2.ID JOIN course AS T3 ON T2.course_id = T3.course_id WHERE T3.title = 'CS-101';"}},
+        {{"complexity": "Simple", "thought": "Find students who got an 'A' grade. I must use the exact value 'A' as seen in sample rows for the `grade` column.", "sql": "SELECT name FROM student JOIN takes ON student.ID = takes.ID WHERE takes.grade = 'A';"}},
+        {{"complexity": "Complex", "thought": "Find instructors who earn more than the average salary. I need a subquery to calculate the average salary first.", "sql": "SELECT name FROM instructor WHERE salary > (SELECT AVG(salary) FROM instructor);"}},
+        {{"complexity": "Complex", "thought": "Find courses offered in Fall but not in Spring. I'll use `EXCEPT` set operation to find the difference between the two sets of courses.", "sql": "SELECT course_id FROM section WHERE semester = 'Fall' EXCEPT SELECT course_id FROM section WHERE semester = 'Spring';"}},
+        {{"complexity": "Simple", "thought": "Find country name, life expectancy, and GNP for countries in Europe with life expectancy above 75. This uses multiple columns from the `country` table to improve coverage.", "sql": "SELECT Name, LifeExpectancy, GNP FROM country WHERE Continent = 'Europe' AND LifeExpectancy > 75;"}}
+    ]
+}}
+
+TARGET SCHEMA & SAMPLE DATA:
+{schema_with_samples_text}
