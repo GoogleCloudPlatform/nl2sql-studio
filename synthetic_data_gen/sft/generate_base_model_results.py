@@ -15,9 +15,11 @@ from pydantic import BaseModel, Field
 from google.cloud import aiplatform
 from get_schema_details import get_schema_details
 import re
+import time
+import random
 
 # Configuration for Vertex AI Endpoint
-ENDPOINT_ID = "7602940387140829184"
+ENDPOINT_ID = "mg-endpoint-a6b654ee-0d0f-4fef-acd8-be194241f9b0"
 PROJECT_ID = "862253555914"
 LOCATION = "asia-southeast1"
 API_ENDPOINT = f"{LOCATION}-aiplatform.googleapis.com"
@@ -57,52 +59,66 @@ def get_ai_sql_gemma(endpoint_obj: aiplatform.Endpoint, schema_details: str, que
 
     final_sql = ""
 
-    try:
-        # This specific container expects the prompt in a "text" field
-        instances = [{
-            "prompt": prompt,
-            "max_tokens": 8192, 
-            "temperature": 0.0,
-            "stop": ["<|im_end|>"] 
-        
-        }]
 
-        # Call the endpoint object with both instances and parameters
-        response = endpoint_obj.predict(instances=instances)
+    max_retries = 10
+    for attempt in range(max_retries):
+        try:
+            # This specific container expects the prompt in a "text" field
+            instances = [{
+                "prompt": prompt,
+                "max_tokens": 8192, 
+                "temperature": 0.0,
+                "frequency_penalty": 1.0,
+                "stop": ["<|im_end|>"] 
+            }]
 
-        if response.predictions:
-            prediction = response.predictions[0]
-            print(f"\n--- Prediction Response ---")
-            print(prediction)
-            raw_content = prediction.get("text", "") if isinstance(prediction, dict) else str(prediction)
+            # Call the endpoint object with both instances and parameters
+            response = endpoint_obj.predict(instances=instances)
 
-            # Strip the container's echo payload
-            if "<|im_start|>assistant" in raw_content:
-                raw_content = raw_content.split("<|im_start|>assistant")[-1]
-            elif "Output:" in raw_content:
-                raw_content = raw_content.split("Output:")[-1]
+            if response.predictions:
+                prediction = response.predictions[0]
+                print(f"\n--- Prediction Response ---")
+                print(prediction)
+                raw_content = prediction.get("text", "") if isinstance(prediction, dict) else str(prediction)
 
-            raw_output = raw_content.replace("<|im_end|>", "").strip()
-            
-            # Extract SQL from markdown
-            sql_match = re.search(r"```[sS][qQ][lL]\s*(.*?)\s*```", raw_output, re.DOTALL)
-            
-            if sql_match:
-                final_sql = sql_match.group(1).strip()
-            else:
-                fallback_match = re.search(r'(?i)\b(SELECT\b[^"]*)', raw_output, re.DOTALL)
-                if fallback_match:
-                    final_sql = fallback_match.group(1).strip()
+                # Strip the container's echo payload
+                if "<|im_start|>assistant" in raw_content:
+                    raw_content = raw_content.split("<|im_start|>assistant")[-1]
+                elif "Output:" in raw_content:
+                    raw_content = raw_content.split("Output:")[-1]
+
+                raw_output = raw_content.replace("<|im_end|>", "").strip()
+                
+                # Extract SQL from markdown
+                sql_match = re.search(r"```[sS][qQ][lL]\s*(.*?)\s*```", raw_output, re.DOTALL)
+                
+                if sql_match:
+                    final_sql = sql_match.group(1).strip()
                 else:
-                    print(f"Extraction failed.")
-                    final_sql = "EXTRACTION_FAILED"
+                    fallback_match = re.search(r'(?i)\b(SELECT\b[^"]*)', raw_output, re.DOTALL)
+                    if fallback_match:
+                        final_sql = fallback_match.group(1).strip()
+                    else:
+                        print(f"Extraction failed.")
+                        final_sql = "EXTRACTION_FAILED"
 
-            # BIRD safety check: Strip trailing semicolons as they can occasionally crash SQLite runners
-            if final_sql and final_sql.endswith(";"):
-                final_sql = final_sql[:-1].strip()
+                # BIRD safety check: Strip trailing semicolons as they can occasionally crash SQLite runners
+                if final_sql and final_sql.endswith(";"):
+                    final_sql = final_sql[:-1].strip()
 
-    except Exception as e:
-        print(f"Error processing SQL: {e}")
+            break
+
+        except Exception as e:
+            print(f"Error processing SQL on attempt {attempt + 1}: {e}")
+            if attempt == max_retries - 1:
+                break
+            err_str = str(e)
+            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                sleep_time = (2 ** attempt) * 5 + random.uniform(1, 5)
+            else:
+                sleep_time = 2 ** attempt
+            print(f"Retrying in {sleep_time:.2f}s...")
+            time.sleep(sleep_time)
         
     return final_sql
 
@@ -122,7 +138,7 @@ def add_ai_sql_to_json(file_path: str):
     # Create the Endpoint Object once to reuse connections
     vertex_endpoint = aiplatform.Endpoint(ENDPOINT_ID)
 
-    out_filename = file_path.replace('.json', '_ai_gemma-base.json')
+    out_filename = file_path.replace('.json', f'_ai_{MODEL_NAME}.json')
     
     try:
         with open(file_path, 'r') as f:
@@ -136,7 +152,7 @@ def add_ai_sql_to_json(file_path: str):
         for item in tqdm(data, desc="Generating SQL queries"):
             db_id = item.get('db_id')
             
-            ai_sql = get_ai_sql_qwen_or_gemma(
+            ai_sql = get_ai_sql_gemma(
                 vertex_endpoint, 
                 json.dumps(get_schema_details(db_id)), 
                 item.get('question'), 
@@ -157,5 +173,7 @@ def add_ai_sql_to_json(file_path: str):
 
 if __name__ == "__main__":
     # Input file containing BIRD questions
-    json_file = '../results/sft/test_set.json' 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    json_file = os.path.abspath(os.path.join(current_dir, "../results/sft/spider_test_set.json"))
+    MODEL_NAME = 'gemma4-26b-base'
     add_ai_sql_to_json(json_file)

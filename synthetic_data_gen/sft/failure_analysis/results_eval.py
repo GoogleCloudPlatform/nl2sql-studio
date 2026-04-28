@@ -69,7 +69,7 @@ def are_results_equal(
 
     return ground_truth_result == ai_result
 
-def evaluate_bird_queries(file_path: str, db_root_path: str):
+def evaluate_queries(file_path: str, db_root_path: str):
     """
     Evaluates AI-generated SQL queries against ground truth for the BIRD dataset.
     Processes each item in the JSON file, executes queries, and prints summary stats.
@@ -125,6 +125,10 @@ def evaluate_bird_queries(file_path: str, db_root_path: str):
             else:
                 incorrect_result_count += 1
                 item["status"] = "Incorrect"
+                if len(ai_result) == 0:
+                    item["error"] = "Returned 0 rows"
+                else:
+                    item["error"] = "Incorrect results"
 
         # Save the updated data back to the input file
         with open(file_path, 'w') as f:
@@ -146,7 +150,8 @@ def evaluate_bird_queries(file_path: str, db_root_path: str):
 if __name__ == "__main__":
     # Execution entry point
     # This assumes you have run gen_bird_ai_sql.py first to generate the file
-    generated_file = '/Users/roopayk/Documents/nl-sql/nl2sql-studio/synthetic_data_gen/results/sft/test_set_ai_gemma-base.json'
-    db_root = '/Users/roopayk/Documents/nl-sql/nl2sql-studio/synthetic_data_gen/database'
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    generated_file = os.path.abspath(os.path.join(current_dir, "../../results/sft/spider_test_set_ai_gemma4-26b-base.json"))
+    db_root = os.path.abspath(os.path.join(current_dir, "../../database"))
     
-    evaluate_bird_queries(generated_file, db_root)
+    evaluate_queries(generated_file, db_root)

@@ -7,6 +7,7 @@ such as unclosed quotes, unmatched parentheses, and dangling keywords.
 """
 
 import json
+import os
 
 def check_sql_completeness(file_path: str):
     """
@@ -78,7 +79,8 @@ def check_sql_completeness(file_path: str):
 if __name__ == "__main__":
     # Execution entry point
     # Point this to the JSON file you want to scan
-    json_file = '../results/sft/filtered_dev_ai_qwen.json' 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    json_file = os.path.abspath(os.path.join(current_dir, "../results/sft/filtered_dev_ai_qwen.json"))
     
     print(f"Scanning file: {json_file}")
     check_sql_completeness(json_file)
