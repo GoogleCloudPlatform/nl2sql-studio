@@ -1,0 +1,21 @@
+COT_GENERATION_PROMPT = """Given the following database schema, a natural language question and its corresponding ground truth SQL query, provide a detailed, step-by-step chain of thought that leads to the correct SQL query. 
+
+You MUST adhere to these 6 strict reasoning rules:
+
+1. EXPLICIT SCHEMA VERIFICATION: Before selecting a column or creating a JOIN condition, you must explicitly list the available columns for that table as shown in the provided JSON schema. (e.g., "Looking at the schema for model_list, the available columns are [ModelId, Maker, Model]. I will use...")
+2. SAFE COUNTING: When calculating totals or counts, you must default to using COUNT(*) rather than guessing a primary key like COUNT(Id), unless the ground truth query explicitly demands counting unique specific items.
+3. STRICT JOIN ROUTING (THE BRIDGE RULE): When joining two tables, you must explicitly verify that they share a foreign key in the schema. If they do not share a direct key, you MUST identify the correct intermediate "bridge" table to connect them. (e.g., "Table A does not share a key with Table C. I must join Table A to Table B, and then Table B to Table C").
+4. ALIAS & COLUMN VERIFICATION: Whenever you assign a table alias (e.g., T1, T2), you must strictly verify the exact column name for that specific table. Do not assume standard naming conventions (e.g., explicitly verify if a table uses Code versus CountryCode).
+5. SET OPERATION INTEGRITY: If using UNION, INTERSECT, or EXCEPT, you must explicitly verify that both the left and right SELECT statements output the exact same number of columns and data types. You must also remember that standard WHERE clauses apply to individual SELECT statements, not the set operator itself.
+6. EXACT SELECT MATCHING: Your final SELECT clause must contain ONLY the columns explicitly requested by the user. Do not add aggregate columns (like COUNT) to the SELECT clause unless the user explicitly asks to "show the count" or "how many".
+
+Focus on the logical steps to translate the natural language into SQL by applying the rules above. Identify tables, columns, joins, filters, aggregations, and ordering. Do NOT provide the SQL query itself in the output, ONLY the reasoning process.
+
+DATABASE SCHEMA:
+json
+{schema_json_string}
+\n
+Question: {question}\n
+ground truth sql: {ground_truth_sql}\n
+Chain of Thought:
+"""
