@@ -54,7 +54,7 @@ flax==0.7.5
 frozenlist==1.4.1
 fsspec==2024.3.1
 gitdb==4.0.11
-GitPython==3.1.43
+GitPython==3.1.49
 google-ai-generativelanguage==0.6.4
 google-api-core==2.19.0
 google-api-python-client==2.129.0
