@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import re
 from collections import Counter
 
 def analyze_file(file_path):
@@ -41,7 +42,8 @@ def analyze_file(file_path):
         
         diff_stats[difficulty]["total"] += 1
         
-        success = item.get("status", False) == "Correct"
+        status = item.get("status", "")
+        success = bool(re.match(r"^Correct", status))
         error_msg = item.get("error", "")
         sql = item.get("ai_generated_sql", "").upper()
 
