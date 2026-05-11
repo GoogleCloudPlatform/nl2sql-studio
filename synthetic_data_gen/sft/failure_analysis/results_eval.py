@@ -1,27 +1,23 @@
 """
-BIRD SQL Execution Evaluator
-----------------------------
+BIRD/Spider SQL Execution Evaluator & Equivalent Analyzer
+---------------------------------------------------------
 This script evaluates AI-generated SQL queries against ground truth queries
-by executing both on the target SQLite database and comparing the results.
-It handles order-insensitive comparisons when ORDER BY is missing.
+by executing both on the target SQLite database, comparing the results,
+and performing advanced equivalence analysis (reordering, extra columns, tie-breakers).
 """
 
 import json
 import sqlite3
 import os
+import re
+import itertools
 from typing import List, Any, Tuple, Dict, Optional
 from tqdm import tqdm
+from collections import Counter
 
 def execute_sql(db_path: str, query: str) -> Tuple[Optional[List[Any]], Optional[str]]:
     """
     Executes a given SQL query on a specified SQLite database.
-    
-    Args:
-        db_path (str): Path to the .sqlite file.
-        query (str): The SQL query to execute.
-        
-    Returns:
-        tuple: (Result list if successful, Error message if failed)
     """
     if not os.path.exists(db_path):
         return None, f"Database not found at {db_path}"
@@ -39,17 +35,9 @@ def are_results_equal(
     ground_truth_query: str,
     ground_truth_result: List[Any],
     ai_result: List[Any]
-) -> bool:
+    ) -> bool:
     """
     Compares two SQL query results for equality, handling order sensitivity.
-    
-    Args:
-        ground_truth_query (str): The original ground truth SQL string.
-        ground_truth_result (list): Results from the ground truth query.
-        ai_result (list): Results from the AI-generated query.
-        
-    Returns:
-        bool: True if results are equivalent, False otherwise.
     """
     if ai_result is None:
         return False
@@ -57,26 +45,115 @@ def are_results_equal(
     if len(ground_truth_result) != len(ai_result):
         return False
 
-    # If there's no ORDER BY in the ground truth, the order of results is not guaranteed.
-    # We sort the results to compare them content-wise.
+    # If there's no ORDER BY in the ground truth, compare order-insensitively using Counter
     if "order by" not in ground_truth_query.lower():
-        try:
-            ground_truth_result = sorted(list(set(ground_truth_result)))
-            ai_result = sorted(list(set(ai_result)))
-        except TypeError:
-            # Fallback for unorderable types (e.g., lists of dicts) using simple set comparison
-            return set(ground_truth_result) == set(ai_result)
+        return Counter(ground_truth_result) == Counter(ai_result)
 
+    # If there is an ORDER BY, compare order-sensitively
     return ground_truth_result == ai_result
+
+def check_reordering(res_gt: List[Any], res_ai: List[Any]) -> Tuple[bool, Optional[Tuple[int, ...]]]:
+    """
+    Checks if AI result is equal to GT result under some column reordering (permutation).
+    """
+    if not res_gt or not res_ai:
+        return False, None
+    if len(res_gt) != len(res_ai):
+        return False, None
+    
+    len_gt = len(res_gt[0])
+    len_ai = len(res_ai[0])
+    if len_gt != len_ai:
+        return False, None
+    
+    for perm in itertools.permutations(range(len_gt)):
+        permuted_ai = []
+        for row in res_ai:
+            permuted_row = tuple(row[i] for i in perm)
+            permuted_ai.append(permuted_row)
+        
+        if Counter(res_gt) == Counter(permuted_ai):
+            return True, perm
+            
+    return False, None
+
+def check_extra_columns(res_gt: List[Any], res_ai: List[Any]) -> Tuple[bool, Optional[bool], Optional[Tuple[int, ...]]]:
+    """
+    Checks if results are equivalent but one has extra columns.
+    Returns (is_extra_cols, swapped, perm) where swapped=True means GT has extra columns.
+    """
+    if not res_gt or not res_ai:
+        return False, None, None
+        
+    len_gt = len(res_gt[0])
+    len_ai = len(res_ai[0])
+    if len_gt == len_ai:
+        return False, None, None
+        
+    if len_gt < len_ai:
+        smaller, larger = res_gt, res_ai
+        swapped = False
+    else:
+        smaller, larger = res_ai, res_gt
+        swapped = True
+        
+    len_small = len(smaller[0])
+    len_large = len(larger[0])
+    
+    if len(smaller) != len(larger):
+        return False, None, None
+        
+    for cols in itertools.combinations(range(len_large), len_small):
+        for perm in itertools.permutations(cols):
+            projected_large = []
+            for row in larger:
+                projected_row = tuple(row[i] for i in perm)
+                projected_large.append(projected_row)
+                
+            if Counter(smaller) == Counter(projected_large):
+                return True, swapped, perm
+                
+    return False, None, None
+
+def check_tie_breaker(db_path: str, sql_gt: str, sql_ai: str) -> Tuple[bool, Optional[str]]:
+    """
+    Checks if queries are equivalent after stripping the LIMIT clause.
+    """
+    def strip_limit(sql):
+        cleaned = re.sub(r'\bLIMIT\s+\d+\b', '', sql, flags=re.IGNORECASE).strip()
+        if cleaned.endswith(';'):
+            cleaned = cleaned[:-1].strip()
+        return cleaned
+
+    clean_gt = strip_limit(sql_gt)
+    clean_ai = strip_limit(sql_ai)
+    
+    if clean_gt == sql_gt and clean_ai == sql_ai:
+        return False, None
+        
+    res_gt_unlimited, err_gt = execute_sql(db_path, clean_gt)
+    res_ai_unlimited, err_ai = execute_sql(db_path, clean_ai)
+    
+    if err_gt or err_ai or not res_gt_unlimited or not res_ai_unlimited:
+        return False, None
+        
+    if Counter(res_gt_unlimited) == Counter(res_ai_unlimited):
+        return True, "exact_match_unlimited"
+        
+    is_reordered, _ = check_reordering(res_gt_unlimited, res_ai_unlimited)
+    if is_reordered:
+        return True, "reordered_unlimited"
+        
+    is_extra, _, _ = check_extra_columns(res_gt_unlimited, res_ai_unlimited)
+    if is_extra:
+        return True, "extra_columns_unlimited"
+        
+    return False, None
 
 def evaluate_queries(file_path: str, db_root_path: str):
     """
-    Evaluates AI-generated SQL queries against ground truth for the BIRD dataset.
-    Processes each item in the JSON file, executes queries, and prints summary stats.
-    
-    Args:
-        file_path (str): Path to the JSON file containing AI generated SQL.
-        db_root_path (str): Directory where SQLite databases are stored.
+    Evaluates AI-generated SQL queries against ground truth for the Spider dataset,
+    performing exact checks and advanced equivalence analysis.
     """
     if not os.path.exists(file_path):
         print(f"Error: File not found at '{file_path}'")
@@ -86,16 +163,18 @@ def evaluate_queries(file_path: str, db_root_path: str):
         with open(file_path, 'r') as f:
             data: List[Dict[str, Any]] = json.load(f)
 
-        correct_count = 0
-        total_count = 0
+        exact_correct_count = 0
+        reordered_count = 0
+        extra_columns_count = 0
+        tie_breaker_count = 0
         execution_failed_count = 0
-        incorrect_result_count = 0
+        pure_incorrect_count = 0
+        total_count = 0
 
         for item in tqdm(data, desc="Evaluating queries"):
             db_id = item.get("db_id")
-            ground_truth_sql = item.get("SQL") # BIRD dataset uses capitalized 'SQL'
+            ground_truth_sql = item.get("SQL")
             ai_sql = item.get("ai_generated_sql")
-            question = item.get("question")
 
             if not all([db_id, ground_truth_sql, ai_sql]):
                 continue
@@ -105,9 +184,6 @@ def evaluate_queries(file_path: str, db_root_path: str):
 
             # Execute ground truth query to get the expected result
             gt_result, gt_error = execute_sql(db_path, ground_truth_sql)
-            if gt_error:
-                # We log it but still count it; dataset issues might cause this.
-                pass
 
             # Execute AI query to get the actual result
             ai_result, ai_error = execute_sql(db_path, ai_sql)
@@ -118,40 +194,77 @@ def evaluate_queries(file_path: str, db_root_path: str):
                 item["error"] = ai_error
                 continue
 
-            # Compare results
+            # 1. Compare results (Exact match)
             if are_results_equal(ground_truth_sql, gt_result or [], ai_result):
-                correct_count += 1
+                exact_correct_count += 1
                 item["status"] = "Correct"
+                item["error"] = None
+                continue
+
+            # 2. Category 1: Column Reordering
+            is_reordered, perm = check_reordering(gt_result or [], ai_result)
+            if is_reordered:
+                reordered_count += 1
+                item["status"] = "Correct (Column Reordered)"
+                item["error"] = f"Equivalent under column permutation {perm}"
+                continue
+
+            # 3. Category 2: Extra Columns
+            is_extra, swapped, perm = check_extra_columns(gt_result or [], ai_result)
+            if is_extra:
+                extra_columns_count += 1
+                who_has_extra = "Ground Truth" if swapped else "AI-generated SQL"
+                item["status"] = "Correct (Extra Columns)"
+                item["error"] = f"Equivalent. {who_has_extra} has extra columns. Permutation {perm}"
+                continue
+
+            # 4. Category 3: Different Row during Tie Breaker
+            is_tie, tie_type = check_tie_breaker(db_path, ground_truth_sql, ai_sql)
+            if is_tie:
+                tie_breaker_count += 1
+                item["status"] = "Correct (Tie Breaker)"
+                item["error"] = f"Equivalent unlimited queries (type: {tie_type})"
+                continue
+
+            # If none of the equivalence checks succeeded, it is pure incorrect
+            pure_incorrect_count += 1
+            item["status"] = "Incorrect"
+            if len(ai_result) == 0:
+                item["error"] = "Returned 0 rows"
             else:
-                incorrect_result_count += 1
-                item["status"] = "Incorrect"
-                if len(ai_result) == 0:
-                    item["error"] = "Returned 0 rows"
-                else:
-                    item["error"] = "Incorrect results"
+                item["error"] = "Incorrect results"
 
         # Save the updated data back to the input file
         with open(file_path, 'w') as f:
             json.dump(data, f, indent=2)
         print(f"Updated evaluation results saved to '{file_path}'")
 
+        # Calculations
+        accuracy_exact = exact_correct_count / total_count if total_count > 0 else 0.0
+        total_correct = exact_correct_count + reordered_count + extra_columns_count + tie_breaker_count
+        accuracy_joint = total_correct / total_count if total_count > 0 else 0.0
+
         # Print final metrics
-        accuracy = correct_count / total_count if total_count > 0 else 0.0
-        print(f"\n--- Evaluation Results ---")
+        print(f"\n--- Combined Evaluation Results ---")
         print(f"Total Queries Evaluated: {total_count}")
-        print(f"Correct Queries: {correct_count}")
+        print(f"Exact Correct Queries: {exact_correct_count}")
+        print(f"Equivalent (Column Reordered): {reordered_count}")
+        print(f"Equivalent (Extra Columns): {extra_columns_count}")
+        print(f"Equivalent (Tie Breaker): {tie_breaker_count}")
         print(f"Execution Failed: {execution_failed_count}")
-        print(f"Incorrect Results: {incorrect_result_count}")
-        print(f"Accuracy: {accuracy:.4f}")
+        print(f"Pure Incorrect Results: {pure_incorrect_count}")
+        print(f"-----------------------------------")
+        print(f"Total Correct (Exact + Equivalents): {total_correct}")
+        print(f"Accuracy (Exact): {accuracy_exact:.4f}")
+        print(f"Accuracy (Joint/Equivalents): {accuracy_joint:.4f}")
 
     except Exception as e:
         print(f"An error occurred during evaluation: {e}")
 
 if __name__ == "__main__":
-    # Execution entry point
-    # This assumes you have run gen_bird_ai_sql.py first to generate the file
+    # Default entry point
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    generated_file = os.path.abspath(os.path.join(current_dir, "../../results/sft/spider_test_set_ai_gemma4-26b-base.json"))
+    generated_file = os.path.abspath(os.path.join(current_dir, "../../results/sft/spider_test_set_ai_gemma3-4b-sft-cot-9k-0405-ep.json"))
     db_root = os.path.abspath(os.path.join(current_dir, "../../database"))
     
     evaluate_queries(generated_file, db_root)
