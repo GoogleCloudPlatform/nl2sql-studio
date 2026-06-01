@@ -3,39 +3,10 @@
 ## Overview
 This project implements an automated, multi-agent pipeline designed to generate high-quality, verified Natural Language to SQL (NL2SQL) query pairs. By validating generated queries against a live database and employing LLM-based evaluation, the system creates a diverse "Golden Truth Dataset." This curated data is optimized for fine-tuning models on complex text-to-SQL tasks and provides a rigorous foundation for benchmarking model performance.
 
-```mermaid
-graph TD
-    subgraph Phase 1: Verified Code Factory
-        A[Schema / tables-all.json] --> B[Smart Sampler]
-        B --> C[Live SQLite DB]
-        B --> D[Agent A: Architect]
-        D --> E[SQL Queries]
-        E --> F[Execution Engine]
-        F -- Error / 0 Rows --> G[Discard]
-        F -- Success --> H[Result Summarizer]
-        H --> I[Stage 1 Dataset: SQL + Result Summaries]
-    end
+## Architecture
+The core architecture operates across three distinct phases to ensure that generated SQL is syntactically correct, contextually relevant, and accurately mapped to natural language questions.
 
-    subgraph Phase 2: Context-Aware Translation [stage2.py]
-        I --> J[Persona-Driven Selector]
-        J --> K[Async Rate Limiter / Token Bucket]
-        K --> L[Agent B: Storyteller / Async Translator]
-        L --> M[Stage 2 Dataset: NL + SQL Pairs]
-    end
-
-    subgraph Phase 3: The Quality Gate [stage3_unified_eval.py]
-        M --> N[Automated Evaluator: Agent C - The Judge]
-        N --> O[Self-Debate Mechanism]
-        O --> P[7-Dimension Rubric Scoring]
-        P --> Q[Pydantic Validation / Output Parser]
-        Q --> R[Evaluation Metrics: Schema Coverage & SUR]
-        R --> S[Enriched Golden Dataset / results/stage3/]
-    end
-```
-
----
-
-## Phase 1: Verified Code Factory (Stage 1)
+### Phase 1: Verified Code Factory
 The goal of this initial phase is to generate syntactically correct and executable SQL queries directly from a target database schema.
 * **Smart Sampler:** Ingests the database JSON Schema and iterates through it table-by-table to ensure comprehensive domain coverage.
 * **Agent A (Architect):** Generates valid SQL queries across varying levels of complexity (*Simple, Medium, Complex*).
