@@ -1,6 +1,7 @@
 import os
 import sys
 import asyncio
+import argparse
 
 # Add the sft directory to sys.path to import from it
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -8,25 +9,35 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from create_training_data import main
 
 if __name__ == "__main__":
-    script_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Configuration
-    INPUT_FILE_PATH = os.path.abspath(os.path.join(script_dir, '../../results/stage2/s2_flash_synthetic_data_0_49_20260407_221624.json'))
-    
-    MODEL_TYPE = "qwen" # possible values: "llama", "gemini", "qwen", "gemma"
-    GENERATE_COT = True
-    CONCURRENT_BATCH_SIZE = 10
+    parser = argparse.ArgumentParser(description='Create SFT training data from Stage 2 output.')
+    parser.add_argument('--input', type=str, required=True, help='Path to Stage 2 output JSON file')
+    parser.add_argument('--prompt', type=str, required=True, help='Path to COT prompt template file')
+    parser.add_argument('--model-type', type=str, default='gemma', choices=['llama', 'gemini', 'qwen', 'gemma'], help='Target model formatting')
+    parser.add_argument('--generate-cot', action=argparse.BooleanOptionalAction, default=False, help='Generate Chain of Thought reasoning steps')
+    parser.add_argument('--batch-size', type=int, default=10, help='Number of parallel calls to Gemini')
+    args = parser.parse_args()
 
-    OUTPUT_FILE_PATH = INPUT_FILE_PATH[:-5]+f"_{MODEL_TYPE}_{'COT' if GENERATE_COT else 'no_COT'}.jsonl"
+    # Derive output file name based on model type and CoT setting using the original old logic
+    args.output = args.input[:-5] + f"_{args.model_type}_{'new_COT' if args.generate_cot else 'no_COT'}.jsonl"
 
-    print(f"Running create_training_data with input: {INPUT_FILE_PATH}")
-    
+    print(f"Configuration:")
+    print(f"  INPUT: {args.input}")
+    print(f"  OUTPUT: {args.output}")
+    print(f"  PROMPT TEMPLATE: {args.prompt}")
+    print(f"  MODEL TYPE: {args.model_type}")
+    print(f"  GENERATE COT: {args.generate_cot}")
+    print(f"  BATCH SIZE: {args.batch_size}")
+
+    # Run the async main function
     asyncio.run(
         main(
-            INPUT_FILE_PATH,
-            OUTPUT_FILE_PATH,
-            model_type=MODEL_TYPE,
-            generate_cot=GENERATE_COT,
-            batch_size=CONCURRENT_BATCH_SIZE
+            args.input,
+            args.output,
+            model_type=args.model_type,
+            generate_cot=args.generate_cot,
+            batch_size=args.batch_size,
+            prompt_path=args.prompt
         )
     )
+

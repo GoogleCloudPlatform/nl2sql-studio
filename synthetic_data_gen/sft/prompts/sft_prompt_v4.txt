@@ -1,4 +1,4 @@
-COT_GENERATION_PROMPT = """Given the following database schema, a natural language question and its corresponding ground truth SQL query, provide a detailed, step-by-step chain of thought that leads to the correct SQL query. 
+Given the following database schema, a natural language question and its corresponding ground truth SQL query, provide a detailed, step-by-step chain of thought that leads to the correct SQL query. 
 
 You MUST adhere to these 6 strict reasoning rules:
 
@@ -14,8 +14,10 @@ Focus on the logical steps to translate the natural language into SQL by applyin
 DATABASE SCHEMA:
 json
 {schema_json_string}
-\n
-Question: {question}\n
-ground truth sql: {ground_truth_sql}\n
+
+
+Question: {question}
+
+ground truth sql: {ground_truth_sql}
+
 Chain of Thought:
-"""

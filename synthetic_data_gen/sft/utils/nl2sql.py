@@ -1,6 +1,6 @@
 from google import genai
 from google.genai import types
-import config
+from . import config
 
 MODEL = "gemini-2.5-flash"
 

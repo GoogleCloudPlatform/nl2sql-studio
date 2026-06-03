@@ -95,10 +95,10 @@ def _partition_and_sample(data_with_scores, total_expected_filtered_count, distr
 
     return hard_sample + medium_sample + easy_sample
 
-def filter_complex_queries(input_path, output_path, total_expected_filtered_count, distribution={'hard': 0.4, 'medium': 0.5, 'easy': 0.1}):
+def add_complexity_scores(input_path, output_path, table_file="synthetic_data_gen/test_tables.json"):
     """
-    Filters a JSON file of SQL queries to get a specific count with a desired
-    distribution of complexity (hard, medium, easy).
+    Processes a JSON file of SQL queries, calculates their complexity scores,
+    and assigns difficulty levels (Simple, Medium, Complex) without filtering.
     """
     try:
         with open(input_path, 'r') as f:
@@ -119,44 +119,46 @@ def filter_complex_queries(input_path, output_path, total_expected_filtered_coun
         return
 
     # Calculate complexity and add it to each item
-    # Here we call get_sql_object to convert string to object before calculating complexity
     data_with_scores = []
     for item in data:
         sql_str = item.get('SQL', '')
         db_id = item.get('db_id', '')
         try:
-            sql_obj = get_sql_object(sql_str, db_id)
+            sql_obj = get_sql_object(sql_str, db_id, table_file)
             score = calculate_complexity(sql_obj)
         except Exception as e:
             print(f"Error processing query for db {db_id}: {e}")
-            score = 0 # Fallback or skip
+            score = 0 # Fallback
             
         data_with_scores.append({'complexity_score': score, **item})
-    
-    filtered_data = _partition_and_sample(data_with_scores, total_expected_filtered_count, distribution)
 
-    # Remove complexity_score field
-    for item in filtered_data:
-        if 'complexity_score' in item:
-            del item['complexity_score']
+    # Sort by complexity score to assign difficulty based on percentiles
+    data_with_scores.sort(key=lambda x: x['complexity_score'])
+    n_total = len(data_with_scores)
 
-    print(f"Original number of items: {len(data)}")
-    print(f"Number of complex items kept: {len(filtered_data)}")
-    print(f"Removed {len(data) - len(filtered_data)} simpler items.")
+    # Strata based on percentiles: 30% easy, 40% medium, 30% hard
+    easy_end_idx = int(n_total * 0.3)
+    medium_end_idx = int(n_total * 0.7)
 
-    # Save the filtered data
+    for i, item in enumerate(data_with_scores):
+        if i < easy_end_idx:
+            item['difficulty'] = 'Simple'
+        elif i < medium_end_idx:
+            item['difficulty'] = 'Medium'
+        else:
+            item['difficulty'] = 'Complex'
+
+    # Save the fully annotated data
     with open(output_path, 'w') as f:
-        json.dump(filtered_data, f, indent=4)
+        json.dump(data_with_scores, f, indent=4)
     
-    print(f"Filtered data saved to {output_path}")
+    print(f"Successfully processed {n_total} queries.")
+    print(f"Saved dataset with complexity and difficulty levels to {output_path}")
 
 if __name__ == '__main__':
-    input_file = "synthetic_data_gen/results/sft/test_set.json"
-    output_file = "synthetic_data_gen/results/sft/test_set.json"
+    input_file = "synthetic_data_gen/results/sft/spider_test_set_all_ai_gemma3-4b-sft-cot-9k.json"
+    output_file = "synthetic_data_gen/results/sft/spider_test_set_all_ai_gemma3-4b-sft-cot-9k.json"
 
-    # Define the target size and distribution for the filtered dataset
-    TARGET_COUNT = 6000
-    DISTRIBUTION = {'hard': 0.4, 'medium': 0.5, 'easy': 0.1}
+    print(f"Processing query complexities for {input_file}...")
+    add_complexity_scores(input_file, output_file)
 
-    print(f"Filtering for a target of {TARGET_COUNT} queries with distribution: {DISTRIBUTION}")
-    filter_complex_queries(input_file, output_file, total_expected_filtered_count=TARGET_COUNT, distribution=DISTRIBUTION)

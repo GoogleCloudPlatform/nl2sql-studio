@@ -14,11 +14,11 @@ from tqdm import tqdm
 from pydantic import BaseModel, Field
 from google import genai
 from google.genai import types
-from get_schema_details import get_schema_details
+from utils.get_schema_details import get_schema_details
 import re
 import time
 import random
-import config
+from utils import config
 
 class SQLResponse(BaseModel):
     """Schema for the AI's response to ensure a single SQL query is returned with reasoning."""

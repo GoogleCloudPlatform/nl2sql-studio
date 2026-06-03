@@ -15,21 +15,12 @@ from tqdm import tqdm
 import textwrap
 import os
 import sys
+import argparse
+from utils.nl2sql import generate
+from utils.get_schema_details import get_schema_details
 
-from nl2sql import generate
-from get_schema_details import get_schema_details
+# Prompt template file loaded dynamically inside the main execution flow
 
-# Prompt template used to ask Gemini to generate the reasoning steps (Chain of Thought)
-COT_GENERATION_PROMPT = """Given the following database schema, a natural language question and its corresponding ground truth SQL query, provide a detailed, step-by-step chain of thought that leads to the correct SQL query. Focus on the logical steps to translate the natural language into SQL, including identifying tables, columns, joins, filters, aggregations, and ordering. Do NOT provide the SQL query itself, only the reasoning process.
-
-DATABASE SCHEMA:
-```json
-{schema_json_string}
-```\n
-Question: {question}\n
-ground truth sql: {ground_truth_sql}\n
-Chain of Thought:
-"""
 
 def create_llama_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
     """
@@ -144,7 +135,7 @@ def create_qwen_or_gemma_tuning_record(system_prompt: str, schema: dict, questio
     return record
 
 
-async def main(input_file_path: str, output_file_path: str, model_type: str, generate_cot: bool, batch_size: int):
+async def main(input_file_path: str, output_file_path: str, model_type: str, generate_cot: bool, batch_size: int, prompt_path: str):
     """
     Main function to generate fine-tuning data in JSONL format.
     Supports dynamic CoT generation and multi-model formatting.
@@ -153,6 +144,15 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
     system_prompt_cot = "You are a powerful text-to-SQL model. Your role is to answer user questions by generating SQL queries against a given database schema. First, provide a step-by-step chain of thought that explains your reasoning, and then provide the final SQL query in a markdown code block."
     system_prompt_no_cot = "You are a powerful text-to-SQL model. Your role is to answer user questions by generating SQL queries against a given database schema. Provide the final SQL query in a markdown code block."
     system_prompt = system_prompt_cot if generate_cot else system_prompt_no_cot
+
+    # Load prompt template dynamically if Chain of Thought generation is enabled
+    cot_generation_prompt_template = ""
+    if generate_cot:
+        try:
+            with open(prompt_path, "r") as f:
+                cot_generation_prompt_template = f.read()
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Could not find COT prompt template file at {prompt_path}")
 
     # Check for existing output to support resuming
     start_index = 0
@@ -199,7 +199,7 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
                             ground_truth_sql = item['sql']
                             schema_json_string = json.dumps(schema, indent=2)
 
-                            cot_generation_prompt = COT_GENERATION_PROMPT.format(
+                            cot_generation_prompt = cot_generation_prompt_template.format(
                                 schema_json_string=schema_json_string,
                                 question=question,
                                 ground_truth_sql=ground_truth_sql
@@ -276,25 +276,35 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
     except Exception as e:
         print(f"An error occurred: {e}")
 
-if __name__ == "__main__":
-    # Configuration for the generation run
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    INPUT_FILE_PATH = os.path.abspath(os.path.join(current_dir, "../results/stage2/s2_flash_synthetic_data_0_166_20260417_150731_4k.json"))
+# if __name__ == "__main__":
     
-    MODEL_TYPE = "gemma" # Target model format: "llama", "gemini", or "qwen"
-    GENERATE_COT = True # Set to True to generate reasoning steps
-    CONCURRENT_BATCH_SIZE = 10 # Number of parallel calls to Gemini
+#     parser = argparse.ArgumentParser(description='Create SFT training data from Stage 2 output.')
+#     parser.add_argument('--input', type=str, required=True, help='Path to Stage 2 output JSON file')
+#     parser.add_argument('--prompt', type=str, required=True, help='Path to COT prompt template file')
+#     parser.add_argument('--model-type', type=str, default='gemma', choices=['llama', 'gemini', 'qwen', 'gemma'], help='Target model formatting')
+#     parser.add_argument('--generate-cot', action=argparse.BooleanOptionalAction, default=False, help='Generate Chain of Thought reasoning steps')
+#     parser.add_argument('--batch-size', type=int, default=10, help='Number of parallel calls to Gemini')
+#     args = parser.parse_args()
 
-    # Derive output file name based on model type and CoT setting
-    OUTPUT_FILE_PATH = INPUT_FILE_PATH[:-5]+f"_{MODEL_TYPE}_{'COT' if GENERATE_COT else 'no_COT'}.jsonl"
+#     # Derive output file name based on model type and CoT setting using the original old logic
+#     args.output = args.input[:-5] + f"_{args.model_type}_{'new_COT' if args.generate_cot else 'no_COT'}.jsonl"
 
-    # Run the async main function
-    asyncio.run(
-        main(
-            INPUT_FILE_PATH,
-            OUTPUT_FILE_PATH,
-            model_type=MODEL_TYPE,
-            generate_cot=GENERATE_COT,
-            batch_size=CONCURRENT_BATCH_SIZE
-        )
-    )
+#     print(f"Configuration:")
+#     print(f"  INPUT: {args.input}")
+#     print(f"  OUTPUT: {args.output}")
+#     print(f"  PROMPT TEMPLATE: {args.prompt}")
+#     print(f"  MODEL TYPE: {args.model_type}")
+#     print(f"  GENERATE COT: {args.generate_cot}")
+#     print(f"  BATCH SIZE: {args.batch_size}")
+
+#     # Run the async main function
+#     asyncio.run(
+#         main(
+#             args.input,
+#             args.output,
+#             model_type=args.model_type,
+#             generate_cot=args.generate_cot,
+#             batch_size=args.batch_size,
+#             prompt_path=args.prompt
+#         )
+#     )

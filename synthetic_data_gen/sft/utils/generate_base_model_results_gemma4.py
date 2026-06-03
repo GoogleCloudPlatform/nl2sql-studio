@@ -11,7 +11,7 @@ import os
 from typing import List, Dict, Any
 from tqdm import tqdm
 from google.cloud import aiplatform
-from get_schema_details import get_schema_details
+from utils.get_schema_details import get_schema_details
 import re
 
 # Configuration for Vertex AI Endpoint

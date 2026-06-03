@@ -1,20 +1,14 @@
 import json
-import os
 import re
 from typing import List, Dict, Any
 from tqdm import tqdm
 from google.cloud import aiplatform
-from get_schema_details import get_schema_details
+from utils.get_schema_details import get_schema_details
 import time
 import random
+import os
 
-# Configuration
-ENDPOINT_ID = "3901403705907347456"
-PROJECT_ID = "862253555914"
-LOCATION = "asia-southeast1"
-API_ENDPOINT = f"{LOCATION}-aiplatform.googleapis.com"
-
-def get_ai_sql_qwen_or_gemma(endpoint_obj: aiplatform.Endpoint, schema_details_dict: dict, question: str, evidence: str = "") -> str:
+def get_ai_sql_qwen_or_gemma(endpoint_obj: aiplatform.Endpoint, schema_details_dict: dict, question: str, evidence: str = "", model: str = "gemma", endpoint_id: str = None, project: str = None, location: str = None) -> str:
     """
     Generates a SQL query ensuring 1:1 byte-parity with the SFT training data.
     """
@@ -33,54 +27,82 @@ def get_ai_sql_qwen_or_gemma(endpoint_obj: aiplatform.Endpoint, schema_details_d
     # 4. Match the exact training User Content format (including the \njson\n literal)
     user_content = f"DATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {combined_question}"
     
-    prompt = f"<|im_start|>system\n{system_prompt}\n<|im_end|>\n<|im_start|>user\n{user_content}\n<|im_end|>\n<|im_start|>assistant\n"
+    # Choose prompt based on the model type
+    if model.lower() == "gemini":
+        prompt = f"{system_prompt}\n\n{user_content}"
+    else:
+        prompt = f"<|im_start|>system\n{system_prompt}\n<|im_end|>\n<|im_start|>user\n{user_content}\n<|im_end|>\n<|im_start|>assistant\n"
 
     final_sql = ""
-
-
-
 
     max_retries = 10
     for attempt in range(max_retries):
         try:
-            instances = [{
-                "prompt": prompt,
-                "max_tokens": 8192, 
-                "temperature": 0.0,
-                "stop": ["<|im_end|>"] 
-            }]
-
-            response = endpoint_obj.predict(instances=instances)
-
-            if response.predictions:
-                prediction = response.predictions[0]
-                print(prediction)
-                raw_content = prediction.get("text", "") if isinstance(prediction, dict) else str(prediction)
-
-                # Strip the container's echo payload
-                if "<|im_start|>assistant" in raw_content:
-                    raw_content = raw_content.split("<|im_start|>assistant")[-1]
-                elif "Output:" in raw_content:
-                    raw_content = raw_content.split("Output:")[-1]
-
-                raw_output = raw_content.replace("<|im_end|>", "").strip()
-                
-                # Extract SQL from markdown
-                sql_match = re.search(r"```[sS][qQ][lL]\s*(.*?)\s*```", raw_output, re.DOTALL)
-                
-                if sql_match:
-                    final_sql = sql_match.group(1).strip()
+            if model.lower() == "gemini":
+                from google.genai import types
+                if "/" in endpoint_id:
+                    model_resource = endpoint_id
                 else:
-                    fallback_match = re.search(r"(?i)\b(SELECT\b.*?;?)", raw_output, re.DOTALL)
-                    if fallback_match:
-                        final_sql = fallback_match.group(1).strip()
-                    else:
-                        print(f"Extraction failed.")
-                        final_sql = "EXTRACTION_FAILED"
+                    model_resource = f"projects/{project}/locations/{location}/endpoints/{endpoint_id}"
+                
+                response = endpoint_obj.models.generate_content(
+                    model=model_resource,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        temperature=0.0,
+                        thinking_config=types.ThinkingConfig(
+                            thinking_budget=0,
+                        )
+                    )
+                )
+                raw_content = response.text if response.text else ""
+                raw_output = raw_content.strip()
+            else:
+                instances = [{
+                    "prompt": prompt,
+                    "max_tokens": 8192, 
+                    "temperature": 0.0,
+                    "stop": ["<|im_end|>"] 
+                }]
 
-                # BIRD safety check: Strip trailing semicolons as they can occasionally crash SQLite runners
-                if final_sql and final_sql.endswith(";"):
-                    final_sql = final_sql[:-1].strip()
+                response = endpoint_obj.predict(instances=instances)
+
+                if response.predictions:
+                    prediction = response.predictions[0]
+                    print(prediction)
+                    
+                    # Handle different possible formats in the prediction payload
+                    if isinstance(prediction, dict):
+                        raw_content = prediction.get("text", "") or prediction.get("content", "") or str(prediction)
+                    else:
+                        raw_content = str(prediction)
+
+                    # Strip the container's echo payload (only needed for non-Gemini models)
+                    if "<|im_start|>assistant" in raw_content:
+                        raw_content = raw_content.split("<|im_start|>assistant")[-1]
+                    elif "Output:" in raw_content:
+                        raw_content = raw_content.split("Output:")[-1]
+
+                    raw_output = raw_content.replace("<|im_end|>", "").strip()
+                else:
+                    raw_output = ""
+                
+            # Extract SQL from markdown
+            sql_match = re.search(r"```[sS][qQ][lL]\s*(.*?)\s*```", raw_output, re.DOTALL)
+            
+            if sql_match:
+                final_sql = sql_match.group(1).strip()
+            else:
+                fallback_match = re.search(r"(?i)\b(SELECT\b.*?;?)", raw_output, re.DOTALL)
+                if fallback_match:
+                    final_sql = fallback_match.group(1).strip()
+                else:
+                    print(f"Extraction failed.")
+                    final_sql = "EXTRACTION_FAILED"
+
+            # BIRD safety check: Strip trailing semicolons as they can occasionally crash SQLite runners
+            if final_sql and final_sql.endswith(";"):
+                final_sql = final_sql[:-1].strip()
 
             break
 
@@ -98,15 +120,27 @@ def get_ai_sql_qwen_or_gemma(endpoint_obj: aiplatform.Endpoint, schema_details_d
         
     return final_sql
 
-def add_ai_sql_to_json(file_path: str, model_name: str):
+def add_ai_sql_to_json(file_path: str, model_name: str, endpoint_id: str, project: str = None, location: str = None):
     if not os.path.exists(file_path):
         print(f"Error: File not found at '{file_path}'")
         return
         
-    aiplatform.init(project=PROJECT_ID, location=LOCATION, api_endpoint=API_ENDPOINT)
-    vertex_endpoint = aiplatform.Endpoint(ENDPOINT_ID)
+    model_type = "gemini" if "gemini" in model_name.lower() else "gemma"
+    
+    if model_type == "gemini":
+        from google import genai
+        endpoint_obj = genai.Client(
+            vertexai=True,
+            project=project,
+            location=location
+        )
+    else:
+        api_endpoint = f"{location}-aiplatform.googleapis.com"
+        aiplatform.init(project=project, location=location, api_endpoint=api_endpoint)
+        endpoint_obj = aiplatform.Endpoint(endpoint_id)
 
     out_filename = file_path.replace('.json', f'_ai_{model_name}.json')
+    checkpoint_filename = file_path.replace('.json', f'_ai_{model_name}_checkpoint.json')
     
     try:
         with open(file_path, 'r') as f:
@@ -114,35 +148,84 @@ def add_ai_sql_to_json(file_path: str, model_name: str):
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
         base_db_path = os.path.abspath(os.path.join(current_dir, "../database"))
+        
+        # Check for existing checkpoint data to resume
+        completed_queries = {}
+        if os.path.exists(checkpoint_filename):
+            try:
+                with open(checkpoint_filename, 'r') as f:
+                    checkpoint_data = json.load(f)
+                completed_queries = {
+                    item['question']: item['ai_generated_sql'] 
+                    for item in checkpoint_data 
+                    if 'ai_generated_sql' in item
+                }
+                print(f"Loaded checkpoint: resuming from {len(completed_queries)}/{len(data)} queries.")
+            except Exception as cp_err:
+                print(f"Could not load checkpoint: {cp_err}. Starting fresh.")
+
         processed_data = []
 
-        for item in tqdm(data):
-            db_id = item.get('db_id')
+        # Process each item with a progress bar
+        for idx, item in enumerate(tqdm(data, desc="Generating SQL queries")):
+            question = item.get('question')
             
-            # THE FIX: Pass the RAW DICTIONARY to the function, do NOT json.dump it here!
-            # The function needs the dict to apply the `indent=2` formatting.
+            # Check if already computed in a previous run
+            if question in completed_queries:
+                item["ai_generated_sql"] = completed_queries[question]
+                processed_data.append(item)
+                continue
+
+            db_id = item.get('db_id')
             schema_dict = get_schema_details(db_id, base_db_path)
             
+            # Determine model type based on the model_name string
+            model_type = "gemini" if "gemini" in model_name.lower() else "gemma"
+            
             ai_sql = get_ai_sql_qwen_or_gemma(
-                vertex_endpoint, 
-                schema_dict,  # Passed as dict
-                item.get('question'), 
-                item.get('evidence', '')
+                endpoint_obj, 
+                schema_dict, 
+                question, 
+                item.get('evidence', ''),
+                model=model_type,
+                endpoint_id=endpoint_id,
+                project=project,
+                location=location
             )
 
             item["ai_generated_sql"] = ai_sql
             processed_data.append(item)
 
+            # Save progress every 5 records
+            if (idx + 1) % 5 == 0 or (idx + 1) == len(data):
+                with open(checkpoint_filename, 'w') as f:
+                    json.dump(processed_data, f, indent=4)
+
+        # Save final results
         with open(out_filename, 'w') as f:
             json.dump(processed_data, f, indent=4)
 
+        # Clean up checkpoint on complete success
+        if os.path.exists(checkpoint_filename):
+            os.remove(checkpoint_filename)
+
         print(f"\nSuccessfully created '{out_filename}'")
         
+    except KeyboardInterrupt:
+        print(f"\nExecution interrupted by user (Ctrl+C). Saving progress so far to checkpoint...")
+        try:
+            with open(checkpoint_filename, 'w') as f:
+                json.dump(processed_data, f, indent=4)
+            print(f"Progress successfully saved to: {checkpoint_filename}")
+        except Exception as save_err:
+            print(f"Failed to save checkpoint on interrupt: {save_err}")
+        import sys
+        sys.exit(130)
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    json_file = os.path.abspath(os.path.join(current_dir, "../results/sft/spider_test_set.json"))
-    model_name = 'gemma3-4b-sft-cot-8k'
-    add_ai_sql_to_json(json_file, model_name)
+# if __name__ == "__main__":
+#     current_dir = os.path.dirname(os.path.abspath(__file__))
+#     json_file = os.path.abspath(os.path.join(current_dir, "../results/sft/spider_test_set.json"))
+#     model_name = 'gemini-2.5-flash-sft-new-cot-53k'
+#     add_ai_sql_to_json(json_file, model_name)

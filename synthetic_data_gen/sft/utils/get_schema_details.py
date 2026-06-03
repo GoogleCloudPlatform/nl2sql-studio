@@ -71,7 +71,7 @@ if __name__ == '__main__':
     db_id = 'concert_singer'
     # Assuming the database is in the relative path '../database'
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    base_path = os.path.abspath(os.path.join(current_dir, "../database"))
+    base_path = os.path.abspath(os.path.join(current_dir, "../../database"))
     
     print(f"Extracting schema for database: {db_id}")
     # Fixed the example usage to pass both required arguments
