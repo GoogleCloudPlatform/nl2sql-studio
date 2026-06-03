@@ -26,6 +26,9 @@ def create_llama_tuning_record(system_prompt: str, schema: dict, question: str, 
     """
     Formats the inputs and ground truth SQL into the Llama chat JSONL structure.
     
+    Llama SFT data expects a system prompt followed by user prompt and model response.
+    Here we embed the system instructions and the database schema directly into the user instruction.
+
     Args:
         system_prompt (str): The system instructions for the model.
         schema (dict): The database schema as a dictionary.
@@ -37,6 +40,7 @@ def create_llama_tuning_record(system_prompt: str, schema: dict, question: str, 
         dict: A dictionary structured for Llama fine-tuning.
     """
     schema_json_string = json.dumps(schema, indent=2)
+    # Llama chat uses "contents" format where system prompt is grouped within the user's context
     user_content = f"{system_prompt}\n\nDATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {question}"
 
     record = {
@@ -61,6 +65,8 @@ def create_gemini_tuning_record(system_prompt: str, schema: dict, question: str,
     """
     Formats the inputs and ground truth SQL into the Gemini JSONL structure.
     
+    Similar to Llama, Gemini fine-tuning uses "contents" containing user and model role parts.
+
     Args:
         system_prompt (str): The system instructions for the model.
         schema (dict): The database schema as a dictionary.
@@ -96,8 +102,11 @@ def create_gemini_tuning_record(system_prompt: str, schema: dict, question: str,
 
 def create_qwen_or_gemma_tuning_record(system_prompt: str, schema: dict, question: str, cot_reasoning: str, ground_truth_sql: str) -> dict:
     """
-    Formats the inputs and ground truth SQL into the Qwen JSONL structure.
+    Formats the inputs and ground truth SQL into the Qwen/Gemma JSONL structure.
     
+    Qwen and Gemma models accept a standard OpenAI-like "messages" list format
+    with system, user, and assistant roles clearly segregated.
+
     Args:
         system_prompt (str): The system instructions for the model.
         schema (dict): The database schema as a dictionary.
@@ -106,7 +115,7 @@ def create_qwen_or_gemma_tuning_record(system_prompt: str, schema: dict, questio
         ground_truth_sql (str): The correct SQL query.
         
     Returns:
-        dict: A dictionary structured for Qwen fine-tuning.
+        dict: A dictionary structured for Qwen/Gemma fine-tuning.
     """
     schema_json_string = json.dumps(schema, indent=2)
     user_content = f"DATABASE SCHEMA:\njson\n{schema_json_string}\n\n\nQuestion: {question}"
@@ -137,10 +146,14 @@ def create_qwen_or_gemma_tuning_record(system_prompt: str, schema: dict, questio
 
 async def main(input_file_path: str, output_file_path: str, model_type: str, generate_cot: bool, batch_size: int, prompt_path: str):
     """
-    Main function to generate fine-tuning data in JSONL format.
-    Supports dynamic CoT generation and multi-model formatting.
+    Main orchestrator for generating the SFT dataset.
+
+    Supports resuming mid-run, batched asynchronous calls to the Gemini API for CoT generation,
+    reformatting to target architecture fine-tuning schemas (Gemini, Llama, Qwen, Gemma),
+    and performing an 80/20 train/validation file split.
     """
-    # Define system prompts based on whether CoT is enabled
+    # Define system prompts based on whether CoT is enabled.
+    # The models are instructed to think out loud if CoT is activated.
     system_prompt_cot = "You are a powerful text-to-SQL model. Your role is to answer user questions by generating SQL queries against a given database schema. First, provide a step-by-step chain of thought that explains your reasoning, and then provide the final SQL query in a markdown code block."
     system_prompt_no_cot = "You are a powerful text-to-SQL model. Your role is to answer user questions by generating SQL queries against a given database schema. Provide the final SQL query in a markdown code block."
     system_prompt = system_prompt_cot if generate_cot else system_prompt_no_cot
@@ -154,7 +167,7 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
         except FileNotFoundError:
             raise FileNotFoundError(f"Could not find COT prompt template file at {prompt_path}")
 
-    # Check for existing output to support resuming
+    # Check for existing output records to support resuming in case of api quota exhaustions/errors
     start_index = 0
     try:
         with open(output_file_path, 'r') as f:
@@ -176,7 +189,7 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
         raise ValueError(f"Invalid model_type: {model_type}. Choose from {list(record_creators.keys())}")
 
     try:
-        # Open input in read mode and output in append mode to support resuming
+        # Open input in read mode and output in append mode ('a') to support resuming
         with open(input_file_path, 'r') as infile, open(output_file_path, 'a') as outfile:
             spider_data = json.load(infile)
 
@@ -185,7 +198,7 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
             
             loop = asyncio.get_running_loop()
 
-            # Process in batches to control concurrency
+            # Process in batches to control concurrency and rate-limits
             with tqdm(total=len(spider_data), initial=start_index, desc="Processing Spider data") as pbar:
                 for i in range(start_index, len(spider_data), batch_size):
                     batch_items = spider_data[i:i+batch_size]
@@ -199,25 +212,28 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
                             ground_truth_sql = item['sql']
                             schema_json_string = json.dumps(schema, indent=2)
 
+                            # Populate the prompt template with details
                             cot_generation_prompt = cot_generation_prompt_template.format(
                                 schema_json_string=schema_json_string,
                                 question=question,
                                 ground_truth_sql=ground_truth_sql
                             )
 
-                            # Run synchronous `generate` in a thread pool to avoid blocking the event loop
+                            # Run synchronous `generate` in a thread pool executor to prevent blocking 
+                            # the asyncio event loop during network requests.
                             task = loop.run_in_executor(None, partial(generate, cot_generation_prompt, model="gemini-2.5-pro"))
                             tasks.append(task)
                         else:
-                            # If CoT is not required, create a completed future with empty content
+                            # If Chain of Thought generation is disabled, we set a completed future with an empty string
                             future = asyncio.Future()
                             future.set_result("")
                             tasks.append(future)
 
-                    # Wait for all tasks in the batch to complete
+                    # Gather the current batch's asynchronous tasks.
+                    # return_exceptions=True prevents one error from failing the entire batch.
                     generated_cots = await asyncio.gather(*tasks, return_exceptions=True)
 
-                    # Process results and write to file
+                    # Process results and write them as JSONL tuning records
                     for item, cot_result in zip(batch_items, generated_cots):
                         if isinstance(cot_result, Exception):
                             tqdm.write(f"Error generating CoT for question '{item.get('nl_question', item.get('question'))}': {cot_result}. Skipping this item.")
@@ -232,16 +248,17 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
                         question = item.get('nl_question', item.get('question'))
                         query = item.get('sql', item.get('query'))
                         
-                        # Create the model-specific record
+                        # Apply model-specific SFT schema conversion
                         tuning_record = create_record_func(
                             system_prompt, schema, question, item['cot_reasoning'], query
                         )
+                        # Append the JSON object as a single line (JSONL format)
                         outfile.write(json.dumps(tuning_record) + '\n')
                         pbar.update(1)
         
         print(f"Successfully created {model_type} tuning data with generated CoT at: {output_file_path}")
 
-        # Split the final dataset into train and val (80/20 split)
+        # Split the final dataset into train and val datasets (80/20 split)
         print(f"Splitting {output_file_path} into training and validation sets...")
         with open(output_file_path, 'r') as f:
             records = f.readlines()
@@ -251,7 +268,7 @@ async def main(input_file_path: str, output_file_path: str, model_type: str, gen
             return
             
         import random
-        # Use a fixed seed for reproducibility
+        # Use a fixed seed (42) to guarantee reproducible splits across different runs
         random.seed(42)
         random.shuffle(records)
         

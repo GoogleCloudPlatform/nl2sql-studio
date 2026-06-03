@@ -41,7 +41,17 @@ class SQLResponse(BaseModel):
 def get_ai_sql_gemini(client: genai.Client, schema_details: str, question: str, evidence: str = "") -> str:
     """
     Generates a single SQL query using Gemini 2.5 Flash with structured JSON response forcing.
+
+    Args:
+        client (genai.Client): GenAI SDK client instance configured for Vertex AI.
+        schema_details (str): Serialized schema of the target database tables.
+        question (str): Natural language user question.
+        evidence (str, optional): Additional database context/hints. Defaults to "".
+
+    Returns:
+        str: Generated and extracted SQL query, or error placeholder.
     """
+    # Append schema/evidence context if present
     if evidence:
         combined_question = f"{question} (Context to use: {evidence})"
     else:
@@ -56,6 +66,7 @@ def get_ai_sql_gemini(client: genai.Client, schema_details: str, question: str, 
     prompt = f"Schema:\n{schema_details}\n\nQuestion: {combined_question}"
     final_sql = ""
 
+    # Call Gemini API with exponential backoff for rate limits/exceptions
     max_retries = 10
     for attempt in range(max_retries):
         try:
@@ -73,22 +84,24 @@ def get_ai_sql_gemini(client: genai.Client, schema_details: str, question: str, 
             if response.text:
                 raw_output = response.text.strip()
                 try:
+                    # Enforce strict response schema validation
                     parsed_response = json.loads(raw_output)
                     final_sql = parsed_response.get("sql_query", "").strip()
                 except Exception as parse_err:
                     print(f"Failed to parse JSON structured output from Gemini response: {parse_err}")
-                    # Fallback regex if somehow it returns non-strict json but text exists
+                    # Fallback 1: Extract SQL blocks from markdown format
                     sql_match = re.search(r"```[sS][qQ][lL]\s*(.*?)\s*```", raw_output, re.DOTALL)
                     if sql_match:
                         final_sql = sql_match.group(1).strip()
                     else:
+                        # Fallback 2: Pull out anything starting with SELECT
                         fallback_match = re.search(r'(?i)\b(SELECT\b[^"]*)', raw_output, re.DOTALL)
                         if fallback_match:
                             final_sql = fallback_match.group(1).strip()
                         else:
                             final_sql = "EXTRACTION_FAILED"
 
-                # BIRD safety check: Strip trailing semicolons
+                # BIRD dataset safety check: Trailing semicolons can cause execution bugs under some wrappers
                 if final_sql and final_sql.endswith(";"):
                     final_sql = final_sql[:-1].strip()
 
@@ -99,7 +112,9 @@ def get_ai_sql_gemini(client: genai.Client, schema_details: str, question: str, 
             if attempt == max_retries - 1:
                 break
             err_str = str(e)
+            # Differentiate between quota exhaustions and standard connection/syntax failures
             if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                # Exponential backoff with jitter for Rate Limits
                 sleep_time = (2 ** attempt) * 5 + random.uniform(1, 5)
             else:
                 sleep_time = 2 ** attempt
@@ -112,7 +127,18 @@ def get_ai_sql_gemini(client: genai.Client, schema_details: str, question: str, 
 def get_ai_sql_gemma3(endpoint_obj: aiplatform.Endpoint, schema_details: str, question: str, evidence: str = "") -> str:
     """
     Generates a single SQL query using Gemma 3's container prompt format and prefix pre-filling.
-    Keeps exact structural parity with the original script (ignores evidence in the prompt).
+
+    Uses Vertex AI Endpoint predictions. Pre-fills the assistant response with `{"sql_query": "`
+    to force JSON-structured output formatting from Gemma 3.
+
+    Args:
+        endpoint_obj (aiplatform.Endpoint): Initialized Vertex AI model endpoint object.
+        schema_details (str): Serialized schema of the target database tables.
+        question (str): Natural language user question.
+        evidence (str, optional): Additional database context/hints. Defaults to "".
+
+    Returns:
+        str: Generated SQL query string.
     """
     # Prefix pre-filling forces JSON structured outputs on non-schema models
     prompt = f"""<|im_start|>system
@@ -187,12 +213,22 @@ def get_ai_sql_gemma3(endpoint_obj: aiplatform.Endpoint, schema_details: str, qu
 def get_ai_sql_gemma4(endpoint_obj: aiplatform.Endpoint, schema_details: str, question: str, evidence: str = "") -> str:
     """
     Generates a single SQL query using Gemma 4's native control tokens prompt format.
+
+    Args:
+        endpoint_obj (aiplatform.Endpoint): Initialized Vertex AI model endpoint object.
+        schema_details (str): Serialized schema of the target database tables.
+        question (str): Natural language user question.
+        evidence (str, optional): Additional database context/hints. Defaults to "".
+
+    Returns:
+        str: Generated SQL query string.
     """
     if evidence:
         combined_question = f"{question} (Context to use: {evidence})"
     else:
         combined_question = question
 
+    # Uses standard Gemma 4 chat delimiters <start_of_turn> and <end_of_turn>
     prompt = f"""<start_of_turn>user
 You are a powerful text-to-SQL model. Your role is to answer user questions by generating SQL queries against a given database schema. First, provide a step-by-step chain of thought that explains your reasoning, and then provide the final SQL query in a markdown code block.
 
@@ -270,6 +306,17 @@ def add_ai_sql_to_json(file_path: str, model_name: str, endpoint_id: str, projec
     """
     Unified execution pipeline that loads database schemas, queries models based on name routing,
     safeguards checkpoint progress, and supports graceful termination.
+
+    Loads the input JSON containing NL2SQL evaluation cases, queries the respective model routing
+    with exponential backoff, periodically saves progress to a checkpoint file, and writes the
+    final output list to disk.
+
+    Args:
+        file_path (str): Path to input JSON containing questions and metadata.
+        model_name (str): Selector string for the model (e.g., 'gemini', 'gemma3', 'gemma4').
+        endpoint_id (str): Vertex AI Custom Endpoint ID for Gemma endpoints.
+        project (str): GCP Project ID.
+        location (str): GCP region (e.g., 'us-central1').
     """
     if not os.path.exists(file_path):
         print(f"Error: File not found at '{file_path}'")
@@ -286,9 +333,10 @@ def add_ai_sql_to_json(file_path: str, model_name: str, endpoint_id: str, projec
 
     print(f"Initializing model environment for: '{model_name}' (type: {model_type})")
 
-    # 2. Initialize Connection Clients
+    # 2. Initialize Connection Clients based on model type
     if model_type == "gemini":
         try:
+            # Use native Google GenAI SDK (Vertex AI backend configuration)
             llm_client = genai.Client(
                 vertexai=True,
                 project=project,
@@ -300,6 +348,7 @@ def add_ai_sql_to_json(file_path: str, model_name: str, endpoint_id: str, projec
             return
     else:
         try:
+            # Initialize Vertex AI Platform connection for custom container endpoints
             api_endpoint = f"{location}-aiplatform.googleapis.com"
             aiplatform.init(project=project, location=location, api_endpoint=api_endpoint)
             endpoint_obj = aiplatform.Endpoint(endpoint_id)
@@ -311,7 +360,7 @@ def add_ai_sql_to_json(file_path: str, model_name: str, endpoint_id: str, projec
     out_filename = file_path.replace('.json', f'_ai_{model_name}.json')
     checkpoint_filename = file_path.replace('.json', f'_ai_{model_name}_checkpoint.json')
     
-    # Resolve database directory path
+    # Resolve database directory path containing SQLite files
     current_dir = os.path.dirname(os.path.abspath(__file__))
     base_db_path = os.path.abspath(os.path.join(current_dir, "../database"))
 
@@ -319,7 +368,7 @@ def add_ai_sql_to_json(file_path: str, model_name: str, endpoint_id: str, projec
         with open(file_path, 'r') as f:
             data = json.load(f)
 
-        # Load checkpoints if resuming
+        # Load checkpoints if resuming from a crashed or interrupted run
         completed_queries = {}
         if os.path.exists(checkpoint_filename):
             try:
@@ -340,17 +389,18 @@ def add_ai_sql_to_json(file_path: str, model_name: str, endpoint_id: str, projec
         for idx, item in enumerate(tqdm(data, desc="Generating SQL queries")):
             question = item.get('question')
             
-            # Skip if already processed in a previous session
+            # Skip calls for questions that were completed and stored in checkpoint files
             if question in completed_queries:
                 item["ai_generated_sql"] = completed_queries[question]
                 processed_data.append(item)
                 continue
 
             db_id = item.get('db_id')
+            # Extract database structure to build prompt schema block
             schema_details = get_schema_details(db_id, base_db_path)
             schema_json_str = json.dumps(schema_details, indent=2)
 
-            # Route calls to the corresponding prompt generators
+            # Route calls to the corresponding prompt generators based on model type
             if model_type == "gemini":
                 ai_sql = get_ai_sql_gemini(endpoint_obj, schema_json_str, question, item.get('evidence', ''))
             elif model_type == "gemma4":
@@ -361,22 +411,23 @@ def add_ai_sql_to_json(file_path: str, model_name: str, endpoint_id: str, projec
             item["ai_generated_sql"] = ai_sql
             processed_data.append(item)
 
-            # Save checkpoint every 5 items
+            # Save checkpoint every 5 items to minimize loss on execution termination
             if (idx + 1) % 5 == 0 or (idx + 1) == len(data):
                 with open(checkpoint_filename, 'w') as f:
                     json.dump(processed_data, f, indent=4)
 
-        # Save final results
+        # Save final complete dataset results
         with open(out_filename, 'w') as f:
             json.dump(processed_data, f, indent=4)
 
-        # Clean up checkpoint
+        # Clean up temporary checkpoint file on success
         if os.path.exists(checkpoint_filename):
             os.remove(checkpoint_filename)
 
         print(f"\nSuccessfully created '{out_filename}'")
 
     except KeyboardInterrupt:
+        # Handle Ctrl+C interruptions gracefully by persisting progress before exit
         print(f"\nExecution interrupted by user (Ctrl+C). Saving progress to checkpoint...")
         try:
             with open(checkpoint_filename, 'w') as f:
