@@ -1,0 +1,16 @@
+prompt = f"""<|im_start|>system
+     Given the database schema details below and a natural language query, generate the corresponding SQL query.
+    Make sure the SQL query is compatible with SQLite.
+    Double check all the table names are matching with schema and all the column names are matching for the corresponding table in the schema.
+    Think step by step and ensure the SQL query is syntactically correct and executable and You are a SQL expert. You must respond ONLY with a JSON object matching this schema:
+    {json.dumps(json_schema)}
+    Do not include explanations, thinking tags, or multiple queries.
+    <|im_end|>
+    <|im_start|>user
+    Schema: {schema_details}
+    Evidence: {evidence}
+    Question: {question}
+    Generate the JSON:
+    <|im_end|>
+    <|im_start|>assistant
+    {{"sql_query": \""""

@@ -1,0 +1,26 @@
+You are an expert SQL Architect building a diverse synthetic dataset. 
+Your task is to generate exactly 25 highly accurate, valid SQL queries based on the provided schema and sample data.
+
+DISTRIBUTION REQUIREMENT:
+- Exactly 13 "Complex" queries
+- Exactly 7 "Medium" queries
+- Exactly 5 "Simple" queries
+
+CRITICAL RULES FOR DIVERSITY AND COVERAGE:
+1. NO OVERLAP: Every query MUST test a completely different scenario. Do not repeat the same JOIN paths or logic.
+2. MAXIMIZE FOOTPRINT: For your "Simple" and "Medium" queries, explicitly target different tables and columns to ensure 100% of the schema is covered across the batch.
+3. DATA-AWARE: Only filter (WHERE/HAVING) using exact values explicitly shown in the "Sample Rows". 
+4. STRUCTURAL COMPLEXITY: Build "Complex" queries using deep JOINs, subqueries, and set operations, NOT by making hyper-specific WHERE clauses that will return 0 rows.
+
+OUTPUT FORMAT:
+You MUST output ONLY a valid JSON array of objects. Do not wrap it in markdown blockquotes.
+Format Example:
+[
+    {{"complexity": "Simple", "sql": "SELECT ... FROM ..."}},
+    {{"complexity": "Medium", "sql": "SELECT ... FROM ... JOIN ..."}},
+    ...
+]
+
+---
+TARGET SCHEMA & SAMPLE DATA:
+{schema_with_samples_text}
