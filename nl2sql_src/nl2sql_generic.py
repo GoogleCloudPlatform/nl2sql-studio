@@ -33,6 +33,10 @@ from langchain_google_vertexai import VertexAI
 from google.cloud import bigquery
 from nl2sql_query_embeddings import PgSqlEmb, Nl2Sql_embed
 import os
+try:
+    from utils.make_data_dict import generate_data_dictionary, make_data_dict
+except ImportError:
+    pass
 
 from loguru import logger
 
@@ -164,8 +168,15 @@ class Nl2sqlBq:
         try:
             data_dict = dict()
             if data_dict_path:
-                f = open(data_dict_path, encoding="utf-8")
-                data_dict = json.loads(f.read())
+                if str(data_dict_path).endswith('.xlsx') or str(data_dict_path).endswith('.xls'):
+                    try:
+                        data_dict = generate_data_dictionary(data_dict_file=data_dict_path)
+                    except Exception as e:
+                        logger.error(f"Failed to load data dictionary from Excel: {e}")
+                        data_dict = dict()
+                else:
+                    with open(data_dict_path, encoding="utf-8") as f:
+                        data_dict = json.loads(f.read())
             table_ls = self.get_all_table_names()
             metadata_json = dict()
             for table_name in table_ls:

@@ -7,6 +7,19 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data_augmenter"))
+
+try:
+    from autonomous_augmentor import AutonomousFailureAnalyzer
+    from error_driven_augmentor import ErrorDrivenAugmentor
+    AUTO_AUGMENT_AVAILABLE = True
+except ImportError:
+    try:
+        from data_augmenter.autonomous_augmentor import AutonomousFailureAnalyzer
+        from data_augmenter.error_driven_augmentor import ErrorDrivenAugmentor
+        AUTO_AUGMENT_AVAILABLE = True
+    except ImportError:
+        AUTO_AUGMENT_AVAILABLE = False
 
 import pandas as pd
 import vertexai
@@ -24,6 +37,7 @@ if __name__ == "__main__":
     parser.add_argument('--model', type=str, default='gemini-2.5-pro', help='Generative model name')
     parser.add_argument('--batch-size', type=int, default=5, help='Number of records per LLM call')
     parser.add_argument('--max-workers', type=int, default=5, help='Number of parallel threads')
+    parser.add_argument('--auto-analyze', '--auto-augment', dest='auto_analyze', action='store_true', help='Optionally trigger failure analysis on evaluation results')
     args = parser.parse_args()
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -143,10 +157,24 @@ if __name__ == "__main__":
         # except Exception as e:
         #     print(f"Error calculating SQL uniqueness rate: {e}")
 
-        # # Save to output file
-        # print(f"\nSaving results to {args.output}...")
-        # os.makedirs(os.path.dirname(args.output), exist_ok=True)
-        # with open(args.output, "w") as f:
-        #     json.dump(stage2_data, f, indent=4)
+        # Save to output file
+        print(f"\nSaving results to {args.output}...")
+        os.makedirs(os.path.dirname(args.output), exist_ok=True)
+        with open(args.output, "w") as f:
+            json.dump(stage2_data, f, indent=4)
             
-        # print("Done!")
+        if args.auto_analyze and AUTO_AUGMENT_AVAILABLE:
+            print("\n--- Triggering Autonomous Failure Analysis ---")
+            try:
+                analyzer = AutonomousFailureAnalyzer()
+                analysis = analyzer.analyze_failures(args.output)
+                print(f"Failure Analysis Complete. Total Failures Identified: {analysis.get('total_failures', 0)}")
+                for strat in analysis.get('strategies', []):
+                    if isinstance(strat, dict):
+                        print(f"  Recommended Strategy: {strat.get('name')} -> {strat.get('instruction')}")
+                    elif hasattr(strat, 'name'):
+                        print(f"  Recommended Strategy: {strat.name} -> {strat.instruction}")
+            except Exception as e:
+                print(f"Error during autonomous failure analysis: {e}")
+
+        print("Done!")

@@ -119,6 +119,114 @@ Output a JSON object adhering to the requested schema.
         return []
 
 # ==========================================
+# OOP AGENT COMPONENT: AUTONOMOUS FAILURE ANALYZER
+# ==========================================
+class AutonomousFailureAnalyzer:
+    """
+    The Autonomous Failure-Analyzer Agent responsible for analyzing failed query evaluations
+    and formulating data augmentation strategies.
+    """
+    def __init__(self, llm_client=None):
+        self.llm_client = llm_client
+        if self.llm_client is None:
+            try:
+                self.llm_client = genai.Client(
+                    vertexai=True,
+                    project=os.environ.get("PROJECT_ID", "sl-test-project-353312"),
+                    location=os.environ.get("LOCATION", "us-central1")
+                )
+            except Exception as e:
+                logger.warning(f"Could not initialize default genai Client in AutonomousFailureAnalyzer: {e}")
+
+    def analyze_failures(self, file_path: str, samples_per_db: int = 5):
+        """
+        Analyzes failed evaluations from a JSON or JSONL file and returns structured analysis and strategies.
+        """
+        if not os.path.exists(file_path):
+            logger.error(f"File not found: {file_path}")
+            return {"total_failures": 0, "failures": [], "db_counts": {}, "strategies": [], "tier1": [], "tier2": [], "tier3": [], "full_counts": []}
+
+        failures = []
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                if not content:
+                    return {"total_failures": 0, "failures": [], "db_counts": {}, "strategies": [], "tier1": [], "tier2": [], "tier3": [], "full_counts": []}
+                if content.startswith('['):
+                    data = json.loads(content)
+                    for item in data:
+                        if isinstance(item, dict) and (item.get('status') != 'Correct' or item.get('success') is False or item.get('passed') is False or (isinstance(item.get('evaluation'), dict) and item['evaluation'].get('genai_total_score', 35) < 28)):
+                            failures.append(item)
+                else:
+                    for line in content.splitlines():
+                        line = line.strip()
+                        if line:
+                            try:
+                                item = json.loads(line)
+                                if isinstance(item, dict) and (item.get('status') != 'Correct' or item.get('success') is False or item.get('passed') is False or (isinstance(item.get('evaluation'), dict) and item['evaluation'].get('genai_total_score', 35) < 28)):
+                                    failures.append(item)
+                            except json.JSONDecodeError:
+                                continue
+        except Exception as e:
+            logger.error(f"Error reading {file_path}: {e}")
+            return {"total_failures": 0, "failures": [], "db_counts": {}, "strategies": [], "tier1": [], "tier2": [], "tier3": [], "full_counts": []}
+
+        db_failures = defaultdict(list)
+        for item in failures:
+            db_id = item.get('db_id') or item.get('schema') or 'unknown'
+            db_failures[db_id].append(item)
+
+        sampled_data = []
+        for db_id, items in db_failures.items():
+            sampled = random.sample(items, min(len(items), samples_per_db))
+            sampled_data.extend(sampled)
+
+        db_counts = Counter([item.get('db_id') or item.get('schema') or 'unknown' for item in failures])
+        sorted_dbs = db_counts.most_common()
+        tier1 = [db[0] for db in sorted_dbs[:5]]
+        tier2 = [db[0] for db in sorted_dbs[5:10]]
+        tier3 = [db[0] for db in sorted_dbs[10:]]
+
+        strategies = []
+        if self.llm_client and sampled_data:
+            try:
+                try:
+                    loop = asyncio.get_running_loop()
+                except RuntimeError:
+                    loop = None
+                if loop and loop.is_running():
+                    import concurrent.futures
+                    with concurrent.futures.ThreadPoolExecutor() as pool:
+                        strategies = pool.submit(lambda: asyncio.run(formulate_strategies(sampled_data, self.llm_client))).result()
+                else:
+                    strategies = asyncio.run(formulate_strategies(sampled_data, self.llm_client))
+            except Exception as e:
+                logger.warning(f"Could not dynamically formulate strategies via LLM: {e}")
+
+        if not strategies:
+            strategies = [
+                {"name": "Subquery Focus", "instruction": "Generate queries focusing on subqueries and EXISTS clauses using exact sample row values."},
+                {"name": "Schema-Anchoring", "instruction": "Generate queries that strictly use only column names explicitly listed in the schema."},
+                {"name": "Precision Aggregation", "instruction": "Generate queries requiring aggregations (COUNT, SUM, AVG) with HAVING clauses."}
+            ]
+
+        return {
+            "total_failures": len(failures),
+            "failures": failures,
+            "sampled_failures": sampled_data,
+            "db_counts": dict(db_counts),
+            "full_counts": sorted_dbs,
+            "tier1": tier1,
+            "tier2": tier2,
+            "tier3": tier3,
+            "strategies": strategies
+        }
+
+    def analyze(self, file_path: str, samples_per_db: int = 5):
+        """Alias for analyze_failures to support various interface expectations."""
+        return self.analyze_failures(file_path, samples_per_db=samples_per_db)
+
+# ==========================================
 # GENERATOR COMPONENT
 # ==========================================
 async def generate_batch_with_dynamic_strategy(db_id: str, schema_text: str, strategy: Strategy, count: int, llm_client):

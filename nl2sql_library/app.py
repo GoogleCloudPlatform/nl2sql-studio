@@ -16,6 +16,12 @@ from loguru import logger
 from utils.utility_functions import initialize_db, config_project
 from utils.utility_functions import execute_bq_query, log_update_feedback
 from utils.utility_functions import result2nl, get_project_config, log_sql
+try:
+    import sys
+    sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../nl2sql_src"))
+    from utils.make_data_dict import generate_data_dictionary, make_data_dict
+except ImportError:
+    pass
 from nl2sql_query_embeddings import Nl2Sql_embed
 
 load_dotenv()

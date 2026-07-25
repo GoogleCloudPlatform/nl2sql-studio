@@ -3,6 +3,10 @@ import os
 from google.cloud import bigquery
 import vertexai
 from vertexai.language_models import TextGenerationModel
+try:
+    from utils.make_data_dict import generate_data_dictionary, make_data_dict
+except ImportError:
+    pass
 
 
 def generate_metadata(project_id,

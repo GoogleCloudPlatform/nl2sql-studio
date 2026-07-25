@@ -30,6 +30,10 @@ from nl2sql_generic import Nl2sqlBq
 
 from utils.utility_functions import config_project, get_project_config
 from utils.utility_functions import log_sql, log_update_feedback
+try:
+    from utils.make_data_dict import generate_data_dictionary, make_data_dict
+except ImportError:
+    pass
 from nl2sql_query_embeddings import Nl2Sql_embed
 
 PROJECT_ID = 'sl-test-project-363109'
