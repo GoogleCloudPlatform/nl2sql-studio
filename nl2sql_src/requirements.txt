@@ -84,7 +84,7 @@ langsmith==0.1.31
 loguru==0.7.2
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
-marshmallow==3.21.3
+marshmallow==3.26.2
 matplotlib==3.9.0
 matplotlib-inline==0.1.7
 mdurl==0.1.2
