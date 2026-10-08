@@ -542,6 +542,26 @@ class Nl2sqlBq:
         except Exception as exc:
             raise Exception(traceback.print_exc()) from exc
 
+    @staticmethod
+    def _validate_readonly_query(query: str) -> str:
+        """Ensure the SQL query is a single read-only SELECT/WITH statement."""
+        if not isinstance(query, str) or not query.strip():
+            raise ValueError("Empty SQL query")
+        cleaned = re.sub(r"--.*?$", "", query, flags=re.MULTILINE)
+        cleaned = re.sub(r"/\*.*?\*/", "", cleaned, flags=re.DOTALL).strip()
+        cleaned = cleaned.rstrip(";").strip()
+        if ";" in cleaned:
+            raise ValueError("Multiple SQL statements are not allowed")
+        if not re.match(r"^(SELECT|WITH)\b", cleaned, re.IGNORECASE):
+            raise ValueError("Only read-only SELECT queries are allowed")
+        if re.search(
+            r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
+            cleaned,
+            re.IGNORECASE,
+        ):
+            raise ValueError("Disallowed DDL/DML keyword in SQL query")
+        return cleaned
+
     def execute_query_old(self, query):
         """
         This function executes an SQL query using the configured
@@ -554,8 +574,9 @@ class Nl2sqlBq:
         pandas.DataFrame: The result of the executed query as a DataFrame.
         """
         try:
+            validated_query = self._validate_readonly_query(query)
             # Run the SQL query
-            query_job = client.query(query)
+            query_job = client.query(validated_query)
 
             # Wait for the job to complete
             query_job.result()
@@ -578,10 +599,11 @@ class Nl2sqlBq:
         Returns:
         pandas.DataFrame: The result of the executed query as a DataFrame.
         """
+        validated_query = self._validate_readonly_query(query)
         if dry_run:
             job_config = bigquery.QueryJobConfig(dry_run=True,
                                                  use_query_cache=False)
-            query_job = client.query(query, job_config=job_config)
+            query_job = client.query(validated_query, job_config=job_config)
 
             if query_job.total_bytes_processed > 0:
                 logger.info("Query is valid")
@@ -591,7 +613,7 @@ class Nl2sqlBq:
         else:
             try:
                 # Run the SQL query
-                query_job = client.query(query)
+                query_job = client.query(validated_query)
 
                 # Wait for the job to complete
                 query_job.result()

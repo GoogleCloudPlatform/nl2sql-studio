@@ -51,6 +51,7 @@ class NL2SQL_Executors:
         question=question_to_gen,
         bq_conn_string=bigquery_connection_string,
         data_dict=None,
+        execute_sql=False,
     ):
         """
         SQL Generation using Linear Executor
@@ -63,7 +64,7 @@ class NL2SQL_Executors:
         )
         logger.info("Linear Executor Executing for ", question)
         result = executor_linear(db_name=dataset_name, question=question)
-        df = executor_linear.fetch_result(result)
+        df = executor_linear.fetch_result(result) if execute_sql else None
         logger.info(f"Linear executor output: [{result.generated_query}]")
         return result.result_id, result.generated_query, df
 
@@ -72,6 +73,7 @@ class NL2SQL_Executors:
         question=question_to_gen,
         bq_conn_string=bigquery_connection_string,
         data_dict=None,
+        execute_sql=False,
     ):
         """
         SQL Generation using Chain of Thought Executor
@@ -99,7 +101,7 @@ class NL2SQL_Executors:
         )
         logger.info("Chain of Thought Executor executing for ", question)
         result = executor_cot(db_name=dataset_name, question=question)
-        df = executor_cot.fetch_result(result)
+        df = executor_cot.fetch_result(result) if execute_sql else None
         logger.info(f"Chain of Thought output: [{result.generated_query}]")
         return result.result_id, result.generated_query, df
 

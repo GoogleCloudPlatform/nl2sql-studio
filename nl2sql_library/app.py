@@ -13,9 +13,17 @@ from flask import Flask, request
 from dotenv import load_dotenv
 from loguru import logger
 
-from utils.utility_functions import initialize_db, config_project
-from utils.utility_functions import execute_bq_query, log_update_feedback
-from utils.utility_functions import result2nl, get_project_config, log_sql
+from utils.utility_functions import (
+    initialize_db,
+    config_project,
+    execute_bq_query,
+    log_update_feedback,
+    result2nl,
+    get_project_config,
+    log_sql,
+    sanitize_metadata_filename,
+    validate_readonly_sql,
+)
 try:
     import sys
     sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../nl2sql_src"))
@@ -46,9 +54,11 @@ bigquery_connection_string = initialize_db(
     get_project_config()["config"]["dataset"],
 )
 
-data_file_name = get_project_config()["config"]["metadata_file"]
+data_file_name = sanitize_metadata_filename(
+    get_project_config()["config"]["metadata_file"]
+)
 
-f = open(f"utils/{data_file_name}", encoding="utf-8")
+f = open(os.path.join("utils", data_file_name), encoding="utf-8")
 spider_data = json.load(f)
 data_dictionary_read = {
     "nl2sql_spider": {
@@ -76,7 +86,7 @@ def linear_executor():
     Invokes the Linear Executor
     """
     question = request.json["question"]
-    execute_sql = request.json["execute_sql"]
+    execute_sql = bool(request.json.get("execute_sql", False))
 
     logger.info(f"Linear Execution engine for question : [{question}]")
     from nl2sql_lib_executors import NL2SQL_Executors
@@ -84,7 +94,9 @@ def linear_executor():
     try:
         nle = NL2SQL_Executors()
         res_id, sql, df = nle.linear_executor(
-            question=question, data_dict=data_dictionary_read
+            question=question,
+            data_dict=data_dictionary_read,
+            execute_sql=execute_sql,
         )
         sql_result = ""
         response_string = {
@@ -96,25 +108,26 @@ def linear_executor():
         log_sql(res_id, question, sql, "Linear Executor", execute_sql)
         if execute_sql:
             try:
-                result = execute_bq_query(sql)
+                validated_sql = validate_readonly_sql(sql)
+                result = execute_bq_query(validated_sql)
                 sql_result = result2nl(question, result)
                 response_string = {
                     "result_id": res_id,
                     "generated_query": sql,
                     "sql_result": sql_result,
-                    "df": df.to_json(),
+                    "df": df.to_json() if df is not None else "",
                     "error_msg": "",
                 }
-            except RuntimeError:
+            except (RuntimeError, ValueError):
                 print("internal try catch")
                 response_string = {
                     "result_id": res_id,
                     "generated_query": sql,
                     "sql_result": sql_result,
-                    "df": df.to_json(),
+                    "df": df.to_json() if df is not None else "",
                     "error_msg": "",
                 }
-    except RuntimeError:
+    except (RuntimeError, ValueError):
         logger.debug(f"Linear SQL Generation uncussessful : [{question}]")
         response_string = {
             "result_id": 0,
@@ -132,7 +145,7 @@ def cot_executor():
     Invokes the Chain of Thought executor
     """
     question = request.json["question"]
-    execute_sql = request.json["execute_sql"]
+    execute_sql = bool(request.json.get("execute_sql", False))
 
     logger.info("CoT SQL Generation engine for question : [{question}]")
     from nl2sql_lib_executors import NL2SQL_Executors
@@ -141,7 +154,9 @@ def cot_executor():
         logger.info("CoT initialising the class")
         nle = NL2SQL_Executors()
         res_id, sql, df = nle.cot_executor(
-            question=question, data_dict=data_dictionary_read
+            question=question,
+            data_dict=data_dictionary_read,
+            execute_sql=execute_sql,
         )
         sql_result = ""
         response_string = {
@@ -154,25 +169,26 @@ def cot_executor():
         log_sql(res_id, question, str(sql2), "CoT Executor", execute_sql)
         if execute_sql:
             try:
-                result = execute_bq_query(sql)
+                validated_sql = validate_readonly_sql(sql)
+                result = execute_bq_query(validated_sql)
                 sql_result = result2nl(question, result)
                 response_string = {
                     "result_id": res_id,
                     "generated_query": sql,
                     "sql_result": sql_result,
-                    "df": df.to_json(),
+                    "df": df.to_json() if df is not None else "",
                     "error_msg": "",
                 }
-            except RuntimeError:
+            except (RuntimeError, ValueError):
                 print("internal try catch")
                 response_string = {
                     "result_id": res_id,
                     "generated_query": sql,
                     "sql_result": sql_result,
-                    "df": df.to_json(),
+                    "df": df.to_json() if df is not None else "",
                     "error_msg": "",
                 }
-    except RuntimeError:
+    except (RuntimeError, ValueError):
         logger.debug(f"CoT SQL generation unsuccessful : [{question}]")
         response_string = {
             "result_id": 0,
@@ -209,7 +225,8 @@ def rag_executor():
         log_sql(res_id, question, sql, "Rag Executor", execute_sql)
         if execute_sql:
             try:
-                result = execute_bq_query(sql)
+                validated_sql = validate_readonly_sql(sql)
+                result = execute_bq_query(validated_sql)
                 sql_result = result2nl(question, result)
                 response_string = {
                     "result_id": res_id,
@@ -217,7 +234,7 @@ def rag_executor():
                     "sql_result": sql_result,
                     "error_msg": "",
                 }
-            except RuntimeError:
+            except (RuntimeError, ValueError):
                 print("internal try catch")
                 response_string = {
                     "result_id": res_id,
@@ -225,7 +242,7 @@ def rag_executor():
                     "sql_result": sql_result,
                     "error_msg": "",
                 }
-    except RuntimeError:
+    except (RuntimeError, ValueError):
         logger.debug(f"RAG SQL generation unsuccessful : [{question}]")
         response_string = {
             "result_id": 0,
@@ -245,7 +262,7 @@ def project_config():
     logger.info("Updating project configuration")
     project = request.json["proj_name"]
     dataset = request.json["bq_dataset"]
-    metadata_file = request.json["metadata_file"]
+    metadata_file = sanitize_metadata_filename(request.json["metadata_file"])
     logger.info(f"Received info - {project}, {dataset}, {metadata_file}")
 
     config_project(project, dataset, metadata_file)
@@ -266,16 +283,23 @@ def upload_file():
         my_json = data.decode("utf8")
         data2 = json.loads(my_json)
         data_to_save = json.dumps(data2, indent=4)
-        target_file = get_project_config()["config"]["metadata_file"]
+        target_file = sanitize_metadata_filename(
+            get_project_config()["config"]["metadata_file"]
+        )
         logger.info(f"Saving file as : {target_file}")
 
-        with open(f"utils/{target_file}", "w", encoding="utf-8") as outfile:
+        utils_dir = os.path.realpath("utils")
+        target_path = os.path.realpath(os.path.join(utils_dir, target_file))
+        if not target_path.startswith(utils_dir + os.sep):
+            raise ValueError("Path traversal detected")
+
+        with open(target_path, "w", encoding="utf-8") as outfile:
             outfile.write(data_to_save)
 
         logger.info(f"List of files - {os.listdir('utils')}")
 
         return json.dumps({"status": "Successfully uploaded file"})
-    except RuntimeError:
+    except (RuntimeError, ValueError):
         return json.dumps({"status": "Failed to upload file"})
 
 
@@ -299,7 +323,7 @@ def execute_sql_query():
     """
     Executes the query on BQ
     """
-    sql = request.json["sql"]
+    sql = validate_readonly_sql(request.json["sql"])
     result = execute_bq_query(sql)
     print("result = ", result)
     sql_result = result.to_dict()  # orient="records")

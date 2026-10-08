@@ -4,6 +4,7 @@
 """
 import os
 import json
+import re
 
 # import pandas as pd
 
@@ -20,6 +21,45 @@ load_dotenv()
 # "bigquery://sl-test-project-363109/nl2sql_spider"
 PROJ_CONFIG_FILE = "utils/proj_config.json"
 SQL_LOG_FILE = "utils/sqlgen_log.json"
+UTILS_DIR = os.path.realpath("utils")
+
+_DISALLOWED_SQL_KEYWORDS = re.compile(
+    r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
+    re.IGNORECASE,
+)
+
+
+def sanitize_metadata_filename(metadata_file: str) -> str:
+    """Validate and sanitize a metadata filename to prevent path traversal."""
+    if not isinstance(metadata_file, str) or not metadata_file:
+        raise ValueError("Invalid metadata filename")
+    safe_name = os.path.basename(metadata_file)
+    if (
+        safe_name != metadata_file
+        or ".." in safe_name
+        or not re.match(r"^[a-zA-Z0-9_.-]+\.json$", safe_name)
+    ):
+        raise ValueError(f"Unsafe metadata filename: {metadata_file}")
+    target_path = os.path.realpath(os.path.join("utils", safe_name))
+    if not target_path.startswith(UTILS_DIR + os.sep):
+        raise ValueError("Path traversal detected in metadata filename")
+    return safe_name
+
+
+def validate_readonly_sql(sql_query: str) -> str:
+    """Ensure the SQL query is a single read-only SELECT/WITH statement."""
+    if not isinstance(sql_query, str) or not sql_query.strip():
+        raise ValueError("Empty SQL query")
+    cleaned = re.sub(r"--.*?$", "", sql_query, flags=re.MULTILINE)
+    cleaned = re.sub(r"/\*.*?\*/", "", cleaned, flags=re.DOTALL).strip()
+    cleaned = cleaned.rstrip(";").strip()
+    if ";" in cleaned:
+        raise ValueError("Multiple SQL statements are not allowed")
+    if not re.match(r"^(SELECT|WITH)\b", cleaned, re.IGNORECASE):
+        raise ValueError("Only read-only SELECT queries are allowed")
+    if _DISALLOWED_SQL_KEYWORDS.search(cleaned):
+        raise ValueError("Disallowed DDL/DML keyword in SQL query")
+    return cleaned
 
 proj_config_dict = {
     "default": {
@@ -50,6 +90,7 @@ def config_project(
     """
     Save the project configuration details
     """
+    metadata_file = sanitize_metadata_filename(metadata_file)
     try:
         with open(PROJ_CONFIG_FILE, "r", encoding="utf-8") as infile:
             proj_config = json.load(infile)
@@ -91,6 +132,11 @@ def get_project_config():
         proj_config = proj_config_dict
         proj_config["config"] = proj_config["default"]
 
+    if proj_config.get("config", {}).get("metadata_file"):
+        proj_config["config"]["metadata_file"] = sanitize_metadata_filename(
+            proj_config["config"]["metadata_file"]
+        )
+
     json_obj = json.dumps(proj_config, indent=4)
     with open(PROJ_CONFIG_FILE, "w", encoding="utf-8") as outfile:
         outfile.write(json_obj)
@@ -103,14 +149,15 @@ def execute_bq_query(sql_query=""):
     """
     Execute the given query on BigQuery
     """
+    validated_query = validate_readonly_sql(sql_query)
     project = get_project_config()["config"]["proj_name"]
     client = bigquery.Client(project=project)
-    logger.info(f"Execute bq query : {sql_query}")
+    logger.info(f"Execute bq query : {validated_query}")
     # query_job = client.query(
     # "select * from `q_and_a_db.questions_and_gensqls` \
     #                          where created_by = 'CoT executor' " )
     try:
-        query_job = client.query(sql_query)
+        query_job = client.query(validated_query)
         results = query_job.result()
         results = query_job.to_dataframe()
         logger.info("Execution result = ", results)

@@ -386,11 +386,32 @@ class Database(BaseModel):
             table_desc_template=self.table_desc_template,
         )
 
+    @staticmethod
+    def validate_readonly_query(query: str) -> str:
+        """Ensure the SQL query is a single read-only SELECT/WITH statement."""
+        if not isinstance(query, str) or not query.strip():
+            raise ValueError("Supplied query is empty")
+        cleaned = re.sub(r"--.*?$", "", query, flags=re.MULTILINE)
+        cleaned = re.sub(r"/\*.*?\*/", "", cleaned, flags=re.DOTALL).strip()
+        cleaned = cleaned.rstrip(";").strip()
+        if ";" in cleaned:
+            raise ValueError("Multiple SQL statements are not allowed")
+        if not re.match(r"^(SELECT|WITH)\b", cleaned, re.IGNORECASE):
+            raise ValueError("Only read-only SELECT queries are allowed")
+        if re.search(
+            r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
+            cleaned,
+            re.IGNORECASE,
+        ):
+            raise ValueError("Disallowed DDL/DML keyword in SQL query")
+        return cleaned
+
     def execute(self, query: str) -> pd.DataFrame:
         """
         Returns the results of a query as a Pandas DataFrame
         """
-        return pd.read_sql(sql=query, con=self.db._engine)
+        validated_query = self.validate_readonly_query(query)
+        return pd.read_sql(sql=validated_query, con=self.db._engine)
 
     def model_post_init(self, __context: object) -> None:
         # pylint: disable=protected-access, too-many-branches

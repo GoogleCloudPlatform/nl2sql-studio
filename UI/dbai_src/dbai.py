@@ -1,7 +1,11 @@
 """The main module for the NL2SQL chat Agent which is multi-turn."""
 
+import ast
 import os
 import json
+import re
+import pandas as pd
+import plotly.express as px
 import vertexai
 from google.cloud import bigquery
 from vertexai import generative_models
@@ -18,6 +22,106 @@ from dbai_src.bot_functions import (
     sql_query_func,
     plot_chart_auto_func
 )
+
+_DISALLOWED_SQL_KEYWORDS = re.compile(
+    r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
+    re.IGNORECASE,
+)
+
+_ALLOWED_PX_CHARTS = frozenset({
+    "bar",
+    "line",
+    "pie",
+    "scatter",
+    "histogram",
+    "box",
+    "violin",
+    "area",
+    "funnel",
+    "sunburst",
+    "treemap",
+    "icicle",
+    "density_heatmap",
+    "strip",
+})
+
+
+def validate_readonly_sql(query: str) -> str:
+    """Validate that a SQL query is a single read-only SELECT/WITH statement."""
+    if not isinstance(query, str) or not query.strip():
+        raise ValueError("Empty SQL query")
+    cleaned = re.sub(r"--.*?$", "", query, flags=re.MULTILINE)
+    cleaned = re.sub(r"/\*.*?\*/", "", cleaned, flags=re.DOTALL).strip()
+    cleaned = cleaned.rstrip(";").strip()
+    if ";" in cleaned:
+        raise ValueError("Multiple SQL statements are not allowed")
+    if not re.match(r"^(SELECT|WITH)\b", cleaned, re.IGNORECASE):
+        raise ValueError("Only read-only SELECT queries are allowed")
+    if _DISALLOWED_SQL_KEYWORDS.search(cleaned):
+        raise ValueError("Disallowed DDL/DML keyword in SQL query")
+    return cleaned
+
+
+def _eval_safe_ast_node(node: ast.AST, env: dict):
+    """Safely evaluate an AST node restricted to literals, env vars, pd.DataFrame, and px charts."""
+    if isinstance(node, ast.Name):
+        if node.id in env:
+            return env[node.id]
+        raise ValueError(f"Disallowed identifier: {node.id}")
+    if isinstance(node, ast.Call):
+        if not isinstance(node.func, ast.Attribute) or not isinstance(
+            node.func.value, ast.Name
+        ):
+            raise ValueError("Only direct module calls on pd or px are allowed")
+        mod_name = node.func.value.id
+        attr_name = node.func.attr
+        args = [_eval_safe_ast_node(arg, env) for arg in node.args]
+        kwargs = {
+            kw.arg: _eval_safe_ast_node(kw.value, env)
+            for kw in node.keywords
+            if kw.arg is not None
+        }
+        if len(kwargs) != len(node.keywords):
+            raise ValueError("**kwargs unpacking is not allowed")
+        if mod_name in ("pd", "pandas") and attr_name == "DataFrame":
+            return pd.DataFrame(*args, **kwargs)
+        if mod_name == "px" and attr_name in _ALLOWED_PX_CHARTS:
+            return getattr(px, attr_name)(*args, **kwargs)
+        raise ValueError(f"Disallowed call: {mod_name}.{attr_name}")
+    return ast.literal_eval(node)
+
+
+def _safe_build_plotly_figure(code_str: str):
+    """Parse LLM-generated chart code via AST without exec()/eval() and return fig."""
+    cleaned = re.sub(r"^```(?:python)?|```$", "", code_str.strip(), flags=re.MULTILINE)
+    tree = ast.parse(cleaned.replace("\r\n", "\n"), mode="exec")
+    env = {}
+    for stmt in tree.body:
+        if isinstance(stmt, (ast.Import, ast.ImportFrom)):
+            for alias in stmt.names:
+                if alias.name not in ("pandas", "plotly.express", "plotly"):
+                    raise ValueError(f"Disallowed import: {alias.name}")
+        elif isinstance(stmt, ast.Assign):
+            if len(stmt.targets) != 1 or not isinstance(
+                stmt.targets[0], ast.Name
+            ):
+                raise ValueError("Only simple variable assignments are allowed")
+            target_name = stmt.targets[0].id
+            if target_name.startswith("_"):
+                raise ValueError("Private variable names are not allowed")
+            env[target_name] = _eval_safe_ast_node(stmt.value, env)
+        elif isinstance(stmt, ast.Expr) and isinstance(
+            stmt.value, ast.Constant
+        ):
+            continue
+        else:
+            raise ValueError(
+                f"Disallowed statement in chart code: {type(stmt).__name__}"
+            )
+    if "fig" not in env:
+        raise ValueError("Chart code did not produce a 'fig' object")
+    return env["fig"]
+
 
 safety_settings = {
     generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH:
@@ -97,7 +201,8 @@ class DBAI:
         Load the metadata cache file from the defined path if exists
         else creates
         """
-        metdata_cache_path = f"./metadata_cache_{self.dataset_id}.json"
+        safe_dataset_id = re.sub(r"[^a-zA-Z0-9_-]", "_", str(self.dataset_id))
+        metdata_cache_path = f"./metadata_cache_{safe_dataset_id}.json"
         if not os.path.exists(metdata_cache_path):
             self.metadata = self.create_metadata_cache()
             with open(metdata_cache_path, 'w') as f:
@@ -173,7 +278,8 @@ class DBAI:
         try:
             cleaned_query = query.replace("\\n", " ").replace("\n", "")
             cleaned_query = cleaned_query.replace("\\", "")
-            query_job = self.bq_client.query(cleaned_query,
+            validated_query = validate_readonly_sql(cleaned_query)
+            query_job = self.bq_client.query(validated_query,
                                              job_config=job_config
                                              )
             api_response = query_job.result()
@@ -262,15 +368,7 @@ class DBAI:
 
                 if function_name == "plot_chart_auto":
                     print(type(params['code']), params['code'])
-                    local_namespace = {}
-                    # Execute the code string in the local namespace
-                    exec(  # pylint: disable=exec-used
-                        params['code'].replace('\r\n', '\n'),
-                        globals(),
-                        local_namespace
-                    )
-                    # Access the 'fig' variable from the local namespace
-                    fig = local_namespace['fig']
+                    fig = _safe_build_plotly_figure(params['code'])
 
                     st.plotly_chart(fig)  # use_container_width=True)
                     api_response = "here is the plot of the data shown\

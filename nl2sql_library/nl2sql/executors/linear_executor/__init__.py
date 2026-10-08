@@ -52,4 +52,6 @@ class BaseLinearExecutor(BaseExecutor, ABC):
     def fetch_result(self, result: BaseLinearExecutorResult) -> pd.DataFrame:
         if result.generated_query is None:
             raise ValueError("Supplied query is empty")
-        return self.dataset.get_database(result.db_name).execute(result.generated_query)
+        db = self.dataset.get_database(result.db_name)
+        validated_query = db.validate_readonly_query(result.generated_query)
+        return db.execute(validated_query)
