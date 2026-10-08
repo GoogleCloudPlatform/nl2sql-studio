@@ -28,8 +28,14 @@ import uuid
 
 from nl2sql_generic import Nl2sqlBq
 
-from utils.utility_functions import config_project, get_project_config
-from utils.utility_functions import log_sql, log_update_feedback
+from utils.utility_functions import (
+    config_project,
+    get_project_config,
+    log_sql,
+    log_update_feedback,
+    sanitize_metadata_filename,
+    validate_readonly_sql,
+)
 try:
     from utils.make_data_dict import generate_data_dictionary, make_data_dict
 except ImportError:
@@ -75,11 +81,11 @@ def nl2sql_lite_generate():
         curdir = os.getcwd()
         proj_conf = get_project_config()["config"]
         print(proj_conf)
-        data_file_name = proj_conf["metadata_file"]
+        data_file_name = sanitize_metadata_filename(proj_conf["metadata_file"])
 
         logger.info(f"Using the metadata file : {data_file_name}")
 
-        metadata_json_path = f"{curdir}/utils/{data_file_name}"
+        metadata_json_path = os.path.join(curdir, "utils", data_file_name)
         logger.info(f"path  {metadata_json_path}")
 
         nl2sqlbq_client_base = Nl2sqlBq(project_id=proj_conf["proj_name"],
@@ -107,7 +113,8 @@ def nl2sql_lite_generate():
         log_sql(res_id, question, sql, "Lite", False)
         if execute_sql:
             try:
-                results = nl2sqlbq_client_base.execute_query(sql)
+                validated_sql = validate_readonly_sql(sql)
+                results = nl2sqlbq_client_base.execute_query(validated_sql)
                 sql_result = nl2sqlbq_client_base.result2nl(result=results,
                                                             question=question)
                 response_string = {
@@ -144,13 +151,18 @@ def project_config():
     Updates the Project Configuration details
     """
     logger.info("Updating project configuration")
-    project = request.json["proj_name"]
-    dataset = request.json["bq_dataset"]
-    metadata_file = request.json["metadata_file"]
-    logger.info(f"Received info - {project}, {dataset}, {metadata_file}")
+    try:
+        project = request.json["proj_name"]
+        dataset = request.json["bq_dataset"]
+        metadata_file = sanitize_metadata_filename(
+            request.json["metadata_file"]
+        )
+        logger.info(f"Received info - {project}, {dataset}, {metadata_file}")
 
-    config_project(project, dataset, metadata_file)
-    return json.dumps({"status": "success"})
+        config_project(project, dataset, metadata_file)
+        return json.dumps({"status": "success"})
+    except (RuntimeError, ValueError, KeyError):
+        return json.dumps({"status": "Failed to update project config"}), 400
 
 
 @app.route("/uploadfile", methods=["POST"])
@@ -166,16 +178,23 @@ def upload_file():
         my_json = data.decode("utf8")
         data2 = json.loads(my_json)
         data_to_save = json.dumps(data2, indent=4)
-        target_file = get_project_config()["config"]["metadata_file"]
+        target_file = sanitize_metadata_filename(
+            get_project_config()["config"]["metadata_file"]
+        )
         logger.info(f"Saving file as : {target_file}")
 
-        with open(f"utils/{target_file}", "w", encoding="utf-8") as outfile:
+        utils_dir = os.path.realpath("utils")
+        target_path = os.path.realpath(os.path.join(utils_dir, target_file))
+        if not target_path.startswith(utils_dir + os.sep):
+            raise ValueError("Path traversal detected")
+
+        with open(target_path, "w", encoding="utf-8") as outfile:
             outfile.write(data_to_save)
 
         logger.info(f"List of files - {os.listdir('utils')}")
 
         return json.dumps({"status": "Successfully uploaded file"})
-    except RuntimeError:
+    except (RuntimeError, ValueError):
         return json.dumps({"status": "Failed to upload file"})
 
 

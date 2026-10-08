@@ -174,11 +174,14 @@ class CoreEvalFix(BaseEvalFixTask):
             logger.info(f"Trial Id: {trial_id}")
             logger.info(f"Evaluating Generated Query: {sql}")
             try:
-                _ = db.execute(sql) # type: ignore
-            except DatabaseError as db_error:
-                error_message = db_error.args[0].splitlines()[0]
-                logger.warning(f"Evaluation Failed: "
-                             f"{error_message}")
+                _ = db.execute(sql)  # type: ignore
+            except (DatabaseError, ValueError) as db_error:
+                error_message = (
+                    str(db_error.args[0]).splitlines()[0]
+                    if db_error.args
+                    else str(db_error)
+                )
+                logger.warning(f"Evaluation Failed: {error_message}")
                 logger.debug("Trying to fix the query ...")
                 prompt_params = {
                     "question": question,
