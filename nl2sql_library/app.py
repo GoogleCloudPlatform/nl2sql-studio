@@ -260,14 +260,19 @@ def project_config():
     Updates the Project Configuration details
     """
     logger.info("Updating project configuration")
-    project = request.json["proj_name"]
-    dataset = request.json["bq_dataset"]
-    metadata_file = sanitize_metadata_filename(request.json["metadata_file"])
-    logger.info(f"Received info - {project}, {dataset}, {metadata_file}")
+    try:
+        project = request.json["proj_name"]
+        dataset = request.json["bq_dataset"]
+        metadata_file = sanitize_metadata_filename(
+            request.json["metadata_file"]
+        )
+        logger.info(f"Received info - {project}, {dataset}, {metadata_file}")
 
-    config_project(project, dataset, metadata_file)
+        config_project(project, dataset, metadata_file)
 
-    return json.dumps({"status": "success"})
+        return json.dumps({"status": "success"})
+    except (RuntimeError, ValueError, KeyError):
+        return json.dumps({"status": "Failed to update project config"}), 400
 
 
 @app.route("/uploadfile", methods=["POST"])
@@ -323,19 +328,30 @@ def execute_sql_query():
     """
     Executes the query on BQ
     """
-    sql = validate_readonly_sql(request.json["sql"])
-    result = execute_bq_query(sql)
-    print("result = ", result)
-    sql_result = result.to_dict()  # orient="records")
-    res_id = ""
-    result_text = result2nl("", sql_result)
-    response_string = {
-        "result_id": res_id,
-        "generated_query": sql,
-        "sql_result": result_text,
-        "error_msg": "",
-    }
-    return json.dumps(response_string)
+    try:
+        sql = validate_readonly_sql(request.json["sql"])
+        result = execute_bq_query(sql)
+        print("result = ", result)
+        sql_result = result.to_dict()  # orient="records")
+        res_id = ""
+        result_text = result2nl("", sql_result)
+        response_string = {
+            "result_id": res_id,
+            "generated_query": sql,
+            "sql_result": result_text,
+            "error_msg": "",
+        }
+        return json.dumps(response_string)
+    except (RuntimeError, ValueError, KeyError) as exc:
+        return (
+            json.dumps({
+                "result_id": "",
+                "generated_query": "",
+                "sql_result": "",
+                "error_msg": str(exc),
+            }),
+            400,
+        )
 
 
 @app.route('/api/record/create', methods=['POST'])

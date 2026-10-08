@@ -23,8 +23,14 @@ from dbai_src.bot_functions import (
     plot_chart_auto_func
 )
 
+_SQL_TOKEN_RE = re.compile(
+    r"('(?:''|\\'|[^'])*'|\"(?:\"\"|\\\"|[^\"])*\"|`[^`]*`)"
+    r"|(--[^\r\n]*|/\*[\s\S]*?\*/)"
+)
+
 _DISALLOWED_SQL_KEYWORDS = re.compile(
-    r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
+    r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE(?!\s*\()"
+    r"|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
     re.IGNORECASE,
 )
 
@@ -45,19 +51,35 @@ _ALLOWED_PX_CHARTS = frozenset({
     "strip",
 })
 
+_ALLOWED_FIG_METHODS = frozenset({
+    "update_layout",
+    "update_traces",
+    "update_xaxes",
+    "update_yaxes",
+})
+
 
 def validate_readonly_sql(query: str) -> str:
     """Validate that a SQL query is a single read-only SELECT/WITH statement."""
     if not isinstance(query, str) or not query.strip():
         raise ValueError("Empty SQL query")
-    cleaned = re.sub(r"--.*?$", "", query, flags=re.MULTILINE)
-    cleaned = re.sub(r"/\*.*?\*/", "", cleaned, flags=re.DOTALL).strip()
+    cleaned = re.sub(
+        r"^\s*```(?:sql)?\s*|\s*```\s*$", "", query.strip(), flags=re.IGNORECASE
+    )
+    cleaned = _SQL_TOKEN_RE.sub(
+        lambda m: m.group(1) if m.group(1) is not None else " ", cleaned
+    ).strip()
     cleaned = cleaned.rstrip(";").strip()
-    if ";" in cleaned:
+    if not cleaned:
+        raise ValueError("Empty SQL query")
+    masked = _SQL_TOKEN_RE.sub(
+        lambda m: "''" if m.group(1) is not None else " ", cleaned
+    )
+    if ";" in masked:
         raise ValueError("Multiple SQL statements are not allowed")
-    if not re.match(r"^(SELECT|WITH)\b", cleaned, re.IGNORECASE):
+    if not re.match(r"^\s*\(*\s*(SELECT|WITH)\b", masked, re.IGNORECASE):
         raise ValueError("Only read-only SELECT queries are allowed")
-    if _DISALLOWED_SQL_KEYWORDS.search(cleaned):
+    if _DISALLOWED_SQL_KEYWORDS.search(masked):
         raise ValueError("Disallowed DDL/DML keyword in SQL query")
     return cleaned
 
@@ -68,13 +90,22 @@ def _eval_safe_ast_node(node: ast.AST, env: dict):
         if node.id in env:
             return env[node.id]
         raise ValueError(f"Disallowed identifier: {node.id}")
+    if isinstance(node, ast.List):
+        return [_eval_safe_ast_node(elt, env) for elt in node.elts]
+    if isinstance(node, ast.Tuple):
+        return tuple(_eval_safe_ast_node(elt, env) for elt in node.elts)
+    if isinstance(node, ast.Set):
+        return {_eval_safe_ast_node(elt, env) for elt in node.elts}
+    if isinstance(node, ast.Dict):
+        if any(k is None for k in node.keys):
+            raise ValueError("Dict unpacking is not allowed")
+        return {
+            _eval_safe_ast_node(k, env): _eval_safe_ast_node(v, env)
+            for k, v in zip(node.keys, node.values)
+        }
     if isinstance(node, ast.Call):
-        if not isinstance(node.func, ast.Attribute) or not isinstance(
-            node.func.value, ast.Name
-        ):
-            raise ValueError("Only direct module calls on pd or px are allowed")
-        mod_name = node.func.value.id
-        attr_name = node.func.attr
+        if any(isinstance(arg, ast.Starred) for arg in node.args):
+            raise ValueError("*args unpacking is not allowed")
         args = [_eval_safe_ast_node(arg, env) for arg in node.args]
         kwargs = {
             kw.arg: _eval_safe_ast_node(kw.value, env)
@@ -83,24 +114,60 @@ def _eval_safe_ast_node(node: ast.AST, env: dict):
         }
         if len(kwargs) != len(node.keywords):
             raise ValueError("**kwargs unpacking is not allowed")
-        if mod_name in ("pd", "pandas") and attr_name == "DataFrame":
-            return pd.DataFrame(*args, **kwargs)
-        if mod_name == "px" and attr_name in _ALLOWED_PX_CHARTS:
+        if not isinstance(node.func, ast.Attribute):
+            raise ValueError("Only method or module attribute calls are allowed")
+        attr_name = node.func.attr
+        if isinstance(node.func.value, ast.Name):
+            mod_name = node.func.value.id
+            if mod_name in ("pd", "pandas") and attr_name == "DataFrame":
+                return pd.DataFrame(*args, **kwargs)
+            if mod_name == "px" and attr_name in _ALLOWED_PX_CHARTS:
+                return getattr(px, attr_name)(*args, **kwargs)
+            if mod_name in env and attr_name in _ALLOWED_FIG_METHODS:
+                receiver = env[mod_name]
+                if hasattr(receiver, "to_plotly_json"):
+                    return getattr(receiver, attr_name)(*args, **kwargs)
+            raise ValueError(f"Disallowed call: {mod_name}.{attr_name}")
+        if (
+            isinstance(node.func.value, ast.Attribute)
+            and isinstance(node.func.value.value, ast.Name)
+            and node.func.value.value.id == "plotly"
+            and node.func.value.attr == "express"
+            and attr_name in _ALLOWED_PX_CHARTS
+        ):
             return getattr(px, attr_name)(*args, **kwargs)
-        raise ValueError(f"Disallowed call: {mod_name}.{attr_name}")
+        if (
+            isinstance(node.func.value, ast.Call)
+            and attr_name in _ALLOWED_FIG_METHODS
+        ):
+            receiver = _eval_safe_ast_node(node.func.value, env)
+            if hasattr(receiver, "to_plotly_json"):
+                return getattr(receiver, attr_name)(*args, **kwargs)
+        raise ValueError("Only direct calls on pd, px, or figure objects are allowed")
     return ast.literal_eval(node)
 
 
 def _safe_build_plotly_figure(code_str: str):
     """Parse LLM-generated chart code via AST without exec()/eval() and return fig."""
-    cleaned = re.sub(r"^```(?:python)?|```$", "", code_str.strip(), flags=re.MULTILINE)
+    cleaned = re.sub(
+        r"^```(?:python|py)?|```$",
+        "",
+        code_str.strip(),
+        flags=re.MULTILINE | re.IGNORECASE,
+    )
     tree = ast.parse(cleaned.replace("\r\n", "\n"), mode="exec")
     env = {}
     for stmt in tree.body:
-        if isinstance(stmt, (ast.Import, ast.ImportFrom)):
+        if isinstance(stmt, ast.Import):
             for alias in stmt.names:
                 if alias.name not in ("pandas", "plotly.express", "plotly"):
                     raise ValueError(f"Disallowed import: {alias.name}")
+        elif isinstance(stmt, ast.ImportFrom):
+            if stmt.module == "plotly" and all(
+                alias.name == "express" for alias in stmt.names
+            ):
+                continue
+            raise ValueError(f"Disallowed import from: {stmt.module}")
         elif isinstance(stmt, ast.Assign):
             if len(stmt.targets) != 1 or not isinstance(
                 stmt.targets[0], ast.Name
@@ -110,10 +177,24 @@ def _safe_build_plotly_figure(code_str: str):
             if target_name.startswith("_"):
                 raise ValueError("Private variable names are not allowed")
             env[target_name] = _eval_safe_ast_node(stmt.value, env)
-        elif isinstance(stmt, ast.Expr) and isinstance(
-            stmt.value, ast.Constant
-        ):
-            continue
+        elif isinstance(stmt, ast.Expr):
+            if isinstance(stmt.value, ast.Constant):
+                continue
+            if isinstance(stmt.value, ast.Call) and isinstance(
+                stmt.value.func, ast.Attribute
+            ):
+                if (
+                    isinstance(stmt.value.func.value, ast.Name)
+                    and stmt.value.func.value.id in env
+                    and stmt.value.func.attr == "show"
+                    and not stmt.value.args
+                    and not stmt.value.keywords
+                ):
+                    continue
+                if stmt.value.func.attr in _ALLOWED_FIG_METHODS:
+                    _eval_safe_ast_node(stmt.value, env)
+                    continue
+            raise ValueError("Disallowed expression in chart code")
         else:
             raise ValueError(
                 f"Disallowed statement in chart code: {type(stmt).__name__}"
@@ -276,9 +357,11 @@ class DBAI:
             default_dataset=f'{self.proj_id}.{self.dataset_id}'
             )
         try:
-            cleaned_query = query.replace("\\n", " ").replace("\n", "")
-            cleaned_query = cleaned_query.replace("\\", "")
-            validated_query = validate_readonly_sql(cleaned_query)
+            normalized_query = query.replace("\\n", "\n")
+            validated_query = validate_readonly_sql(normalized_query)
+            validated_query = (
+                validated_query.replace("\n", " ").replace("\\", "").strip()
+            )
             query_job = self.bq_client.query(validated_query,
                                              job_config=job_config
                                              )

@@ -542,23 +542,42 @@ class Nl2sqlBq:
         except Exception as exc:
             raise Exception(traceback.print_exc()) from exc
 
+    _SQL_TOKEN_RE = re.compile(
+        r"('(?:''|\\'|[^'])*'|\"(?:\"\"|\\\"|[^\"])*\"|`[^`]*`)"
+        r"|(--[^\r\n]*|/\*[\s\S]*?\*/)"
+    )
+
+    _DISALLOWED_SQL_KEYWORDS = re.compile(
+        r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE(?!\s*\()"
+        r"|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
+        re.IGNORECASE,
+    )
+
     @staticmethod
     def _validate_readonly_query(query: str) -> str:
         """Ensure the SQL query is a single read-only SELECT/WITH statement."""
         if not isinstance(query, str) or not query.strip():
             raise ValueError("Empty SQL query")
-        cleaned = re.sub(r"--.*?$", "", query, flags=re.MULTILINE)
-        cleaned = re.sub(r"/\*.*?\*/", "", cleaned, flags=re.DOTALL).strip()
+        cleaned = re.sub(
+            r"^\s*```(?:sql)?\s*|\s*```\s*$",
+            "",
+            query.strip(),
+            flags=re.IGNORECASE,
+        )
+        cleaned = Nl2sqlBq._SQL_TOKEN_RE.sub(
+            lambda m: m.group(1) if m.group(1) is not None else " ", cleaned
+        ).strip()
         cleaned = cleaned.rstrip(";").strip()
-        if ";" in cleaned:
+        if not cleaned:
+            raise ValueError("Empty SQL query")
+        masked = Nl2sqlBq._SQL_TOKEN_RE.sub(
+            lambda m: "''" if m.group(1) is not None else " ", cleaned
+        )
+        if ";" in masked:
             raise ValueError("Multiple SQL statements are not allowed")
-        if not re.match(r"^(SELECT|WITH)\b", cleaned, re.IGNORECASE):
+        if not re.match(r"^\s*\(*\s*(SELECT|WITH)\b", masked, re.IGNORECASE):
             raise ValueError("Only read-only SELECT queries are allowed")
-        if re.search(
-            r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
-            cleaned,
-            re.IGNORECASE,
-        ):
+        if Nl2sqlBq._DISALLOWED_SQL_KEYWORDS.search(masked):
             raise ValueError("Disallowed DDL/DML keyword in SQL query")
         return cleaned
 
@@ -599,8 +618,12 @@ class Nl2sqlBq:
         Returns:
         pandas.DataFrame: The result of the executed query as a DataFrame.
         """
-        validated_query = self._validate_readonly_query(query)
         if dry_run:
+            try:
+                validated_query = self._validate_readonly_query(query)
+            except ValueError as exc:
+                logger.warning(f"Query validation failed during dry_run: {exc}")
+                return False, 'Invalid query. Regenerate'
             job_config = bigquery.QueryJobConfig(dry_run=True,
                                                  use_query_cache=False)
             query_job = client.query(validated_query, job_config=job_config)
@@ -611,6 +634,7 @@ class Nl2sqlBq:
             else:
                 return False, 'Invalid query. Regenerate'
         else:
+            validated_query = self._validate_readonly_query(query)
             try:
                 # Run the SQL query
                 query_job = client.query(validated_query)

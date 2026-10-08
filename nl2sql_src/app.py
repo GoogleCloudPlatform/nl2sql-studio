@@ -151,13 +151,18 @@ def project_config():
     Updates the Project Configuration details
     """
     logger.info("Updating project configuration")
-    project = request.json["proj_name"]
-    dataset = request.json["bq_dataset"]
-    metadata_file = sanitize_metadata_filename(request.json["metadata_file"])
-    logger.info(f"Received info - {project}, {dataset}, {metadata_file}")
+    try:
+        project = request.json["proj_name"]
+        dataset = request.json["bq_dataset"]
+        metadata_file = sanitize_metadata_filename(
+            request.json["metadata_file"]
+        )
+        logger.info(f"Received info - {project}, {dataset}, {metadata_file}")
 
-    config_project(project, dataset, metadata_file)
-    return json.dumps({"status": "success"})
+        config_project(project, dataset, metadata_file)
+        return json.dumps({"status": "success"})
+    except (RuntimeError, ValueError, KeyError):
+        return json.dumps({"status": "Failed to update project config"}), 400
 
 
 @app.route("/uploadfile", methods=["POST"])

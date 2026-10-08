@@ -21,10 +21,23 @@ load_dotenv()
 # "bigquery://sl-test-project-363109/nl2sql_spider"
 PROJ_CONFIG_FILE = "utils/proj_config.json"
 SQL_LOG_FILE = "utils/sqlgen_log.json"
-UTILS_DIR = os.path.realpath("utils")
+UTILS_DIR = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
+
+_RESERVED_UTILS_FILES = frozenset({
+    "proj_config.json",
+    "sqlgen_log.json",
+    "embeddings.json",
+    "embeddings_zi.json",
+})
+
+_SQL_TOKEN_RE = re.compile(
+    r"('(?:''|\\'|[^'])*'|\"(?:\"\"|\\\"|[^\"])*\"|`[^`]*`)"
+    r"|(--[^\r\n]*|/\*[\s\S]*?\*/)"
+)
 
 _DISALLOWED_SQL_KEYWORDS = re.compile(
-    r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
+    r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE(?!\s*\()"
+    r"|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
     re.IGNORECASE,
 )
 
@@ -37,10 +50,11 @@ def sanitize_metadata_filename(metadata_file: str) -> str:
     if (
         safe_name != metadata_file
         or ".." in safe_name
-        or not re.match(r"^[a-zA-Z0-9_.-]+\.json$", safe_name)
+        or not re.match(r"^[a-zA-Z0-9][a-zA-Z0-9_.-]*\.json$", safe_name)
+        or safe_name.lower() in _RESERVED_UTILS_FILES
     ):
         raise ValueError(f"Unsafe metadata filename: {metadata_file}")
-    target_path = os.path.realpath(os.path.join("utils", safe_name))
+    target_path = os.path.realpath(os.path.join(UTILS_DIR, safe_name))
     if not target_path.startswith(UTILS_DIR + os.sep):
         raise ValueError("Path traversal detected in metadata filename")
     return safe_name
@@ -50,14 +64,26 @@ def validate_readonly_sql(sql_query: str) -> str:
     """Ensure the SQL query is a single read-only SELECT/WITH statement."""
     if not isinstance(sql_query, str) or not sql_query.strip():
         raise ValueError("Empty SQL query")
-    cleaned = re.sub(r"--.*?$", "", sql_query, flags=re.MULTILINE)
-    cleaned = re.sub(r"/\*.*?\*/", "", cleaned, flags=re.DOTALL).strip()
+    cleaned = re.sub(
+        r"^\s*```(?:sql)?\s*|\s*```\s*$",
+        "",
+        sql_query.strip(),
+        flags=re.IGNORECASE,
+    )
+    cleaned = _SQL_TOKEN_RE.sub(
+        lambda m: m.group(1) if m.group(1) is not None else " ", cleaned
+    ).strip()
     cleaned = cleaned.rstrip(";").strip()
-    if ";" in cleaned:
+    if not cleaned:
+        raise ValueError("Empty SQL query")
+    masked = _SQL_TOKEN_RE.sub(
+        lambda m: "''" if m.group(1) is not None else " ", cleaned
+    )
+    if ";" in masked:
         raise ValueError("Multiple SQL statements are not allowed")
-    if not re.match(r"^(SELECT|WITH)\b", cleaned, re.IGNORECASE):
+    if not re.match(r"^\s*\(*\s*(SELECT|WITH)\b", masked, re.IGNORECASE):
         raise ValueError("Only read-only SELECT queries are allowed")
-    if _DISALLOWED_SQL_KEYWORDS.search(cleaned):
+    if _DISALLOWED_SQL_KEYWORDS.search(masked):
         raise ValueError("Disallowed DDL/DML keyword in SQL query")
     return cleaned
 

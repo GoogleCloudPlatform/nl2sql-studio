@@ -391,16 +391,33 @@ class Database(BaseModel):
         """Ensure the SQL query is a single read-only SELECT/WITH statement."""
         if not isinstance(query, str) or not query.strip():
             raise ValueError("Supplied query is empty")
-        cleaned = re.sub(r"--.*?$", "", query, flags=re.MULTILINE)
-        cleaned = re.sub(r"/\*.*?\*/", "", cleaned, flags=re.DOTALL).strip()
+        token_re = re.compile(
+            r"('(?:''|\\'|[^'])*'|\"(?:\"\"|\\\"|[^\"])*\"|`[^`]*`)"
+            r"|(--[^\r\n]*|/\*[\s\S]*?\*/)"
+        )
+        cleaned = re.sub(
+            r"^\s*```(?:sql)?\s*|\s*```\s*$",
+            "",
+            query.strip(),
+            flags=re.IGNORECASE,
+        )
+        cleaned = token_re.sub(
+            lambda m: m.group(1) if m.group(1) is not None else " ", cleaned
+        ).strip()
         cleaned = cleaned.rstrip(";").strip()
-        if ";" in cleaned:
+        if not cleaned:
+            raise ValueError("Supplied query is empty")
+        masked = token_re.sub(
+            lambda m: "''" if m.group(1) is not None else " ", cleaned
+        )
+        if ";" in masked:
             raise ValueError("Multiple SQL statements are not allowed")
-        if not re.match(r"^(SELECT|WITH)\b", cleaned, re.IGNORECASE):
+        if not re.match(r"^\s*\(*\s*(SELECT|WITH)\b", masked, re.IGNORECASE):
             raise ValueError("Only read-only SELECT queries are allowed")
         if re.search(
-            r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
-            cleaned,
+            r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE(?!\s*\()"
+            r"|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
+            masked,
             re.IGNORECASE,
         ):
             raise ValueError("Disallowed DDL/DML keyword in SQL query")

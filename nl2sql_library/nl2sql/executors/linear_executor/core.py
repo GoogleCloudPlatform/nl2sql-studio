@@ -116,7 +116,7 @@ class CoreLinearExecutor(BaseLinearExecutor):
         # Generated SQL cleanup : Remove Backticks if any
         if result_generated_query is not None:
             result_generated_query = re.sub(
-                "```|sql", "", result_generated_query, flags=re.IGNORECASE
+                r"```(?:sql)?", "", result_generated_query, flags=re.IGNORECASE
             ).strip()
             result_generated_query = database.validate_readonly_query(
                 result_generated_query
@@ -138,7 +138,7 @@ class CoreLinearExecutor(BaseLinearExecutor):
                     )
                     if eval_fix_result.modified_query is not None:
                         cleaned_mod = re.sub(
-                            "```|sql",
+                            r"```(?:sql)?",
                             "",
                             eval_fix_result.modified_query,
                             flags=re.IGNORECASE,
