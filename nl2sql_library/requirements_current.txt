@@ -183,7 +183,7 @@ ptyprocess==0.7.0
 pulsar-client==3.5.0
 pure-eval==0.2.2
 py-cpuinfo==9.0.0
-pyarrow==16.1.0
+pyarrow==14.0.1
 pyarrow-hotfix==0.6
 pyasn1==0.6.0
 pyasn1_modules==0.4.0
