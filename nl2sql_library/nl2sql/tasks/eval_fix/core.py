@@ -176,10 +176,8 @@ class CoreEvalFix(BaseEvalFixTask):
             try:
                 _ = db.execute(sql)  # type: ignore
             except (DatabaseError, ValueError) as db_error:
-                error_message = (
-                    str(db_error.args[0]).splitlines()[0]
-                    if db_error.args
-                    else str(db_error)
+                error_message = Database.sanitize_db_error_for_prompt(
+                    db_error
                 )
                 logger.warning(f"Evaluation Failed: {error_message}")
                 logger.debug("Trying to fix the query ...")

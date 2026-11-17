@@ -18,8 +18,8 @@
     Streamlit entry point function
 """
 import os
+import html as html_lib
 import json
-import configparser
 from io import StringIO
 from pathlib import Path
 import requests
@@ -36,8 +36,8 @@ from utils import linear_gen_sql, cot_gen_sql, rag_gen_sql, lite_gen_sql
 from utils import get_feedback, message_queue, \
     add_question_to_db, create_look_ui
 # import auth functions
-from utils import view_auth_google, view_login_google, \
-    back_to_login_page, run_visualization
+from utils import authenticate_session, view_login_google, \
+    back_to_login_page, run_visualization, validate_gcp_project_and_dataset
 
 curr_path = Path(__file__).resolve()
 # sys.path.extend([str(curr_path.parent), str(curr_path.parent.parent)])
@@ -166,11 +166,10 @@ def define_pre_auth_layout() -> None:
             }
             </style>
             """, unsafe_allow_html=True)
-        auth_url = view_login_google()
+        auth_url = html_lib.escape(view_login_google(), quote=True)
         hyperlink_string = '<div class="big-font"> <a href="' +\
             auth_url +\
             '" style="color:white" target="_self">Login</a> </div>'
-        logger.info(f"Auth url = {auth_url}")
         st.markdown(hyperlink_string, unsafe_allow_html=True)
 
     logo_image()
@@ -445,8 +444,15 @@ def define_post_auth_layout() -> None:
                                            file_name='sample_metadata.json')
                     if st.button("Save configuration"):
                         if uploaded_file is not None:
-                            # To read file as bytes:
-                            url = os.getenv('EXECUTORS')
+                            try:
+                                valid_proj, valid_ds = (
+                                    validate_gcp_project_and_dataset(
+                                        project, dataset
+                                    )
+                                )
+                            except ValueError as exc:
+                                st.error(str(exc))
+                                return
                             # To convert to a string based IO:
                             stringio = StringIO(
                                 uploaded_file.getvalue().decode("utf-8")
@@ -458,13 +464,17 @@ def define_post_auth_layout() -> None:
                             # To read file as string:
                             string_data = stringio.read()
                             files = {'file': (uploaded_file.name, string_data)}
-                            token = f"Bearer {st.session_state.access_token}"
-                            body = {"proj_name": project,
-                                    "bq_dataset": dataset,
+                            bearer = (
+                                st.session_state.get("token")
+                                or st.session_state.get("access_token")
+                                or ""
+                            )
+                            token = f"Bearer {bearer}"
+                            body = {"proj_name": valid_proj,
+                                    "bq_dataset": valid_ds,
                                     "metadata_file": uploaded_file.name}
                             headers = {"Content-type": "application/json",
                                        "Authorization": token}
-                            # url = "http://localhost:5000"
                             executors_list = ['CORE_EXECUTORS',
                                               'LITE_EXECUTORS']
                             for executor in executors_list:
@@ -476,14 +486,14 @@ def define_post_auth_layout() -> None:
                                     url=url+"/projconfig",
                                     data=json.dumps(body),
                                     headers=headers,
-                                    timeout=None
+                                    timeout=30
                                     )
 
                                 _ = requests.post(
                                     url=url+"/uploadfile",
                                     headers={"Authorization": token},
                                     files=files,
-                                    timeout=None
+                                    timeout=30
                                     )
 
                         pc_modal.close()
@@ -557,7 +567,10 @@ def redraw() -> None:
             cntr += 1
 
             with st.chat_message(message["role"]):
-                st.markdown(message["content"], unsafe_allow_html=True)
+                safe_msg = str(message.get("content", ""))
+                if "<" in safe_msg or ">" in safe_msg:
+                    safe_msg = html_lib.escape(safe_msg, quote=True)
+                st.markdown(safe_msg)
 
                 if message["dataframe"] is not None:
                     visualise_modal = st.session_state.get(
@@ -681,13 +694,18 @@ def when_user_responded() -> None:
                 "user_feedback": user_feedback}
 
         logger.info(f"User reposnse data to API {data}")
+        bearer = (
+            st.session_state.get("token")
+            or st.session_state.get("access_token")
+            or ""
+        )
         headers = {'Content-type': 'application/json',
                    'Accept': 'text/plain',
-                   "Authorization": f"Bearer {st.session_state.access_token}"}
+                   "Authorization": f"Bearer {bearer}"}
         resp = requests.post(url=url,
                              data=json.dumps(data),
                              headers=headers,
-                             timeout=None)
+                             timeout=30)
 
         st.session_state.refresh = True
         get_feedback()
@@ -707,43 +725,10 @@ def refresh() -> None:
 
 def app_load() -> None:
     """
-        On Application load
+        On Application load: enforce Google OAuth without logging credentials.
     """
     logger.info("App loaders")
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-    google_oauth = config['DEFAULT']['GOOGLE_OAUTH']
-    if google_oauth == 'ENABLE':
-        # Code Block for 'With Google Authentication'
-        found_query_params = False
-        try:
-            logger.info(f"Query Parameters - {st.query_params}")
-            code = st.query_params['code']
-            found_query_params = True
-            logger.info(f"Authorisation code : {code}")
-        except Exception:
-            logger.info("Login required")
-            found_query_params = False
-
-        if found_query_params:
-            id_token, access_token = view_auth_google(st.query_params['code'])
-            logger.info(f"ID Token = {id_token}")
-            logger.info(f"Access Token = {access_token}")
-            st.session_state.token = id_token
-            st.session_state.access_token = access_token
-            st.session_state.login_status = True
-        else:
-            st.session_state.token = None
-            st.session_state.access_token = None
-            st.session_state.login_status = False
-        # Comment for 'With Google Authentication' ends
-    else:
-        # Code block for 'Without Google Authentication'
-        st.session_state.login_status = True
-        st.session_state.token = "dummy token"
-        st.session_state.access_token = "dummy token"
-        # Code block for without Google Auth ends
-
+    authenticate_session()
     logger.info(f"Login status = {st.session_state.login_status}")
 
 

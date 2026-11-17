@@ -18,6 +18,7 @@ A dataset is a group of databases, intended to represent a data warehouse
 containing multiple databases.
 """
 
+import html
 import re
 import typing
 
@@ -392,8 +393,22 @@ class Database(BaseModel):
         if not isinstance(query, str) or not query.strip():
             raise ValueError("Supplied query is empty")
         token_re = re.compile(
-            r"('(?:''|\\'|[^'])*'|\"(?:\"\"|\\\"|[^\"])*\"|`[^`]*`)"
-            r"|(--[^\r\n]*|/\*[\s\S]*?\*/)"
+            r"("
+            r"(?:\b(?:[rR][bB]?|[bB][rR]))(?:"
+            r"'''(?:\\\\|\\[^'\\]|(?!''')[^\\])*?'''"
+            r"|\"\"\"(?:\\\\|\\[^\"\\]|(?!\"\"\")[^\\])*?\"\"\""
+            r"|'(?:\\\\|\\[^'\\\r\n]|[^'\\\r\n])*'"
+            r"|\"(?:\\\\|\\[^\"\\\r\n]|[^\"\\\r\n])*\""
+            r")"
+            r"|(?<![A-Za-z0-9_])(?:[bB])?(?:"
+            r"'''(?:\\[\s\S]|(?!''')[\s\S])*?'''"
+            r"|\"\"\"(?:\\[\s\S]|(?!\"\"\")[\s\S])*?\"\"\""
+            r"|'(?:\\[\s\S]|[^'\\\r\n])*'"
+            r"|\"(?:\\[\s\S]|[^\"\\\r\n])*\""
+            r")"
+            r"|`(?:\\[\s\S]|[^`\\\r\n])*`"
+            r")"
+            r"|(--[^\r\n]*|#[^\r\n]*|/\*[\s\S]*?\*/)"
         )
         cleaned = re.sub(
             r"^\s*```(?:sql)?\s*|\s*```\s*$",
@@ -407,21 +422,87 @@ class Database(BaseModel):
         cleaned = cleaned.rstrip(";").strip()
         if not cleaned:
             raise ValueError("Supplied query is empty")
-        masked = token_re.sub(
-            lambda m: "''" if m.group(1) is not None else " ", cleaned
+        tight_masked = token_re.sub(
+            lambda m: "__LIT__" if m.group(1) is not None else " ", cleaned
         )
+        if "__LIT____LIT__" in tight_masked:
+            raise ValueError(
+                "Adjacent string/identifier literals are not allowed"
+            )
+        masked = token_re.sub(
+            lambda m: " __LIT__ " if m.group(1) is not None else " ", cleaned
+        )
+        if re.search(r"['\"`\\#]|--|/\*|\*/", masked):
+            raise ValueError(
+                "Unclosed or malformed literal/comment in SQL query"
+            )
         if ";" in masked:
             raise ValueError("Multiple SQL statements are not allowed")
         if not re.match(r"^\s*\(*\s*(SELECT|WITH)\b", masked, re.IGNORECASE):
             raise ValueError("Only read-only SELECT queries are allowed")
         if re.search(
             r"\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|TRUNCATE(?!\s*\()"
-            r"|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT)\b",
+            r"|MERGE|GRANT|REVOKE|CALL|EXEC|EXECUTE|EXPORT|LOAD|UNDROP|INTO)\b",
             masked,
             re.IGNORECASE,
         ):
             raise ValueError("Disallowed DDL/DML keyword in SQL query")
         return cleaned
+
+    @staticmethod
+    def sanitize_untrusted_cell_value(
+        value: object, max_len: int = 200
+    ) -> str:
+        """Strip newlines/control chars, backticks, and HTML from DB values."""
+        if value is None:
+            return ""
+        flat = re.sub(
+            r"[\r\n\t\x00-\x1f\x7f\u2028\u2029]+", " ", str(value)
+        ).strip()
+        flat = flat.replace("`", "'").replace('"', "'")
+        escaped = html.escape(flat, quote=False)
+        if len(escaped) > max_len:
+            escaped = escaped[:max_len] + "..."
+        return escaped
+
+    @staticmethod
+    def fence_untrusted_data(value: object, max_len: int = 4000) -> str:
+        """Sanitize untrusted DB output and wrap in <untrusted_data> fences."""
+        sanitized = Database.sanitize_untrusted_cell_value(
+            value, max_len=max_len
+        )
+        return f"<untrusted_data>{sanitized}</untrusted_data>"
+
+    @staticmethod
+    def sanitize_db_error_for_prompt(err: object) -> str:
+        """Extract safe error class/code/category without echoed DB strings."""
+        err_type = (
+            type(err).__name__ if not isinstance(err, str) else "DBError"
+        )
+        raw = str(err or "")
+        code_match = re.search(r"\b([45]\d{2})\b", raw)
+        status_prefix = f"{code_match.group(1)} " if code_match else ""
+        known_kinds = (
+            "Unrecognized name",
+            "Syntax error",
+            "Table not found",
+            "Not found",
+            "InvalidQuery",
+            "Access Denied",
+            "No matching signature",
+            "Column name",
+            "ambiguous",
+            "cannot be null",
+            "division by zero",
+        )
+        matched_kind = "Query execution error"
+        raw_lower = raw.lower()
+        for kind in known_kinds:
+            if kind.lower() in raw_lower:
+                matched_kind = kind
+                break
+        summary = f"{err_type}: {status_prefix}{matched_kind}".strip()
+        return Database.fence_untrusted_data(summary, max_len=160)
 
     def execute(self, query: str) -> pd.DataFrame:
         """
@@ -559,14 +640,19 @@ class Database(BaseModel):
                 if col_enums
                 else {}
             ).items():
-                col_descriptor[colname]["col_enum_vals"] = colvals
+                col_descriptor[colname]["col_enum_vals"] = [
+                    self.sanitize_untrusted_cell_value(val, max_len=80)
+                    for val in colvals
+                ]
 
             table_descriptor[table.name] = {
                 "table_name": table.name,
                 "table_creation_statement": str(
                     CreateTable(table).compile(engine)
                 ).rstrip(),
-                "table_sample_rows": temp_db._get_sample_rows(table),
+                "table_sample_rows": self.fence_untrusted_data(
+                    temp_db._get_sample_rows(table)
+                ),
                 "col_descriptor": col_descriptor,
             }
 

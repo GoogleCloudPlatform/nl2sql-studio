@@ -9,7 +9,7 @@ import inspect
 import json
 import os
 from flask_cors import CORS
-from flask import Flask, request
+from flask import Flask, g, request
 from dotenv import load_dotenv
 from loguru import logger
 
@@ -22,54 +22,80 @@ from utils.utility_functions import (
     get_project_config,
     log_sql,
     sanitize_metadata_filename,
+    validate_project_and_dataset,
     validate_readonly_sql,
+    verify_bearer_token,
 )
-try:
-    import sys
-    sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../nl2sql_src"))
-    from utils.make_data_dict import generate_data_dictionary, make_data_dict
-except ImportError:
-    pass
 from nl2sql_query_embeddings import Nl2Sql_embed
 
 load_dotenv()
 
 currentdir = os.path.dirname(
     os.path.abspath(inspect.getfile(inspect.currentframe()))
-    )
+)
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 app = Flask(__name__)
 
 cors = CORS(app)
-app.config["CORS_HEADERS"] = "Content-Type"
+app.config["CORS_HEADERS"] = "Content-Type, Authorization"
 
 
-dataset_name = get_project_config()["config"]["dataset"]  # "zoominfo"
+def _load_data_dictionary(
+    metadata_file: str, dataset_key: str | None = None
+) -> dict:
+    """Load metadata JSON safely from nl2sql_library/utils."""
+    safe_file = sanitize_metadata_filename(metadata_file)
+    candidates = [
+        os.path.join(currentdir, "utils", safe_file),
+        os.path.join("utils", safe_file),
+    ]
+    spider_rows = {}
+    for candidate in candidates:
+        if os.path.exists(candidate):
+            with open(candidate, encoding="utf-8") as handle:
+                spider_rows = json.load(handle)
+            break
+    entry = {
+        "description": (
+            "This dataset contains information about the concerts "
+            "singers, country they belong to, stadiums where the "
+            "concerts happened"
+        ),
+        "tables": spider_rows,
+    }
+    result = {"nl2sql_spider": entry}
+    if dataset_key and dataset_key != "nl2sql_spider":
+        result[dataset_key] = entry
+    return result
 
-# bigquery_connection_string = "bigquery://sl-test-project-363109/zoominfo"
+
+dataset_name = get_project_config()["config"]["dataset"]
 bigquery_connection_string = initialize_db(
     get_project_config()["config"]["proj_name"],
     get_project_config()["config"]["dataset"],
 )
-
 data_file_name = sanitize_metadata_filename(
     get_project_config()["config"]["metadata_file"]
 )
+data_dictionary_read = _load_data_dictionary(data_file_name)
 
-f = open(os.path.join("utils", data_file_name), encoding="utf-8")
-spider_data = json.load(f)
-data_dictionary_read = {
-    "nl2sql_spider": {
-        "description": "This dataset contains information about the concerts\
-                      singers, country they belong to, stadiums where the  \
-                      concerts happened",
-        "tables": spider_data,
-    },
-}
 
-print("curr path = ", os.getcwd())
+@app.before_request
+def _enforce_bearer_auth():
+    """Require a verified Google OIDC Bearer token on API endpoints."""
+    if request.method == "OPTIONS":
+        return None
+    if request.method == "GET" and request.path == "/":
+        return None
+    try:
+        g.auth_claims = verify_bearer_token(
+            request.headers.get("Authorization")
+        )
+    except Exception:
+        return json.dumps({"error": "Unauthorized"}), 401
+    return None
 
 
 @app.route("/")
@@ -92,10 +118,13 @@ def linear_executor():
     from nl2sql_lib_executors import NL2SQL_Executors
 
     try:
+        active_cfg = get_project_config()["config"]
         nle = NL2SQL_Executors()
         res_id, sql, df = nle.linear_executor(
             question=question,
-            data_dict=data_dictionary_read,
+            data_dict=_load_data_dictionary(
+                active_cfg["metadata_file"], active_cfg["dataset"]
+            ),
             execute_sql=execute_sql,
         )
         sql_result = ""
@@ -152,10 +181,13 @@ def cot_executor():
 
     try:
         logger.info("CoT initialising the class")
+        active_cfg = get_project_config()["config"]
         nle = NL2SQL_Executors()
         res_id, sql, df = nle.cot_executor(
             question=question,
-            data_dict=data_dictionary_read,
+            data_dict=_load_data_dictionary(
+                active_cfg["metadata_file"], active_cfg["dataset"]
+            ),
             execute_sql=execute_sql,
         )
         sql_result = ""
@@ -261,17 +293,22 @@ def project_config():
     """
     logger.info("Updating project configuration")
     try:
-        project = request.json["proj_name"]
-        dataset = request.json["bq_dataset"]
-        metadata_file = sanitize_metadata_filename(
-            request.json["metadata_file"]
+        payload = request.get_json(force=True) or {}
+        project, dataset = validate_project_and_dataset(
+            payload["proj_name"],
+            payload["bq_dataset"],
         )
+        raw_meta = (
+            payload.get("metadata_file")
+            or get_project_config()["config"]["metadata_file"]
+        )
+        metadata_file = sanitize_metadata_filename(raw_meta)
         logger.info(f"Received info - {project}, {dataset}, {metadata_file}")
 
         config_project(project, dataset, metadata_file)
 
         return json.dumps({"status": "success"})
-    except (RuntimeError, ValueError, KeyError):
+    except (RuntimeError, ValueError, KeyError, TypeError):
         return json.dumps({"status": "Failed to update project config"}), 400
 
 
@@ -293,7 +330,7 @@ def upload_file():
         )
         logger.info(f"Saving file as : {target_file}")
 
-        utils_dir = os.path.realpath("utils")
+        utils_dir = os.path.realpath(os.path.join(currentdir, "utils"))
         target_path = os.path.realpath(os.path.join(utils_dir, target_file))
         if not target_path.startswith(utils_dir + os.sep):
             raise ValueError("Path traversal detected")
@@ -301,11 +338,11 @@ def upload_file():
         with open(target_path, "w", encoding="utf-8") as outfile:
             outfile.write(data_to_save)
 
-        logger.info(f"List of files - {os.listdir('utils')}")
+        logger.info(f"List of files - {os.listdir(utils_dir)}")
 
         return json.dumps({"status": "Successfully uploaded file"})
-    except (RuntimeError, ValueError):
-        return json.dumps({"status": "Failed to upload file"})
+    except (RuntimeError, ValueError, KeyError):
+        return json.dumps({"status": "Failed to upload file"}), 400
 
 
 @app.route("/userfb", methods=["POST"])
@@ -373,4 +410,4 @@ def create_record():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)

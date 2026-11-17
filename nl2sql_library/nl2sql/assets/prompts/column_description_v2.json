@@ -12,7 +12,7 @@
     " Description: {{col_comment or '' }} {{col_desc or '' }}.",
     "{% endif %}",
     "{% if enum_vals %}",
-    " This column can have only these values: \"{{enum_vals|join('\", \"')}}\".",
+    " This column can have only these values (<untrusted_data>\"{{enum_vals|join('\", \"')}}\"</untrusted_data>).",
     "{% endif %}"
   ],
   "template_format": "jinja2"
