@@ -49,21 +49,26 @@ class NL2SQL_Executors:
     def linear_executor(
         self,
         question=question_to_gen,
-        bq_conn_string=bigquery_connection_string,
+        bq_conn_string=None,
         data_dict=None,
         execute_sql=False,
     ):
         """
         SQL Generation using Linear Executor
         """
+        cfg = get_project_config()["config"]
+        active_dataset = cfg["dataset"]
+        conn_str = bq_conn_string or initialize_db(
+            cfg["proj_name"], active_dataset
+        )
         executor_linear = CoreLinearExecutor.from_connection_string_map(
             {
-                dataset_name: bq_conn_string,
+                active_dataset: conn_str,
             },
             data_dictionary=data_dict,
         )
         logger.info("Linear Executor Executing for ", question)
-        result = executor_linear(db_name=dataset_name, question=question)
+        result = executor_linear(db_name=active_dataset, question=question)
         df = executor_linear.fetch_result(result) if execute_sql else None
         logger.info(f"Linear executor output: [{result.generated_query}]")
         return result.result_id, result.generated_query, df
@@ -71,13 +76,18 @@ class NL2SQL_Executors:
     def cot_executor(
         self,
         question=question_to_gen,
-        bq_conn_string=bigquery_connection_string,
+        bq_conn_string=None,
         data_dict=None,
         execute_sql=False,
     ):
         """
         SQL Generation using Chain of Thought Executor
         """
+        cfg = get_project_config()["config"]
+        active_dataset = cfg["dataset"]
+        conn_str = bq_conn_string or initialize_db(
+            cfg["proj_name"], active_dataset
+        )
         logger.info("Chain of Thought executor LLM initialised")
         llm = text_bison_32k()
         # Disabling logs because these steps generate a LOT of logs.
@@ -93,14 +103,14 @@ class NL2SQL_Executors:
         )
         logger.enable("nl2sql.datasets.base")
         executor_cot = CoreLinearExecutor.from_connection_string_map(
-            {dataset_name: bq_conn_string},
+            {active_dataset: conn_str},
             core_table_selector=core_table_selector,
             core_column_selector=core_column_selector,
             core_sql_generator=core_sql_generator,
             data_dictionary=data_dict,
         )
         logger.info("Chain of Thought Executor executing for ", question)
-        result = executor_cot(db_name=dataset_name, question=question)
+        result = executor_cot(db_name=active_dataset, question=question)
         df = executor_cot.fetch_result(result) if execute_sql else None
         logger.info(f"Chain of Thought output: [{result.generated_query}]")
         return result.result_id, result.generated_query, df

@@ -21,7 +21,7 @@
 import json
 import os
 from flask_cors import CORS
-from flask import Flask, request
+from flask import Flask, g, request
 from dotenv import load_dotenv
 from loguru import logger
 import uuid
@@ -34,12 +34,10 @@ from utils.utility_functions import (
     log_sql,
     log_update_feedback,
     sanitize_metadata_filename,
+    validate_project_and_dataset,
     validate_readonly_sql,
+    verify_bearer_token,
 )
-try:
-    from utils.make_data_dict import generate_data_dictionary, make_data_dict
-except ImportError:
-    pass
 from nl2sql_query_embeddings import Nl2Sql_embed
 
 PROJECT_ID = 'sl-test-project-363109'
@@ -48,12 +46,30 @@ DATASET_ID = 'nl2sql_spider'
 
 load_dotenv()
 
+currentdir = os.path.dirname(os.path.abspath(__file__))
+
 app = Flask(__name__)
 
 cors = CORS(app)
-app.config["CORS_HEADERS"] = "Content-Type"
+app.config["CORS_HEADERS"] = "Content-Type, Authorization"
 
 dataset_name = 'nl2sql_spider'
+
+
+@app.before_request
+def _enforce_bearer_auth():
+    """Require a verified Google OIDC Bearer token on API endpoints."""
+    if request.method == "OPTIONS":
+        return None
+    if request.method == "GET" and request.path == "/":
+        return None
+    try:
+        g.auth_claims = verify_bearer_token(
+            request.headers.get("Authorization")
+        )
+    except Exception:
+        return json.dumps({"error": "Unauthorized"}), 401
+    return None
 
 
 @app.route("/")
@@ -78,18 +94,19 @@ def nl2sql_lite_generate():
 
     try:
         logger.info("Reading the configuration file")
-        curdir = os.getcwd()
         proj_conf = get_project_config()["config"]
-        print(proj_conf)
+        valid_proj, valid_ds = validate_project_and_dataset(
+            proj_conf["proj_name"], proj_conf["dataset"]
+        )
         data_file_name = sanitize_metadata_filename(proj_conf["metadata_file"])
 
         logger.info(f"Using the metadata file : {data_file_name}")
 
-        metadata_json_path = os.path.join(curdir, "utils", data_file_name)
+        metadata_json_path = os.path.join(currentdir, "utils", data_file_name)
         logger.info(f"path  {metadata_json_path}")
 
-        nl2sqlbq_client_base = Nl2sqlBq(project_id=proj_conf["proj_name"],
-                                        dataset_id=proj_conf["dataset"],
+        nl2sqlbq_client_base = Nl2sqlBq(project_id=valid_proj,
+                                        dataset_id=valid_ds,
                                         metadata_json_path=metadata_json_path,
                                         model_name="text-bison@002",
                                         tuned_model=False)
@@ -152,16 +169,21 @@ def project_config():
     """
     logger.info("Updating project configuration")
     try:
-        project = request.json["proj_name"]
-        dataset = request.json["bq_dataset"]
-        metadata_file = sanitize_metadata_filename(
-            request.json["metadata_file"]
+        payload = request.get_json(force=True) or {}
+        project, dataset = validate_project_and_dataset(
+            payload["proj_name"],
+            payload["bq_dataset"],
         )
+        raw_meta = (
+            payload.get("metadata_file")
+            or get_project_config()["config"]["metadata_file"]
+        )
+        metadata_file = sanitize_metadata_filename(raw_meta)
         logger.info(f"Received info - {project}, {dataset}, {metadata_file}")
 
         config_project(project, dataset, metadata_file)
         return json.dumps({"status": "success"})
-    except (RuntimeError, ValueError, KeyError):
+    except (RuntimeError, ValueError, KeyError, TypeError):
         return json.dumps({"status": "Failed to update project config"}), 400
 
 
@@ -183,7 +205,7 @@ def upload_file():
         )
         logger.info(f"Saving file as : {target_file}")
 
-        utils_dir = os.path.realpath("utils")
+        utils_dir = os.path.realpath(os.path.join(currentdir, "utils"))
         target_path = os.path.realpath(os.path.join(utils_dir, target_file))
         if not target_path.startswith(utils_dir + os.sep):
             raise ValueError("Path traversal detected")
@@ -191,11 +213,11 @@ def upload_file():
         with open(target_path, "w", encoding="utf-8") as outfile:
             outfile.write(data_to_save)
 
-        logger.info(f"List of files - {os.listdir('utils')}")
+        logger.info(f"List of files - {os.listdir(utils_dir)}")
 
         return json.dumps({"status": "Successfully uploaded file"})
-    except (RuntimeError, ValueError):
-        return json.dumps({"status": "Failed to upload file"})
+    except (RuntimeError, ValueError, KeyError):
+        return json.dumps({"status": "Failed to upload file"}), 400
 
 
 @app.route("/userfb", methods=["POST"])
@@ -232,4 +254,4 @@ def create_record():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)
